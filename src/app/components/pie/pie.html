@@ -1,0 +1,20 @@
+<footer class="footer fixed-bottom rounded-top-4 mt-5">
+    <div class="container">
+
+        <div class="row justify-content-center p-3">
+
+            @for (logo of config.footer.logos; track logo) {
+            <div class="col mb-1">
+                <a [href]="logo.link">
+                    <img [src]="logo.img" [alt]="logo.alt" class="footer-logo img-fluid" />
+                </a>
+            </div>
+            }
+        </div>
+        
+        <div class="row text-center p-2 small fuente-firacode" pTooltip="Creado con ♥️" showDelay="3000">
+            <span><i class="bi bi-c-circle"></i> {{config.footer.copyright}} '{{year}}</span>
+        </div>
+
+    </div>
+</footer>
