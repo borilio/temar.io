@@ -8,5 +8,6 @@ import { PRIMENG_IMPORTS } from '../../shared/primeng.imports';
   styleUrl: './contenido.css'
 })
 export class Contenido {
+  
 
 }
