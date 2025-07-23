@@ -3,6 +3,17 @@
     color: var(--p-primary-color-text, #fff);
 }
 
+/* Aplicamos un degrado usando los colores del preset */
+.degradado {
+  background: linear-gradient(
+    to top,
+    var(--p-primary-400),
+    var(--p-primary-600)
+  );
+  color: var(--p-primary-color-text, #fff);
+}
+
+
 .footer-logo {
     max-height: 50px;
     max-width: 100%;
