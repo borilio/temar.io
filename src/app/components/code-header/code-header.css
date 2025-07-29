@@ -1,0 +1,10 @@
+/**************************************
+Recuerda que este componente está dentro de ContenidoComponent, que tiene la encapsulación deshabilitada,
+por lo que cualquier estilo que se aplique aquí SE VUELVE GLOBAL
+***************************************/
+
+/* Para hacer la etiqueta un poco más pequeña */
+.p-tag.p-tag-sm {
+  font-size: 0.75rem; /* Reduce el tamaño de la fuente */
+  padding: 0.2rem 0.5rem;   /* Ajusta el padding para hacerlo más compacto */
+}

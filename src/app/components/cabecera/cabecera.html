@@ -1,33 +1,24 @@
-<div>
-    <header class="bg-primario degradado text-center text-light p-3 rounded-bottom-4">
-        <!-- TODO Mejorar esto -->
-        <div class="mb-3" [hidden]="true">
-            <span class="lead">Temar.io</span>
-        </div>
+<header class="fixed-top degradado text-center text-light p-3 rounded-bottom-4">
+    <!-- TODO Mejorar esto -->
+    <div class="mb-3" [hidden]="true">
+        <span class="lead">Temar.io</span>
+    </div>
+
+    <!-- Navegación -->
+    <div>
+        <p-menubar [model]="items">
+            <ng-template #start>
+                <img />
+            </ng-template>
+
+            <ng-template #end>
+                <div class="flex items-center gap-2">
+                    <app-temas></app-temas>
+                </div>
+            </ng-template>
+        </p-menubar>
+    </div>
+</header>
 
 
-        <!-- Navegación -->
-        <div>
-            <p-menubar [model]="items">
-                <ng-template #start>
-                    <img />
-                </ng-template>
-
-                <ng-template #end>
-                    <div class="flex items-center gap-2">
-                        <p-button 
-                            severity="contrast" 
-                            [icon]="temaOscuro ? 'pi pi-sun' : 'pi pi-moon'"
-                            [pTooltip]="textoBotonModoOscuro" 
-                            rounded="true" 
-                            (click)="cambiarModo()">
-                        </p-button>
-                        <p-toast position="top-center" />
-                    </div>
-                </ng-template>
-            </p-menubar>
-        </div>
-    </header>
-
-
-</div>
+<p-toast position="top-center" />

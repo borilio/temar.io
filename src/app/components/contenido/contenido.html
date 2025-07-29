@@ -1,7 +1,25 @@
-<div id="contenido" class="p-3">
-    <p-card header="Contenidos">
+<div class="tarjeta">
 
-
-    </p-card>
-
+    @if (cargandoContenido) {
+        <!-- Si está cargando todavía contenidos...-->
+        <p-card>
+            <div class="text-center">
+                <!--TODO Mostrar el spinner en el centro de la página, y no arriba -->
+                <p>{{fraseCargando}}</p>
+                <p-progress-spinner aria-label="Cargando contenidos"></p-progress-spinner>
+            </div>
+        </p-card>
+    } @else if (hayError) {
+        <!-- Si hay un error al obtener los contenidos... -->
+        <p-card>
+            <div class="alert alert-danger text-center">
+                <span>🙄No se pudo obtener el contenido HTML.</span>
+            </div>
+        </p-card>
+    } @else {
+        <!-- Si todo fue bien y ya tenemos los contenidos -->
+        <div [innerHTML]="contenidoHTML" class="markdown-body"></div>
+    }
 </div>
+
+<p-toast position="top-center" />

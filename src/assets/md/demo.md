@@ -47,7 +47,7 @@
 > Si ejecuta `npm install -g json-server` sin indicar la versión concreta, pero no tendrás la opción de retraso.
 
 > [!note]
-> Cita de tipo note
+> En esta cita también aprovechamos a meter un kbd. Pulsa <kbd>Intro</kbd> para probarlo.
 
 > [!tip]
 > Cita de tipo tip
@@ -88,8 +88,41 @@ Puedes visitar [Google](https://www.google.com) o hacer una referencia a [Sectio
 Veamos bloques de código:
 
 ```typescript
-function saluda(nombre: string): void {
-    console.log(¡Hola, ${nombre}!);
+async convertirMarkdownHTML(url: string): Promise<string> {
+    const markdown = await firstValueFrom(this.http.get(url, { responseType: "text" }));
+
+    //Añadimos un retardo artificial a la consulta, para probar barras de progreso
+    if (this.retardoActivo) {
+      await new Promise(resolve => setTimeout(resolve, 2000)); // 2 segundos de espera
+    }
+
+    return this.mdParser.render(markdown);
+}
+```
+
+```json
+{
+    "preset": "MiPresetTeal",
+    "defaultThemeId": "github-light",
+    "footer": {
+        "copyright": "Temar.io by ExprimeAndroid",
+        "logos": [
+            {
+                "img": "img/logo1.png",
+                "link": "http://www.enlace1.com",
+                "alt": "Logo1"
+            }
+        ]
+    },
+    "themes": [
+        {
+            "id": "github-light",
+            "name": "GitHub Claro",
+            "baseMode": "light",
+            "markdownThemeFile": "github-markdown-light.css",
+            "highlightThemeFile": "github.css"
+        }
+    ]
 }
 ```
 
@@ -99,10 +132,21 @@ SELECT * FROM clientes WHERE nombre='Pepe';
 
 Y también veamos como se ve el código en línea, por ejemplo `System.out.println(“Hola Mundo!!!”);`. Se ve distinto que `int a=5;`.
 
+## 9. Fórmulas
 
+Los trozos de fórmulas usando la sintáxis Latex. Tanto en bloques de código como en línea.
 
----
-## 9. Tareas/todo
+Por ejemplo, una función en matemáticas, se puede definir así:
+$$
+f(x) = x + 1
+$$
+Estamos indicando que la función recibe un valor $x$, y retorna dicho valor sumándole un $1$.
+
+> [!IMPORTANT]
+>
+> Hay que tener claro que todavía no estamos usando la función ni ejecutándola, tan solo estamos **definiendo su comportamiento**, los valores que debe recibir y retornar (si es que los recibe o retorna).
+
+## 10. Tareas/todo
 
 - [x] Escribir ejemplo
 - [ ] Probar en visor Markdown
@@ -110,7 +154,7 @@ Y también veamos como se ve el código en línea, por ejemplo `System.out.print
 
 ---
 
-## 10. Bloques personalizados con html y css
+## 11. Bloques personalizados con html y css
 
 Bloques listos para usar en Markdown con HTML embebido, usando colores contextuales y texto con contraste adecuado.
 

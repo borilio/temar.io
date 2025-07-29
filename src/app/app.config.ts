@@ -1,7 +1,7 @@
 import { ApplicationConfig, provideBrowserGlobalErrorListeners, provideZoneChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withFetch } from '@angular/common/http';
 
 // Import de la configuración
 import { CONFIG } from './shared/constantes';
@@ -18,7 +18,7 @@ export const appConfig: ApplicationConfig = {
     provideBrowserGlobalErrorListeners(),
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
-    provideHttpClient(),
+    provideHttpClient(withFetch()), // Es para eliminar un warning en la consola de depuración, para mantener el keepalive
     
     
     // PrimeNG
@@ -29,7 +29,7 @@ export const appConfig: ApplicationConfig = {
         //Se elige el preset que haya en el config.json o el índigo por defecto
         preset: PRESETS[CONFIG.preset as keyof typeof PRESETS] ?? PRESETS["MiPresetIndigo"],
         options: {
-          darkModeSelector: ".modo-oscuro",
+          darkModeSelector: ".dark-mode",
         }
       }
     }),

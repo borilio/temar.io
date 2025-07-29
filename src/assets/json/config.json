@@ -1,0 +1,47 @@
+{
+    "preset": "MiPresetTeal",
+    "defaultThemeId": "github-light",
+    "footer": {
+        "copyright": "Temar.io by ExprimeAndroid",
+        "logos": [
+            {
+                "img": "img/logo1.png",
+                "link": "http://www.enlace1.com",
+                "alt": "Logo1"
+            },
+            {
+                "img": "img/logo2.png",
+                "link": "http://www.enlace2.com",
+                "alt": "Logo2"
+            },
+            {
+                "img": "img/logo3.png",
+                "link": "http://www.enlace3.com",
+                "alt": "Logo3"
+            }
+        ]
+    },
+    "themes": [
+        {
+            "id": "github-light",
+            "name": "GitHub Claro",
+            "baseMode": "light",
+            "markdownThemeFile": "github-markdown-light.css",
+            "highlightThemeFile": "github.css"
+        },
+        {
+            "id": "github-dark",
+            "name": "GitHub Oscuro",
+            "baseMode": "dark",
+            "markdownThemeFile": "github-markdown-dark.css",
+            "highlightThemeFile": "github-dark.css"
+        },
+        {
+            "id": "dracula",
+            "name": "Dracula",
+            "baseMode": "dark",
+            "markdownThemeFile": "github-markdown-dark.css",
+            "highlightThemeFile": "base16/dracula.css"
+        }
+    ]
+}

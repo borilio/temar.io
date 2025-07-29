@@ -1,0 +1,17 @@
+/* Margen para evitar el header y el footer */
+.tarjeta {
+    margin-top: 8rem;
+    margin-bottom: 10rem;
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+    /* Borde simple y redondeado usando el color primario de PrimeNG */
+    border: 1px solid var(--p-primary-500);
+    border-radius: 10px; 
+    overflow: hidden; /* Para que el contenido respete los bordes */
+}
+
+.tarjeta .markdown-body {
+  /* Un padding para que el contenido no se pegue a los bordes */
+  padding: 1rem;
+  
+}

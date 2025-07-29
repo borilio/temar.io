@@ -1,15 +1,25 @@
 export interface ConfigModel {
     preset: string;
+    defaultThemeId: string;
     footer: Footer;
+    themes: Theme[];
 }
 
 export interface Footer {
     copyright: string;
-    logos:     Logo[];
+    logos: Logo[];
 }
 
 export interface Logo {
-    img:  string;
+    img: string;
     link: string;
-    alt:  string;
+    alt: string;
+}
+
+export interface Theme {
+    id: string;
+    name: string;
+    baseMode: string;
+    markdownThemeFile: string;
+    highlightThemeFile: string;
 }

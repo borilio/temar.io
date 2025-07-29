@@ -7,7 +7,7 @@
 html {
   background: var(--p-surface-100); /* Claro */
 }
-html.modo-oscuro {
+html.dark-mode {
   background: var(--p-surface-700); /* Oscuro */
 }
 /* El body tiene que heredar lo de html para aplicar correctamente el color de surface (cosas del scope de las variables en css) */
@@ -35,4 +35,5 @@ body {
   );
   color: var(--p-primary-color-text, #fff);
 }
+
 

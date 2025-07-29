@@ -1,0 +1,85 @@
+/*
+Aquí añadiremos estilos para forzar algunos estilos contenido html generado por el markdown-it
+*/
+
+/*
+  Aplicamos fira code a todo el código, ya sea en bloques, en línea o para kbd.
+  Usamos !important para asegurar que esta regla anule a las del tema base.
+*/
+.markdown-body pre code,
+.markdown-body code,
+.markdown-body kbd {
+  font-family: 'Fira Code', monospace !important;
+}
+
+
+/*
+  Las imágenes, las convierte en elementos de bloque y las centra horizontalmente.
+*/
+.markdown-body img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ===================================================================
+   ESTILOS PARA EL CONTENEDOR DE BLOQUES DE CÓDIGO (Efecto Unificado)
+   =================================================================== */
+
+/* 1. El contenedor principal que envuelve todo el bloque.
+   Le damos los bordes redondeados y un borde general.
+   'overflow: hidden' es clave para que los hijos respeten la forma redondeada. */
+.code-block-wrapper {
+  margin-bottom: 1.5rem;
+  border-radius: 8px; /* Bordes redondeados generales */
+  overflow: hidden;
+  border: 1px solid; /* El color se define por tema */
+}
+
+/* 2. El componente de la cabecera.
+   Le quitamos el margen inferior para que se pegue al bloque de código. */
+.code-block-wrapper app-code-header {
+  display: block; /* Asegura que ocupe todo el ancho */
+}
+
+/* 3. El bloque <pre> que contiene el código.
+   Le quitamos todos los márgenes y bordes para que encaje perfectamente
+   dentro de nuestro contenedor. */
+.code-block-wrapper pre {
+  margin: 0 !important;
+  border: none !important;
+  border-radius: 0 !important; /* Quitamos cualquier redondeo que tuviera */
+}
+
+
+/* ===================================================================
+   COLORES Y ESTILOS DEPENDIENTES DEL TEMA
+   =================================================================== */
+
+/* --- TEMA CLARO --- */
+[data-theme="light"] .code-block-wrapper {
+  border-color: #d0d7de;
+}
+
+[data-theme="light"] app-code-header .code-header-container {
+  background-color: #f6f8fa;
+  border-bottom: 1px solid #d0d7de; /* Línea de separación */
+}
+
+[data-theme="light"] app-code-header .language-label {
+  color: #57606a;
+}
+
+/* --- TEMA OSCURO --- */
+[data-theme="dark"] .code-block-wrapper {
+  border-color: #30363d;
+}
+
+[data-theme="dark"] app-code-header .code-header-container {
+  background-color: #161b22;
+  border-bottom: 1px solid #30363d; /* Línea de separación */
+}
+
+[data-theme="dark"] app-code-header .language-label {
+  color: #8b949e;
+}

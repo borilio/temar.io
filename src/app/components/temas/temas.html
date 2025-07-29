@@ -1,1 +1,9 @@
-<p>temas works!</p>
+<div class="">
+  <p-select 
+    [options]="temasDisponibles" 
+    [(ngModel)]="temaSeleccionado"
+    optionLabel="name"
+    (onChange)="onCambiarTema()"
+    placeholder="Selecciona un Tema">
+  </p-select>
+</div>
