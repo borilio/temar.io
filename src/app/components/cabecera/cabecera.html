@@ -17,7 +17,13 @@
 
             <ng-template #end>
                 <div class="flex items-center gap-2">
-                    <p-button icon="pi pi-cog" rounded="true" (onClick)="this.mostrarDialogo()" />
+                    <p-button 
+                        icon="pi pi-cog" 
+                        rounded="true" 
+                        (onClick)="this.mostrarDialogo()" 
+                        pTooltip="Configuración"
+                        tooltipPosition="left"
+                    />
                 </div>
             </ng-template>
         </p-menubar>

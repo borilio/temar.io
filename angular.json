@@ -25,6 +25,11 @@
                 "glob": "**/*",
                 "input": "src/assets/img",
                 "output": "img"
+              },
+              {
+                "glob": "**/*",
+                "input": "src/assets/temario/img",
+                "output": "img"
               }
             ],
             "styles": [

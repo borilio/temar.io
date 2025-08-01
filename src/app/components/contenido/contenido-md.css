@@ -19,7 +19,8 @@ Aquí añadiremos estilos para forzar algunos estilos contenido html generado po
 /*
   Las imágenes, las convierte en elementos de bloque y las centra horizontalmente.
 */
-.markdown-body img {
+.markdown-body img,
+.markdown-body table {
   display: block;
   margin-left: auto;
   margin-right: auto;
@@ -63,4 +64,12 @@ Aquí añadiremos estilos para forzar algunos estilos contenido html generado po
 [data-theme="dark"] .code-block-wrapper,
 [data-theme="dark"] .code-block-wrapper pre {
   border-color: var(--p-surface-700) !important;
+}
+
+/*
+  Elimina las viñetas de la tabla de contenidos
+*/
+.markdown-body .table-of-contents ul {
+  list-style-type: none;
+  padding-left: 2rem;
 }

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { PRIMENG_IMPORTS } from '../../shared/primeng.imports';
 import { MenuItem, MessageService, PrimeIcons } from 'primeng/api';
 import { Config } from "../config/config";
+import { TemarioService } from '../../services/temario.service';
 
 @Component({
   selector: 'app-cabecera',
@@ -11,13 +12,20 @@ import { Config } from "../config/config";
   styleUrl: './cabecera.css'
 })
 export class Cabecera implements OnInit {
-  public items: MenuItem[] | undefined;
+  public items: MenuItem[] = [];
   public visible: boolean = false;
 
-  constructor(private messageService: MessageService) {
+  constructor(
+    private messageService: MessageService,
+    private temarioService: TemarioService
+  ) {
   }
 
   ngOnInit(): void {
+    // 1. Pide los subitems ya formateados directamente al servicio
+    const subItemsContenidos = this.temarioService.getTemasAsMenuItems();
+
+    // 2. Construye el menú final usando los contenidos del json
     this.items = [
       {
         label: 'Inicio',
@@ -28,15 +36,9 @@ export class Cabecera implements OnInit {
       {
         label: 'Contenidos',
         icon: PrimeIcons.BOOK,
-        routerLink: "/tema/cambiar",
-      },
-      {
-        label: 'Configuración',
-        icon: PrimeIcons.COG,
-        command: () => {
-          this.mostrarDialogo();
-        }
+        items: subItemsContenidos, // <----- Aquí cargamos los contenidos del temario.json
       }
+      
 
     ];
   }

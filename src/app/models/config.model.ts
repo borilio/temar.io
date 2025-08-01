@@ -1,4 +1,4 @@
-export interface ConfigModel {
+export interface Config {
     preset: string;
     defaultThemeId: string;
     footer: Footer;

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ConfigModel } from '../../models/config.model';
+import { Config } from '../../models/config.model';
 import { CONFIG } from '../../shared/constantes';
 import { PRIMENG_IMPORTS } from '../../shared/primeng.imports';
 
@@ -11,7 +11,7 @@ import { PRIMENG_IMPORTS } from '../../shared/primeng.imports';
 })
 export class Pie implements OnInit {
   // Objeto de configuración que incluye información del footer (entre otras)
-  public config: ConfigModel = CONFIG ;
+  public config: Config = CONFIG ;
   public year: number;
 
 

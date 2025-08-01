@@ -8,3 +8,11 @@
     border-radius: 10px; 
     overflow: hidden; /* Para que el contenido respete los bordes */
 }
+
+/* Estilos para hacer el botón flotante */
+.boton-flotante {
+  position: fixed;
+  bottom: 8rem;
+  right: 1.5rem;
+  z-index: 1000;
+}

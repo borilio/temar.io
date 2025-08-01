@@ -20,8 +20,6 @@ export const routes: Routes = [
     path: 'config', 
     component: Config,
   },
-  
-  
   // (Opcional pero recomendado) Redirige cualquier otra ruta al índice
   // TODO hacer una página 404
   { 

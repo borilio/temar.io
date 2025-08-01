@@ -1,0 +1,46 @@
+{
+  "tituloGeneral": "Curso de Microsoft 365",
+  "temas": [
+    {
+      "id": "00-intro",
+      "orden": 0,
+      "titulo": "Introducción al Curso",
+      "descripcion": "Una visión general de los objetivos y tecnologías que aprenderemos.",
+      "icono": "pi pi-book",
+      "archivoMd": "00-intro.md"
+    },
+    {
+      "id": "01-word",
+      "orden": 1,
+      "titulo": "Microsoft Word",
+      "descripcion": "Usar Microsoft Word como procesador de textos",
+      "icono": "bi bi-file-earmark-word",
+      "archivoMd": "01-word.md"
+    },
+    {
+      "id": "02-excel",
+      "orden": 2,
+      "titulo": "Microsoft Excel",
+      "descripcion": "Aprender a usar hojas de cálculo con Microsoft Excel.",
+      "icono": "bi bi-file-earmark-excel",
+      "archivoMd": "02-excel.md"
+    },
+    {
+      "id": "03-powerpoint",
+      "orden": 3,
+      "titulo": "Microsoft PowerPoint",
+      "descripcion": "Crear presentaciones impactantes con Microsoft PowerPoint.",
+      "icono": "bi bi-file-earmark-ppt",
+      "archivoMd": "03-powerpoint.md"
+    },
+    {
+      "id": "demo",
+      "orden": 4,
+      "titulo": "Demo de contenido en markdown",
+      "descripcion": "Demo con todas las posibles combinaciones de elementos en markdown",
+      "icono": "pi pi-android",
+      "archivoMd": "demo.md"
+    }
+
+  ]
+}

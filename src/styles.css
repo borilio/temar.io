@@ -6,6 +6,7 @@
 
 html {
   background: var(--p-surface-100); /* Claro */
+  scroll-padding-top: 7rem; /* Ajusta este valor a la altura exacta de tu cabecera */
 }
 html.dark-mode {
   background: var(--p-surface-700); /* Oscuro */

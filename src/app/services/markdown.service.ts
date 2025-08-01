@@ -6,6 +6,8 @@ import { firstValueFrom } from 'rxjs';
 import MarkdownIt from 'markdown-it';
 import katex from 'markdown-it-katex';
 import hljs from 'highlight.js';
+import tocDoneRight from 'markdown-it-toc-done-right';
+import anchor from 'markdown-it-anchor';
 
 // Plugins correctos
 import githubAlerts from 'markdown-it-github-alerts';
@@ -19,6 +21,10 @@ export class MarkdownService {
   private retardoActivo: boolean = true;
 
   constructor(private http: HttpClient) {
+    // Creamos una función 'slugify' consistente para crear los enlaces ancla a las secciones del documento
+    // Convierte espacios a guiones y luego codifica de forma segura CUALQUIER caracter restante.
+    const slugify = (s: string) => encodeURIComponent(String(s).trim().toLowerCase().replace(/\s+/g, '-'));
+
     // Cargamos la configuración básica
     this.mdParser = new MarkdownIt({
       html: true,
@@ -34,6 +40,17 @@ export class MarkdownService {
 
     // Usamos el plugin katex para las fórmulas
     this.mdParser.use(katex);
+
+    // Usamos el plugin de anchor (hace que los enlaces internos de las cabeceras funcionen)
+    this.mdParser.use(anchor, {
+      slugify: slugify
+    });
+
+    // Usamos el generador de TOC (tabla de contenidos)
+    this.mdParser.use(tocDoneRight, {
+      slugify: slugify,
+      listType: 'ul'
+    });
   }
 
 
@@ -43,15 +60,41 @@ export class MarkdownService {
    * @returns HTML renderizado como string
    */
   async convertirMarkdownHTML(url: string): Promise<string> {
+    // Obtenemos el contenido markdown
     const markdown = await firstValueFrom(this.http.get(url, { responseType: "text" }));
+
+    // Usamos una función para arreglar posibles errores en las rutas
+    const markdownConRutasCorregidas = this.convertirSintaxisImagen(markdown);
 
     //Añadimos un retardo artificial a la consulta, para probar barras de progreso
     if (this.retardoActivo) {
       await new Promise(resolve => setTimeout(resolve, 2000)); // 2 segundos de espera
     }
 
-    return this.mdParser.render(markdown);
+    return this.mdParser.render(markdownConRutasCorregidas);
 
+  }
+
+  // Función que limpia la url de las imágenes en url válidas
+  private convertirSintaxisImagen(markdown: string): string {
+    // Expresión regular mejorada para capturar URLs con y sin título.
+    const regex = /!\[(.*?)\]\((.*?)(?:\s+"(.*?)"|)\)/g;
+
+    return markdown.replace(
+      regex,
+      (match, altText, filePath, title) => {
+        // 1. Reemplaza las barras invertidas por barras normales (en algunos casos en el temario los he visto)
+        const normalizedPath = filePath.replace(/\\/g, '/');
+
+        // 2. Codifica la URL (les añade %20 en los espacios y cosas parecidas)
+        const encodedPath = encodeURI(normalizedPath);
+
+        // 3. Vuelve a montar la cadena. Si hay título, lo incluye. por si hay este formato ![desc](url "title")
+        const titlePart = title ? ` "${title}"` : '';
+
+        return `![${altText}](${encodedPath}${titlePart})`;
+      }
+    );
   }
 
 }
