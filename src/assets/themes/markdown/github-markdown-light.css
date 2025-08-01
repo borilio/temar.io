@@ -1103,3 +1103,34 @@
   min-height: 52px;
 }
 
+
+/**********************************************************
+***********************************************************
+
+  Modificaciones propias al CSS original
+
+  ***********************************************************
+***********************************************************
+*/
+
+/* --- Fondos sutiles para las Alertas --- */
+
+.markdown-body .markdown-alert.markdown-alert-note {
+  background-color: #1f6feb1a; /* Azul con ~10% de opacidad */
+}
+
+.markdown-body .markdown-alert.markdown-alert-important {
+  background-color: #8957e51a; /* Morado con ~10% de opacidad */
+}
+
+.markdown-body .markdown-alert.markdown-alert-warning {
+  background-color: #9e6a031a; /* Amarillo/ámbar con ~10% de opacidad */
+}
+
+.markdown-body .markdown-alert.markdown-alert-tip {
+  background-color: #2386361a; /* Verde con ~10% de opacidad */
+}
+
+.markdown-body .markdown-alert.markdown-alert-caution {
+  background-color: #da36331a; /* Rojo con ~10% de opacidad */
+}

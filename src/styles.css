@@ -30,10 +30,8 @@ body {
 .degradado {
   background: linear-gradient(
     to top,
-    var(--p-primary-400),
-    var(--p-primary-600)
+    var(--p-primary-700),
+    var(--p-primary-500)
   );
   color: var(--p-primary-color-text, #fff);
 }
-
-

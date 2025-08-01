@@ -2,9 +2,33 @@
 
 Este proyecto ha sido generado usando [Angular CLI](https://github.com/angular/angular-cli) versión 20.1.0.
 
-## Uso de PrimeNG
+Este documento se separa entre la documentación que necesitas para clonar el proyecto y crear un nuevo temario y la documentación interna para editar la app base.
 
-### Añadir el componente al import compartido
+
+
+## Crear un nuevo temario
+
+Solo necesitas clonar el repositorio, añadir el contenido en markdown y modificar los archivos json.
+
+{{ Editar más adelante, cuando esté madurado }}
+
+
+
+
+
+
+
+
+
+## Modificar la app base
+
+A continuación se explican algunas cosas que puedes necesitar recordar para editar la app base, sobre todo si hace mucho tiempo que creaste la app y cuando vuelvas ya no te acuerdas de nada. Para eso está tu yo del pasado que te ayuda a recordar ahora que lo tiene todo fresquito.
+
+
+
+### Uso de PrimeNG
+
+#### Añadir el componente al import compartido
 
 Todas los módulos (componentes) de PrimeNG se van añadiendo al archivo `shared/primeng.imports.ts`. Aquí estarán todos los módulos que usemos de PrimeNG.
 
@@ -21,7 +45,7 @@ export const PRIMENG_IMPORTS = [
 ];
 ```
 
-### Añadir el import al componente de Angular
+#### Añadir el import al componente de Angular
 
 Hacemos el import del archivo `shared/primeng.imports.ts` en el componente que queramos usar los "componentes" de PrimeNG.
 
@@ -42,19 +66,21 @@ export class Pie {
 
 Hay que importarlo en todos los componentes que tenga nuestra aplicación y que queramos usar componentes de primeNG.
 
-## Uso de archivos JSON de configuración
 
-En la carpeta `assets/json` encontrarás algunos archivos JSON de configuración, como el de ` contenidos.json` o el de `config.json`. 
+
+### Uso de archivos JSON de configuración
+
+En la carpeta `/src/assets/json` encontrarás algunos archivos JSON de configuración, como el de ` contenidos.json` o el de `config.json`. 
 
 Está pensando para tener junta toda la información que se tenga que cambiar de un temario a otro, y así no tener que estar buceando en código, solo modificar el archivo de configuración y listo.
 
-### 📚Contenidos.json
+#### 📚Contenidos.json
 
 {{ Por hacer }}
 
 
 
-### ⚙️Config.json
+#### ⚙️Config.json
 
 ```json
 {
@@ -161,9 +187,9 @@ export class Pie {
 
 
 
-## Presets de colores de un tema
+### Presets de colores de un tema
 
-### Crear un nuevo preset
+#### Crear un nuevo preset
 
 
 
@@ -224,7 +250,7 @@ export const PRESETS = {
 
 
 
-### Elegir un preset
+#### Elegir un preset
 
 En el archivo `public/assets/json/config.json` , escribir el nombre del preset existente en el campo `preset` y listo. Todo se cargará automáticamente.
 
@@ -237,3 +263,107 @@ En el archivo `public/assets/json/config.json` , escribir el nombre del preset e
 }
 ```
 
+
+
+### Temas
+
+La aplicación te permite elegir un tema prediseñado desde el selector de temas.
+
+
+
+#### config.json
+
+En el `config.json`se puede ver la siguiente estructura:
+```json
+// config.json
+{
+    "preset": "MiPresetTeal",
+    "defaultThemeId": "github-light",
+    "footer": {...},
+    "themes": [
+        {
+            "id": "github-light",
+            "name": "GitHub Claro",
+            "baseMode": "light",
+            "markdownThemeFile": "github-markdown-light.css",
+            "highlightThemeFile": "github.css"
+        },
+        {
+            "id": "github-dark",
+            "name": "GitHub Oscuro",
+            "baseMode": "dark",
+            "markdownThemeFile": "github-markdown-dark.css",
+            "highlightThemeFile": "github-dark.css"
+        },
+        {...}       
+    ]
+}
+```
+En `themes`, hay un array de objetos. Cada objeto representa un tema de la aplicación.
+
+Los atributos sirven para lo siguiente:
+
+- `id`: El nombre interno que se usará. 
+
+- `name`: El nombre que se mostrará al usuario.
+
+- `baseMode`: Indica si la interfaz completa se mostrará en claro u oscuro. Sus posibles valores son `dark` o `light`.
+
+- `markdownThemeFile`: El css que se aplicará al contenido generado desde el archivo markdown, independientemente del `baseMode`.
+
+- `highlightThemeFile`: El css que se aplicará a los bloques de código, independientemente del `baseMode`.
+
+- En `defaultThemeId` se indicará la `id` del tema por defecto que se aplicará al iniciar.
+
+
+
+#### Crear un tema
+
+El proyecto tiene la siguiente estructura:
+
+```
+/src
+└── assets/
+    └── themes/
+        ├── highlight/
+        │   └── ... (archivos css)
+        └── markdown/
+            ├── github-markdown-dark.css
+            └── github-markdown-light.css
+```
+
+Puedes crear nuevos temas a elegir siguiendo los siguientes pasos:
+
+1️⃣Copia los archivos css en su respectiva carpeta (una para el Mark Down y otra para los bloques de código). 
+
+> [!important]
+>
+> Asegúrate que el css del Mark Down esté todo encapsulado con la clase `.markdown-body`, si no no funcionará. Así funciona la librería del markdown-it.
+
+> [!note]
+>
+> La librería `highlight.js` ya contiene más de 500 archivos css para aplicar a los bloques, no creo que necesites más. En el repositorio habrá unas cuantas, pero en `node_modules/highlight.js` están todas. 
+
+
+
+2️⃣ Crea un objeto en el `config.json`. El atributo `themes` contiene un array con los temas. Solo tienes que crear un objeto más con la combinación que quieras y ya aparecerá automáticamente en el selector de temas.
+
+```json
+"themes": [
+    {
+        "id": "github-light",
+        "name": "GitHub Claro",
+        "baseMode": "light",
+        "markdownThemeFile": "github-markdown-light.css",
+        "highlightThemeFile": "github.css"
+    },
+]
+```
+
+> [!note]
+>
+> En `baseMode` solo puede poner `light` o `dark`.
+
+> [!tip]
+>
+> No tienes que editar nada de código, tan solo copiar el css a su sitio, y crear el tema en el `config.json`.

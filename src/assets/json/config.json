@@ -37,10 +37,10 @@
             "highlightThemeFile": "github-dark.css"
         },
         {
-            "id": "dracula",
-            "name": "Dracula",
+            "id": "typora",
+            "name": "Typora",
             "baseMode": "dark",
-            "markdownThemeFile": "github-markdown-dark.css",
+            "markdownThemeFile": "github-markdown-darky.css",
             "highlightThemeFile": "base16/dracula.css"
         }
     ]
