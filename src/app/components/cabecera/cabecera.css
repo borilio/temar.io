@@ -1,0 +1,19 @@
+/* Contenedor para alinear logo y título */
+.logo-container {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem; /* Espacio entre el logo y el texto */
+  text-decoration: none; /* Quita el subrayado del enlace */
+}
+
+/* Estilo para el logo */
+.menubar-logo {
+  height: 25px;
+}
+
+/* Estilo para el título */
+.menubar-title {
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: var(--p-primary-500); /* Color de texto del tema */
+}

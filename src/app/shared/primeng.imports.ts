@@ -10,6 +10,7 @@ import { SelectModule } from 'primeng/select';
 import { FormsModule } from '@angular/forms';
 import { TagModule } from 'primeng/tag';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { DialogModule } from 'primeng/dialog';
 //1. Pega aquí
 
 
@@ -24,6 +25,7 @@ export const PRIMENG_IMPORTS = [
     ProgressSpinnerModule,
     SelectModule,
     FormsModule,
-    TagModule
+    TagModule,
+    DialogModule,
     //2. Añade aquí
 ];

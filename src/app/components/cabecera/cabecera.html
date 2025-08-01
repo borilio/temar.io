@@ -6,14 +6,18 @@
 
     <!-- Navegación -->
     <div>
+        <!-- TODO Arreglar que funcione siempre el routerLinkActive -->
         <p-menubar [model]="items">
             <ng-template #start>
-                <img />
+                <div class="logo-container">
+                    <img class="menubar-logo" src="img/favicon.ico" alt="Logo de la Aplicación" />
+                    <span class="menubar-title" [hidden]="true">Temar.io</span>
+                </div>
             </ng-template>
 
             <ng-template #end>
                 <div class="flex items-center gap-2">
-                    <app-temas></app-temas>
+                    <p-button icon="pi pi-cog" rounded="true" (onClick)="this.mostrarDialogo()" />
                 </div>
             </ng-template>
         </p-menubar>
@@ -22,3 +26,7 @@
 
 
 <p-toast position="top-center" />
+
+<p-dialog header="Configuración" [modal]="true" [(visible)]="visible" [maximizable]="true">
+    <app-config></app-config>
+</p-dialog>

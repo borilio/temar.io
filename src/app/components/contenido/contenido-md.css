@@ -1,6 +1,9 @@
 /*
 Aquí añadiremos estilos para forzar algunos estilos contenido html generado por el markdown-it
 */
+.markdown-body { 
+  padding: 1rem;
+}
 
 /*
   Aplicamos fira code a todo el código, ya sea en bloques, en línea o para kbd.

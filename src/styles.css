@@ -35,3 +35,17 @@ body {
   );
   color: var(--p-primary-color-text, #fff);
 }
+
+
+/*
+  Esta regla se aplica al elemento <li> del menú cuando está activo,
+  dándole un color de fondo para resaltarlo.
+*/
+.p-menubar .p-menuitem.p-highlight {
+  background-color: rgba(0, 0, 0, 0.1); /* Un fondo semitransparente de ejemplo */
+}
+
+/* Para el tema oscuro, puedes querer un resaltado más claro */
+[data-theme="dark"] .p-menubar .p-menuitem.p-highlight {
+  background-color: rgba(255, 255, 255, 0.1);
+}
