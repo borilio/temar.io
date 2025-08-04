@@ -1,9 +1,29 @@
 /*
 Aquí añadiremos estilos para forzar algunos estilos contenido html generado por el markdown-it
 */
-.markdown-body { 
-  padding: 1rem;
+
+/* 1. El contenedor principal (.markdown-body)
+   Sigue teniendo el borde y los márgenes de página.
+   Le quitamos el padding porque ahora lo gestiona el grid. */
+.markdown-body {
+  padding: 2rem;
 }
+
+/* 2. Para pantallas grandes, activamos la maquetación Grid */
+@media (min-width: 1200px) {
+  .markdown-body {
+    display: grid;
+    /* Crea 3 columnas: [espacio flexible] [contenido de 1024px] [espacio flexible] */
+    grid-template-columns: 1fr minmax(0, 1024px) 1fr;
+  }
+
+  /* 3. Le decimos a TODOS los hijos directos que se pongan en la segunda columna (la central) */
+  .markdown-body > * {
+    grid-column: 2;
+  }
+}
+
+
 
 /*
   Aplicamos fira code a todo el código, ya sea en bloques, en línea o para kbd.
