@@ -2,6 +2,20 @@
 
 <div>
     <router-outlet></router-outlet>
+
+    <span pTooltip="Volver arriba" tooltipPosition="left">
+        <p-scrollTop
+            target="window" 
+            icon="pi pi-arrow-up" 
+            [buttonProps]="{
+                severity: 'primary',
+                rounded: true,
+                outlined: true
+            }"
+            [threshold]="400">
+            
+        </p-scrollTop>
+    </span>
 </div>
 
 <app-pie></app-pie>

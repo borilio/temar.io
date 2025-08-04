@@ -11,6 +11,9 @@ import { FormsModule } from '@angular/forms';
 import { TagModule } from 'primeng/tag';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { DialogModule } from 'primeng/dialog';
+import { DrawerModule } from 'primeng/drawer';
+import { SpeedDialModule } from 'primeng/speeddial';
+import { ScrollTopModule } from 'primeng/scrolltop';
 //1. Pega aquí
 
 
@@ -27,5 +30,9 @@ export const PRIMENG_IMPORTS = [
     FormsModule,
     TagModule,
     DialogModule,
+    DrawerModule,
+    SpeedDialModule,
+    ScrollTopModule
+
     //2. Añade aquí
 ];

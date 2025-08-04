@@ -2,10 +2,16 @@ import { Component, OnInit, signal } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { Cabecera } from "./components/cabecera/cabecera";
 import { Pie } from "./components/pie/pie";
+import { PRIMENG_IMPORTS } from './shared/primeng.imports';
 
 @Component({
   selector: 'app-root',
-  imports: [Cabecera, Pie, RouterModule],
+  imports: [
+    PRIMENG_IMPORTS,
+    Cabecera,
+    Pie,
+    RouterModule
+  ],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
