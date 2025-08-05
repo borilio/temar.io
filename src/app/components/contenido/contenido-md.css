@@ -86,10 +86,25 @@ Aquí añadiremos estilos para forzar algunos estilos contenido html generado po
   border-color: var(--p-surface-700) !important;
 }
 
-/*
-  Elimina las viñetas de la tabla de contenidos
-*/
-.markdown-body .table-of-contents ul {
+/******* ESTILOS DEL TOC (tanto el drawer como en contenido) *******/
+.table-of-contents a {
+  text-decoration: none;
+  color: var(--p-primary-500);
+}
+.table-of-contents a:hover {
+  text-decoration: underline;
+}
+
+/* Y lo mismo para la indentación */
+.table-of-contents ul {
   list-style-type: none;
-  padding-left: 2rem;
+  padding-left: 0;
+}
+.table-of-contents ul ul {
+  padding-left: 1.5rem;
+}
+
+/* Pero ocultamos el TOC principal, solo vemos el del drawer */
+.markdown-body .table-of-contents {
+  display: none;
 }

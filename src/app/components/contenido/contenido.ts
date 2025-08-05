@@ -1,8 +1,8 @@
-import { ChangeDetectorRef, Component, ElementRef, HostListener, OnInit, Renderer2, ViewContainerRef, ViewEncapsulation } from '@angular/core';
+import { Component, ElementRef, HostListener, OnInit, Renderer2, ViewContainerRef, ViewEncapsulation } from '@angular/core';
 import { CodeHeader } from '../code-header/code-header'; // Componente code-header (cabecera para los bloques de código)
 import { PRIMENG_IMPORTS } from '../../shared/primeng.imports';
 import { MarkdownService } from '../../services/markdown.service';
-import { MessageService } from 'primeng/api';
+import { MenuItem, MessageService } from 'primeng/api';
 
 // Importamos DomSanitizer para evitar que Angular elimine los estilos
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
@@ -27,8 +27,14 @@ export class Contenido implements OnInit {
   public hayError: boolean;
   public fraseCargando: string = "Cargando contenidos..."; //TODO hacer que salgan frases aleatorias
   private routeSuscripcion!: Subscription; // Para estar al corriente de los cambios que se hacen de url
-  public mostrarBotonHaciaArriba: boolean;
-  private scrollTimeout: any; // Para guardar la referencia del temporizador para mostrar el botón de arriba o no
+
+  //TOC
+  public mostrarDrawer: boolean; // Para mostrar el menú lateral con el TOC
+  public tocHTML: SafeHtml = "";
+  public anclasTocArregladas: boolean; // Las anclas del TOC se arreglan una vez, en el drawer onShow.
+
+  //SpeedDial
+  public speedDialItems: MenuItem[] = []; // Propiedad para los items del Speed Dial
 
   constructor(
     private markdownService: MarkdownService,
@@ -37,7 +43,6 @@ export class Contenido implements OnInit {
     private elementRef: ElementRef,
     private renderer: Renderer2,
     private viewContainerRef: ViewContainerRef,
-    private cd: ChangeDetectorRef, // Para el temporizador del botón scrollArriba
     // Para la navegación dinámica...
     private temarioService: TemarioService,
     private route: ActivatedRoute,
@@ -47,7 +52,8 @@ export class Contenido implements OnInit {
     this.contenidoHTML = "";
     this.cargandoContenido = true;
     this.hayError = false;
-    this.mostrarBotonHaciaArriba = false;
+    this.mostrarDrawer = false;
+    this.anclasTocArregladas = false;
   }
 
   ngOnInit(): void {
@@ -59,33 +65,17 @@ export class Contenido implements OnInit {
         this.cargarContenidoDelTema(id);
       }
     });
-  }
 
-  // Está al loro de cuando se hace scroll
-  @HostListener('window:scroll')
-  onWindowScroll(): void {
-    // Si estamos arriba del todo, el botón siempre está oculto.
-    if (window.scrollY < 400) {
-      this.mostrarBotonHaciaArriba = false;
-      this.cd.detectChanges();
-      return;
-    }
-
-    // 1. Muestra el botón y reinicia cualquier cuenta atrás anterior
-    this.mostrarBotonHaciaArriba = true;
-    clearTimeout(this.scrollTimeout);
-    this.cd.detectChanges();
-
-    // 2. Inicia una nueva cuenta atrás para ocultar el botón
-    this.scrollTimeout = setTimeout(() => {
-      this.mostrarBotonHaciaArriba = false;
-      this.cd.detectChanges(); // Notifica a Angular que lo oculte
-    }, 1500); // 1500ms = 1.5 segundos
-  }
-  
-  // Movemos hasta arriba, suavesssito
-  scrollHaciaArriba(): void {
-    window.scrollTo({top:0, behavior: 'smooth'});
+    // Inicializamos los elementos del speeddial
+    this.speedDialItems = [
+      {
+        icon: "pi pi-list",
+        tooltip: "Indice de contenidos",
+        command: () => {
+          this.mostrarDrawer = true;
+        }
+      }
+    ];
   }
 
   // Vuelca el contenido HTML según la id de un tema recibido
@@ -93,6 +83,7 @@ export class Contenido implements OnInit {
     // Vamos a cargar contenido, por lo que iniciamos la animación de carga...
     this.cargandoContenido = true;
     this.hayError = false;
+    this.anclasTocArregladas = false; // Para que se vuelva a arreglar las anclas del nuevo contenido
 
     // Obtenemos el nombre del archivo md que tenemos que cargar
     const archivoMd = this.temarioService.getTemaById(id)?.archivoMd;
@@ -120,8 +111,8 @@ export class Contenido implements OnInit {
 
         // Aunque creas que no hace falta, setTimeout(..., 0) es el paso que garantiza que tu código de manipulación del DOM se ejecute después de que el navegador haya tenido la oportunidad de renderizarlo.
         setTimeout(() => {
-          this.mejorarBloquesDeCodigo();
-          this.gestionarEnlacesDelIndice();
+          this.mejorarBloquesDeCodigo(); // Mejora los bloques de código del HTML generado original
+          this.extraerTocParaDrawer(); // Extrae el TOC y lo coloca en el drawer lateral
         }, 0);
 
       })
@@ -174,12 +165,17 @@ export class Contenido implements OnInit {
   }
 
 
-
-  // Función que corrige todos los enlaces del TOC (haciendo magia)  
-  private gestionarEnlacesDelIndice(): void {
-    const enlacesDelIndice: NodeListOf<HTMLAnchorElement> =
-      this.elementRef.nativeElement.querySelectorAll('.markdown-body .table-of-contents a');
-
+  // Función que corrige todos los enlaces del TOC (haciendo magia)
+  // Esta función se llama una sola vez al mostrar el Drawer por primera vez 
+  public arreglarAnclas(): void {
+    // Si ya lo hemos hecho, no hacemos nada más y nos vamos de la función.
+    if (this.anclasTocArregladas) {
+      return;
+    }
+    
+    // Buscamos TODOS los enlaces que haya en el TOC (tanto en drawer como en contenido...)
+    const enlacesDelIndice: NodeListOf<HTMLAnchorElement> = document.querySelectorAll('.table-of-contents a');
+    
     enlacesDelIndice.forEach(enlace => {
       this.renderer.listen(enlace, 'click', (event) => {
         event.preventDefault(); // Evitamos que el router navegue
@@ -195,13 +191,33 @@ export class Contenido implements OnInit {
 
         if (elementoDestino) {
           elementoDestino.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          this.mostrarDrawer = false; // Ocultamos el drawer al hacer click en algún enlace
         } else {
           // Este error ahora será muy útil para depurar si algo sigue fallando
           console.error(`Error definitivo: No se pudo encontrar el elemento con id: '${idDelElemento}'`);
         }
       });
     });
+
+    // Una vez arregladas las anclas del TOC, ponemos a true para no volver a hacerlo
+    this.anclasTocArregladas = true;
+
   }
+
+  // Función que extrae el TOC del HTML ya generado y arreglado y lo coloca en el drawer lateral
+  private extraerTocParaDrawer(): void {
+    // Busca el índice que ya está en la página
+    const tocOriginal = this.elementRef.nativeElement.querySelector('.markdown-body .table-of-contents');
+
+    if (tocOriginal) {
+      // Copia su HTML y lo asigna a la variable del drawer
+      this.tocHTML = this.sanitizer.bypassSecurityTrustHtml(tocOriginal.innerHTML);
+    } else {
+      console.error("Hubo un error al extraer el TOC del HTML");
+    }
+  }
+
+
 
   ngOnDestroy(): void {
     // Limpiamos la suscripción para evitar fugas de memoria

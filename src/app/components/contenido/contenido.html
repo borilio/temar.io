@@ -18,20 +18,34 @@
         </p-card>
     } @else {
         <!-- Si todo fue bien y ya tenemos los contenidos -->
+        <p-speeddial [model]="speedDialItems" direction="up" class="boton-speeddial" />
         <div [innerHTML]="contenidoHTML" class="markdown-body"></div>
     }
 </div>
 
-@if (mostrarBotonHaciaArriba) {
-    <p-button 
-        icon="pi pi-arrow-up" 
-        [rounded]="true"
-        [outlined]="true"
-        (click)="scrollHaciaArriba()"
-        styleClass="boton-flotante"
-        pTooltip="Volver arriba"
-        tooltipPosition="left">
-    </p-button>
-}
 
+
+
+
+<!-- Botón flotante para volver arriba -->
+<!-- @if (mostrarBotonHaciaArriba) {
+<p-button icon="pi pi-arrow-up" [rounded]="true" [outlined]="true" (click)="scrollHaciaArriba()"
+    styleClass="boton-flotante" pTooltip="Volver arriba" tooltipPosition="left">
+</p-button>
+} -->
+
+<!-- 
+    Menú lateral (drawer) donde mostraremos el índice de contenidos TOC del tema 
+    Está oculto por defecto y se muestra al pulsar el botón     
+-->
+<p-drawer [(visible)]="mostrarDrawer" closeOnEscape="true" position="left" (onShow)="this.arreglarAnclas()">
+    <ng-template pTemplate="header">
+        <h3>Índice de contenidos</h3>
+    </ng-template>
+
+    <div [innerHTML]="tocHTML" class="table-of-contents"></div>
+</p-drawer>
+
+
+<!-- TOAST con los mensajes que se muestren -->
 <p-toast position="top-center" />
