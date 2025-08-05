@@ -1,21 +1,23 @@
-<app-cabecera></app-cabecera>
+<div class="app-container">
+    <app-cabecera></app-cabecera>
 
-<div>
-    <router-outlet></router-outlet>
+    <main class="main-content">
+        <router-outlet></router-outlet>
+    </main>
 
-    <span pTooltip="Volver arriba" tooltipPosition="left">
-        <p-scrollTop
-            target="window" 
-            icon="pi pi-arrow-up" 
-            [buttonProps]="{
-                severity: 'primary',
-                rounded: true,
-                outlined: true
-            }"
-            [threshold]="400">
-            
-        </p-scrollTop>
-    </span>
+    <!-- El botón de volver para arriba que esté disponible en todas los componentes que se usen -->
+    <p-scrollTop 
+        target="window" 
+        icon="pi pi-arrow-up" 
+        pTooltip="Volver arriba" 
+        tooltipPosition="left" 
+        [threshold]="500"
+        [buttonProps]="{
+            severity: 'primary',
+            rounded: true,
+            outlined: true
+        }" 
+    />
+
+    <app-pie></app-pie>
 </div>
-
-<app-pie></app-pie>

@@ -18,21 +18,28 @@
         </p-card>
     } @else {
         <!-- Si todo fue bien y ya tenemos los contenidos -->
-        <p-speeddial [model]="speedDialItems" direction="up" class="boton-speeddial" />
         <div [innerHTML]="contenidoHTML" class="markdown-body"></div>
     }
 </div>
 
 
+<!-- DE AQUÍ PARA ABAJO HAY ELEMENTOS VARIOS POSICIONADOS DE FORMA ABSOLUTA -->
 
-
-
-<!-- Botón flotante para volver arriba -->
-<!-- @if (mostrarBotonHaciaArriba) {
-<p-button icon="pi pi-arrow-up" [rounded]="true" [outlined]="true" (click)="scrollHaciaArriba()"
-    styleClass="boton-flotante" pTooltip="Volver arriba" tooltipPosition="left">
-</p-button>
-} -->
+<!-- Botón flotante para mostrar TOC (o speeddial si hay más acciones) -->
+<p-button 
+    [hidden]="this.cargandoContenido"
+    icon="pi pi-list" 
+    pTooltip="Mostrar índice de contenidos"
+    tooltipPosition="right"
+    severity="primary"
+    outlined="true"
+    rounded="true"
+    class="boton-flotante"
+    (click)="this.mostrarDrawer = true"
+/>
+<!-- Si en un futuro en lugar de un botón para abrir el drawer, le vamos a añadir más acciones (imprimir, descargar, hacer piruetas...) usaremos el speeddial que ya estaba funcionando, por eso no lo he borrado. Solo habría que borrar el p-button de arriba y listo.
+    <p-speeddial [model]="speedDialItems" direction="up" class="boton-flotante" /> 
+-->
 
 <!-- 
     Menú lateral (drawer) donde mostraremos el índice de contenidos TOC del tema 

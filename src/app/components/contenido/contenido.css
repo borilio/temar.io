@@ -1,6 +1,6 @@
 .tarjeta {
     margin-top: 8rem;
-    margin-bottom: 10rem;
+    margin-bottom: 5rem;
     margin-left: 0.5rem;
     margin-right: 0.5rem;
     /* Borde simple y redondeado usando el color primario de PrimeNG */
@@ -10,7 +10,7 @@
 }
 
 /* Posiciona el speed dial en la esquina inferior izquierda */
-.boton-speeddial {
+.boton-flotante {
   position: fixed;
   bottom: 1.5rem;
   left: 1.5rem;

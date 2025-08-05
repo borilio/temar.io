@@ -89,7 +89,7 @@ Aquí añadiremos estilos para forzar algunos estilos contenido html generado po
 /******* ESTILOS DEL TOC (tanto el drawer como en contenido) *******/
 .table-of-contents a {
   text-decoration: none;
-  color: var(--p-primary-500);
+  color: var(--p-primary-color);
 }
 .table-of-contents a:hover {
   text-decoration: underline;

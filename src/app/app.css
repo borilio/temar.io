@@ -1,1 +1,17 @@
+/* En app.component.css */
 
+
+
+/* 1. El contenedor principal se convierte en un layout Flex vertical
+      y le decimos que ocupe al menos el 100% de la altura de la pantalla. */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+}
+
+/* 2. Esta es la línea clave. Le decimos al contenido principal
+      que "crezca" para ocupar todo el espacio sobrante. */
+.main-content {
+  flex: 1;
+}

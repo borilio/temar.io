@@ -66,7 +66,7 @@ export class Contenido implements OnInit {
       }
     });
 
-    // Inicializamos los elementos del speeddial
+    // Inicializamos los elementos del speeddial (deshabilitado)
     this.speedDialItems = [
       {
         icon: "pi pi-list",
@@ -172,11 +172,23 @@ export class Contenido implements OnInit {
     if (this.anclasTocArregladas) {
       return;
     }
-    
+
+    // Obtenemos la ruta actual de la página (ej: /tema/01-word) para añadirla al href y que no queden raros los enlaces (aunque no naveguen a esa ruta)
+    const pathActual = window.location.pathname;
+
     // Buscamos TODOS los enlaces que haya en el TOC (tanto en drawer como en contenido...)
     const enlacesDelIndice: NodeListOf<HTMLAnchorElement> = document.querySelectorAll('.table-of-contents a');
-    
+
     enlacesDelIndice.forEach(enlace => {
+
+      // Corregimos el href para que el navegador muestre la URL correcta al pasar el ratón
+      const fragmento = enlace.getAttribute('href');
+      if (fragmento) {
+        const urlCorrecta = pathActual + fragmento;
+        this.renderer.setAttribute(enlace, 'href', urlCorrecta);
+      }
+
+      // Interceptamos los enlaces y evitamos que al hacer click navegue a donde dice su href
       this.renderer.listen(enlace, 'click', (event) => {
         event.preventDefault(); // Evitamos que el router navegue
 
@@ -184,7 +196,7 @@ export class Contenido implements OnInit {
         if (!href) return;
 
         // Quitamos el '#' para obtener el ID limpio (aunque esté codificado)
-        const idDelElemento = href.substring(1);
+        const idDelElemento = href.substring(href.lastIndexOf('#') + 1);
 
         // getElementById es el método más fiable para buscar, incluso con IDs codificados
         const elementoDestino = document.getElementById(idDelElemento);
@@ -201,7 +213,6 @@ export class Contenido implements OnInit {
 
     // Una vez arregladas las anclas del TOC, ponemos a true para no volver a hacerlo
     this.anclasTocArregladas = true;
-
   }
 
   // Función que extrae el TOC del HTML ya generado y arreglado y lo coloca en el drawer lateral
