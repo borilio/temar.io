@@ -3,7 +3,7 @@
 
         <div class="row justify-content-center p-3">
 
-            @for (logo of config.footer.logos; track logo) {
+            @for (logo of footer.logos; track logo) {
             <div class="col mb-1">
                 <a [href]="logo.link">
                     <img [src]="logo.img" [alt]="logo.alt" class="footer-logo img-fluid" />
@@ -13,7 +13,7 @@
         </div>
         
         <div class="row text-center p-2 small fuente-firacode" pTooltip="Creado con ♥️" showDelay="3000">
-            <span><i class="bi bi-c-circle"></i> {{config.footer.copyright}} '{{year}}</span>
+            <span><i class="bi bi-c-circle"></i> {{footer.copyright}} '{{year}}</span>
         </div>
 
     </div>
