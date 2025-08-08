@@ -6,6 +6,7 @@ import { CONFIG } from '../shared/constantes';
   providedIn: 'root'
 })
 export class ConfigService {
+ 
 
   constructor() { }
 
@@ -31,6 +32,10 @@ export class ConfigService {
    */
   getThemes(): Theme[] {
     return CONFIG.themes;
+  }
+
+  isDevMode(): boolean {
+    return CONFIG.devMode;
   }
 
 

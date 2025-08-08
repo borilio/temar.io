@@ -1,6 +1,26 @@
-<div>
-    <label for="theme-selector" class="mb-2"><i class="pi pi-palette"></i> Tema</label>
-    <app-temas id="theme-selector"></app-temas>
+<!-- El cuadro de dialogo se muestra en la cabecera.html, aquí se crea el contenido que se muestra DENTRO del cuadro de diálogo -->
 
-    <!--TODO Añadir un botón de aceptar y que cierre el dialogo, para tener otra salida más aparte del botón x para cerrar el diálogo -->
+<div class="config-container">
+    <p-panel>
+        <ng-template #header>
+            <div class="flex align-items-center gap-2">
+                <i class="pi pi-palette"></i>
+                <span class="fw-bold"> Tema</span>
+            </div>
+        </ng-template>
+
+        <app-temas id="theme-selector"></app-temas>
+  </p-panel>
+
+  <p-panel [hidden]="!this.devMode" toggleable="true">
+    <ng-template #header>
+      <div class="flex align-items-center gap-2" style="color: var(--p-primary-color)">
+        <i class="bi bi-flask"></i>
+        <span class="fw-bold"> Labs</span>
+      </div>
+    </ng-template>
+
+    <p class="small">Aquí se mostrarán opciones solo cuando el modo desarrollador está activado</p>
+  </p-panel>
+
 </div>

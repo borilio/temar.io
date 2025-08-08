@@ -1,0 +1,5 @@
+.config-container {
+  display: flex;         /* Activa el layout flexible */
+  flex-direction: column;  /* Apila los elementos verticalmente */
+  gap: 1.5rem;           /* Añade un espacio de 1.5rem ENTRE cada elemento */
+}

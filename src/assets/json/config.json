@@ -1,6 +1,7 @@
 {
     "preset": "MiPresetTeal",
     "defaultThemeId": "typora",
+    "devMode": false,
     "footer": {
         "copyright": "Temar.io by ExprimeAndroid",
         "logos": [

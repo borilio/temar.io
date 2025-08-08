@@ -35,4 +35,7 @@
 
 <p-dialog header="Configuración" [modal]="true" [(visible)]="visible" [maximizable]="true">
     <app-config></app-config>
+    <ng-template #footer>
+        <p-button label="Aceptar" severity="primary" (click)="visible = false" />
+    </ng-template>
 </p-dialog>

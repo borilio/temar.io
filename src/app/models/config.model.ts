@@ -1,6 +1,7 @@
 export interface Config {
     preset: string;
     defaultThemeId: string;
+    devMode: boolean;
     footer: Footer;
     themes: Theme[];
 }
