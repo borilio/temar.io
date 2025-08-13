@@ -1,47 +1,92 @@
 {
-  "tituloGeneral": "Curso de Microsoft 365",
-  "descripcion" : "",
-  "temas": [
+  "tituloGeneral": "Curso DEMO",
+  "descripcion": "Esto es un curso Demo para probar la app Temar.io. ",
+  "img": "",
+  "mostrarBloquesEnMenu": true,
+  "bloques": [
     {
-      "id": "00-intro",
-      "orden": 0,
-      "titulo": "Introducción al Curso",
-      "descripcion": "Una visión general de los objetivos y tecnologías que aprenderemos.",
-      "icono": "pi pi-book",
-      "archivoMd": "00-intro.md"
-    },
-    {
-      "id": "01-word",
+      "id": "troncal",
       "orden": 1,
-      "titulo": "Microsoft Word",
-      "descripcion": "Usar Microsoft Word como procesador de textos",
-      "icono": "bi bi-file-earmark-word",
-      "archivoMd": "01-word.md"
+      "titulo": "Troncal",
+      "mostrarTitulo": true,
+      "descripcion": "Parte troncal del temario DEMO",
+      "icon": "pi pi-box",
+      "emoji": "🪵",
+      "color": "",
+      "img": "",
+      "expandible": true,
+      "contraido": false,
+      "habilitado": true,
+      "temas": [
+        {
+          "id": "demo",
+          "orden": 1,
+          "titulo": "Demo de contenido en markdown",
+          "descripcion": "Demo con todas las posibles combinaciones de elementos en markdown",
+          "archivoMd": "demo.md",
+          "img": "img/01 - word/logo-word.png",
+          "emoji": "🎨",
+          "icon": "pi pi-android",
+          "severity": "primary",
+          "outlined": false,
+          "habilitado": true
+        },
+        {
+          "id": "demo",
+          "orden": 2,
+          "titulo": "Demo de contenido en markdown 2",
+          "descripcion": "Demo con todas las posibles combinaciones de elementos en markdown",
+          "archivoMd": "demo.md",
+          "icon": "pi pi-android",
+          "emoji": "🎨",
+          "img": "",
+          "severity": "primary",
+          "outlined": false,
+          "habilitado": true
+        }
+      ]
     },
     {
-      "id": "02-excel",
+      "id": "pildoras",
       "orden": 2,
-      "titulo": "Microsoft Excel",
-      "descripcion": "Aprender a usar hojas de cálculo con Microsoft Excel.",
-      "icono": "bi bi-file-earmark-excel",
-      "archivoMd": "02-excel.md"
-    },
-    {
-      "id": "03-powerpoint",
-      "orden": 3,
-      "titulo": "Microsoft PowerPoint",
-      "descripcion": "Crear presentaciones impactantes con Microsoft PowerPoint.",
-      "icono": "bi bi-file-earmark-ppt",
-      "archivoMd": "03-powerpoint.md"
-    },
-    {
-      "id": "demo",
-      "orden": 4,
-      "titulo": "Demo de contenido en markdown",
-      "descripcion": "Demo con todas las posibles combinaciones de elementos en markdown",
-      "icono": "pi pi-android",
-      "archivoMd": "demo.md"
+      "titulo": "Píldoras",
+      "mostrarTitulo": true,
+      "descripcion": "Las píldoras de información son secciones breves y concisas que complementan la parte troncal del curso. Aquí encontrarás temas específicos y avanzados que no se abordan en profundidad en el temario troncal.",
+      "icon": "pi pi-circle-fill",
+      "emoji": "💊",
+      "color": "rgba(255, 0, 255, 0.05)", 
+      "img": "",
+      "expandible": true,
+      "contraido": true,
+      "habilitado": true,
+      "temas": [
+        {
+          "id": "ia",
+          "orden": 1,
+          "titulo": "Inteligencia Artificial",
+          "descripcion": "Descripción del tema de IA",
+          "archivoMd": "ia.md",
+          "icon": "pi pi-android",
+          "emoji": "🧠",
+          "img": "",
+          "severity": "primary",
+          "outlined": true,
+          "habilitado": true
+        },
+        {
+          "id": "teams",
+          "orden": 2,
+          "titulo": "Microsoft Teams",
+          "descripcion": "Descripción del tema de Teams",
+          "archivoMd": "teams.md",
+          "icon": "pi pi-android",
+          "emoji": "👥",
+          "img": "",
+          "severity": "primary",
+          "outlined": true,
+          "habilitado": true
+        }
+      ]
     }
-
   ]
 }

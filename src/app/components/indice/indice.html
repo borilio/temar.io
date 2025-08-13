@@ -1,5 +1,100 @@
-<div class="indice">
+<div class="container-indice">
+
+    <!-- Si hay un temario... -->
+    @if (temario) {
     <p-card>
-        Aquí irá el índice generado del curso
+        <h1>{{temario.tituloGeneral}}</h1>
+        @if (temario.img) {
+            <img [src]="temario.img" class="my-4 img-fluid" alt="Imagen general representativa del curso" />
+        }
+
+        <p class="my-5">{{temario.descripcion}}</p>
+
+        <div class="bloques-container">
+
+            @for (bloque of temario.bloques; track bloque.id) {
+
+            <p-panel 
+                [showHeader]="bloque.mostrarTitulo" 
+                [toggleable]="bloque.expandible"
+                [style.background-color]="bloque.color"
+                [collapsed]="bloque.contraido">
+                
+                
+                <ng-template #header>
+                    <div class="flex align-items-center gap-3">
+                        <!-- 
+                            En la cabecera del bloque solo se mostrará el emoji. Si no hay emoji, se mostrará el icon.
+                        -->
+                        <i [class]="bloque.icon" [hidden]="bloque.emoji"></i>
+                        <span class="font-bold fs-3">{{bloque.emoji}} {{ bloque.titulo }}</span>
+                    </div>
+                </ng-template>
+
+                @if (bloque.img) {
+                    <img 
+                        [src]="bloque.img"
+                        [alt]="'Imagen del bloque ' + bloque.titulo"
+                        class="my-4 img-fluid"
+                    />
+                }
+                <p>{{bloque.descripcion}}</p>
+
+                <div class="lista-temas">
+                    @for (tema of bloque.temas; track tema.id) {
+                        <!-- Para botones grandes aplicar styleClass='p-button-lg'  -->
+                        <!-- Versión con imagen personalizada -->
+                        @if (tema.img) {
+                            <p-button
+                                styleClass=""
+                                [title]="tema.descripcion"
+                                [severity]="$any(tema.severity || 'primary')"
+                                [outlined]="tema.outlined ?? true"
+                                [disabled]="!tema.habilitado"
+                                [routerLink]="!tema.habilitado ? null : ['/tema', tema.id]"
+                                raised="true">
+                                    <div class="boton-contenido">
+                                        <img [src]="tema.img" />
+                                        <span class="p-button-label">{{ tema.titulo }}</span>
+                                    </div>
+                            </p-button>
+
+                        <!-- Versión con emoji o icono -->
+                        } @else {
+                            <p-button
+                                styleClass=""
+                                [label]="tema.emoji ? `${tema.emoji} ${tema.titulo}` : tema.titulo"
+                                [icon]="tema.emoji ? undefined : tema.icon"
+                                [title]="tema.descripcion"
+                                [severity]="$any(tema.severity || 'primary')"
+                                [outlined]="tema.outlined ?? true"
+                                [disabled]="!tema.habilitado"
+                                [routerLink]="!tema.habilitado ? null : ['/tema', tema.id]"
+                                raised="true">
+                            </p-button>
+                        }
+                    }
+                </div>
+
+            </p-panel>
+
+            }
+        </div>
+
     </p-card>
+    } @else {
+    <p-card>
+        <div class="alert alert-danger">
+            <h4><i class="pi pi-info-circle"></i> Error</h4>
+            <p>
+                Hubo un problema al generar el índice. No se pudo obtener el temario.
+            </p>
+        </div>
+
+        <p-skeleton width="30%" height="2rem" class="mb-4"></p-skeleton>
+        <p-skeleton width="60%" class="mb-2"></p-skeleton>
+        <p-skeleton height="1rem" class="mb-2"></p-skeleton>
+        <p-skeleton height="1rem"></p-skeleton>
+    </p-card>
+    }
 </div>

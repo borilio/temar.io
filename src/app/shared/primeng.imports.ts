@@ -16,6 +16,8 @@ import { SpeedDialModule } from 'primeng/speeddial';
 import { ScrollTopModule } from 'primeng/scrolltop';
 import { FieldsetModule } from 'primeng/fieldset';
 import { PanelModule } from 'primeng/panel';
+import { ImageModule } from 'primeng/image';
+import { SkeletonModule} from 'primeng/skeleton';
 
 //1. Pega aquí
 
@@ -37,6 +39,9 @@ export const PRIMENG_IMPORTS = [
     SpeedDialModule,
     ScrollTopModule,
     FieldsetModule,
-    PanelModule
+    PanelModule,
+    ImageModule,
+    SkeletonModule
+
     //2. Añade aquí
 ];

@@ -1,9 +1,51 @@
-.indice {
-    margin-top: 8rem;
-    margin-left: 0.5rem;
-    margin-right: 0.5rem;
-    /* Borde simple y redondeado usando el color primario de PrimeNG */
-    border: 1px solid var(--p-primary-500);
-    border-radius: 10px; 
-    overflow: hidden; /* Para que el contenido respete los bordes */
+.container-indice {
+  margin-top: 8rem;
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+  /* Borde simple y redondeado usando el color primario de PrimeNG */
+  border: 1px solid var(--p-primary-500);
+  border-radius: 10px;
+  overflow: hidden; /* Para que el contenido respete los bordes */
+}
+
+/*
+  Cuando la pantalla sea más ancha de 1200px,
+  limitamos el ancho del contenedor y lo centramos.
+*/
+@media (min-width: 1200px) {
+  .container-indice {
+    max-width: 1024px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+.bloques-container {
+  display: flex; /* Activa el layout flexible */
+  flex-direction: column; /* Apila los elementos verticalmente */
+  gap: 1.5rem;
+}
+
+.lista-temas {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Le da estilos a los botones que están dentro del lista-temas */
+:host ::ng-deep .lista-temas p-button .p-button{
+  width: 100% !important; 
+  justify-content: flex-start; 
+}
+
+/* Estilo de las imágenes que pueda haber en los botones del menú */
+.lista-temas img {
+  width: 1.5rem; 
+  height: 1.5rem; /* Altura para mantener la proporción */
+  margin-right: 0.75rem;
+}
+
+.boton-contenido {
+  display: flex;
+  align-items: center;
 }
