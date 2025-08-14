@@ -52,17 +52,34 @@ export class TemarioService {
 
     } else {
 
-      // --- Lógica para el menú PLANO ---
+      // --- Lógica para el menú PLANO PERO CON SEPARADORES ---
       // Primero ordenamos los bloques, y luego aplanamos.
-      return TEMARIO.bloques
-        .sort((bloqueA, bloqueB) => bloqueA.orden - bloqueB.orden) // 1. Ordena los bloques primero
-        .flatMap(bloque => bloque.temas)                           // 2. AHORA aplana. Los temas de cada bloque se añadirán en orden.
-        .map(tema => ({
-          label: tema.titulo,
-          icon: tema.icon,
-          routerLink: `/tema/${tema.id}`,
-          disabled: !tema.habilitado
-        }));
+      const bloquesOrdenados = TEMARIO.bloques.sort((a, b) => a.orden - b.orden);
+
+      return bloquesOrdenados.reduce((acumulador, bloqueActual, indice) => {
+        // 1. Convierte los temas del bloque actual a MenuItems
+        const temasDelBloque = bloqueActual.temas
+          .sort((a, b) => a.orden - b.orden)
+          .map(tema => ({
+            label: tema.titulo,
+            icon: tema.icon,
+            routerLink: `/tema/${tema.id}`,
+            disabled: !tema.habilitado
+          }));
+
+        // 2. Añade los temas al resultado final
+        acumulador.push(...temasDelBloque);
+
+        // 3. Si NO es el último bloque, añade un separador
+        if (indice < bloquesOrdenados.length - 1) {
+          acumulador.push({ separator: true });
+        }
+
+        // 4. Devuelve el resultado para la siguiente iteración
+        return acumulador;
+      }, [] as MenuItem[]); // <-- El [] inicial es nuestro array de resultado
+
+
     }
   }
 
