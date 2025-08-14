@@ -1,24 +1,30 @@
 <div class="tarjeta">
 
     @if (cargandoContenido) {
-        <!-- Si está cargando todavía contenidos...-->
-        <p-card>
-            <div class="text-center">
-                <!--TODO Mostrar el spinner en el centro de la página, y no arriba -->
-                <p class="lead">{{fraseCargando}}</p>
-                <p-progress-spinner aria-label="Cargando contenidos"></p-progress-spinner>
+    <!-- Si está cargando todavía contenidos...-->
+    <p-card>
+        <div class="text-center">
+            <p class="lead">{{fraseCargando}}</p>
+            <p-progress-spinner aria-label="Cargando contenidos"></p-progress-spinner>
+            <div class="p-4">
+                <p-skeleton width="60%" height="2.5rem" styleClass="mb-4"></p-skeleton>
+                <p-skeleton class="mb-2"></p-skeleton>
+                <p-skeleton width="85%" class="mb-4"></p-skeleton>
+                <p-skeleton height="200px" class="mb-4"></p-skeleton>
+                <p-skeleton width="40%" height="2rem" class="mb-3"></p-skeleton>
             </div>
-        </p-card>
+        </div>
+    </p-card>
     } @else if (hayError) {
-        <!-- Si hay un error al obtener los contenidos... -->
-        <p-card header="Error">
-            <div class="alert alert-danger text-center">
-                <span>🙄Ese tema creo que no existe</span>
-            </div>
-        </p-card>
+    <!-- Si hay un error al obtener los contenidos... -->
+    <p-card header="Error">
+        <div class="alert alert-danger text-center">
+            <span>🙄Ese tema creo que no existe</span>
+        </div>
+    </p-card>
     } @else {
-        <!-- Si todo fue bien y ya tenemos los contenidos -->
-        <div [innerHTML]="contenidoHTML" class="markdown-body"></div>
+    <!-- Si todo fue bien y ya tenemos los contenidos -->
+    <div [innerHTML]="contenidoHTML" class="markdown-body"></div>
     }
 </div>
 
@@ -26,17 +32,9 @@
 <!-- DE AQUÍ PARA ABAJO HAY ELEMENTOS VARIOS POSICIONADOS DE FORMA ABSOLUTA -->
 
 <!-- Botón flotante para mostrar TOC (o speeddial si hay más acciones) -->
-<p-button 
-    [hidden]="this.cargandoContenido"
-    icon="pi pi-list" 
-    pTooltip="Mostrar índice de contenidos"
-    tooltipPosition="right"
-    severity="primary"
-    outlined="true"
-    rounded="true"
-    class="boton-flotante"
-    (click)="this.mostrarDrawer = true"
-/>
+<p-button [hidden]="this.cargandoContenido" icon="pi pi-list" pTooltip="Mostrar índice de contenidos"
+    tooltipPosition="right" severity="primary" outlined="true" rounded="true" class="boton-flotante"
+    (click)="this.mostrarDrawer = true" />
 <!-- Si en un futuro en lugar de un botón para abrir el drawer, le vamos a añadir más acciones (imprimir, descargar, hacer piruetas...) usaremos el speeddial que ya estaba funcionando, por eso no lo he borrado. Solo habría que borrar el p-button de arriba y listo.
     <p-speeddial [model]="speedDialItems" direction="up" class="boton-flotante" /> 
 -->

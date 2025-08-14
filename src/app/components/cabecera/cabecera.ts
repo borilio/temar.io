@@ -37,6 +37,11 @@ export class Cabecera implements OnInit {
         label: 'Contenidos',
         icon: PrimeIcons.BOOK,
         items: subItemsContenidos, // <----- Aquí cargamos los contenidos del temario.json
+      },
+      {
+        label: 'Acerca de',
+        icon: PrimeIcons.QUESTION_CIRCLE,
+        routerLink: "/acerca"
       }
       
 
