@@ -1,5 +1,6 @@
 
 import { ButtonModule } from 'primeng/button';
+import { ButtonGroupModule } from 'primeng/buttongroup';
 import { ToastModule } from 'primeng/toast';
 import { TooltipModule } from 'primeng/tooltip';
 import { CardModule } from 'primeng/card';
@@ -24,6 +25,7 @@ import { SkeletonModule} from 'primeng/skeleton';
 
 export const PRIMENG_IMPORTS = [
     ButtonModule,
+    ButtonGroupModule,
     ToastModule,
     TooltipModule,
     CardModule,
