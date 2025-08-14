@@ -2,7 +2,7 @@
   "tituloGeneral": "Curso DEMO",
   "descripcion": "Esto es un curso Demo para probar la app Temar.io. ",
   "img": "",
-  "mostrarBloquesEnMenu": true,
+  "mostrarBloquesEnMenu": false,
   "bloques": [
     {
       "id": "troncal",
