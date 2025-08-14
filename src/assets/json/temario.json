@@ -21,7 +21,7 @@
         {
           "id": "demo",
           "orden": 1,
-          "titulo": "Demo de contenido en markdown",
+          "titulo": "Demo de contenido con imagen",
           "descripcion": "Demo con todas las posibles combinaciones de elementos en markdown",
           "archivoMd": "demo.md",
           "img": "img/01 - word/logo-word.png",
@@ -34,12 +34,25 @@
         {
           "id": "demo",
           "orden": 2,
-          "titulo": "Demo de contenido en markdown 2",
+          "titulo": "Demo de contenido con emoji",
           "descripcion": "Demo con todas las posibles combinaciones de elementos en markdown",
           "archivoMd": "demo.md",
           "icon": "pi pi-android",
           "emoji": "🎨",
           "img": "",
+          "severity": "primary",
+          "outlined": false,
+          "habilitado": true
+        },
+        {
+          "id": "demo",
+          "orden": 3,
+          "titulo": "Demo de contenido con icono (sin img ni emoji)",
+          "descripcion": "Demo con todas las posibles combinaciones de elementos en markdown",
+          "archivoMd": "demo.md",
+          "img": "",
+          "emoji": "",
+          "icon": "pi pi-android",
           "severity": "primary",
           "outlined": false,
           "habilitado": true
