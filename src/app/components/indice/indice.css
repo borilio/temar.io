@@ -42,7 +42,6 @@
 .lista-temas img {
   width: 1.5rem; 
   height: 1.5rem; /* Altura para mantener la proporción */
-  margin-right: 0.75rem;
 }
 
 .boton-contenido {

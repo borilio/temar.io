@@ -42,8 +42,39 @@
 
                 <div class="lista-temas">
                     @for (tema of bloque.temas; track tema.id) {
+                        
                         <!-- Para botones grandes aplicar styleClass='p-button-lg'  -->
-                        <!-- Versión con imagen personalizada -->
+                        <p-button
+                            styleClass=""
+                            [title]="tema.descripcion"
+                            [severity]="$any(tema.severity || 'primary')"
+                            [outlined]="tema.outlined ?? true"
+                            [disabled]="!tema.habilitado"
+                            [routerLink]="!tema.habilitado ? null : ['/tema', tema.id]"
+                            raised="true">
+                            <div class="boton-contenido">
+                                <!-- Usamos en orden img o emoji o icon -->
+                                @if (tema.img) {
+                                    <img [src]="tema.img" [alt]="tema.titulo" />
+                                } @else if (tema.emoji) {
+                                    <i>{{ tema.emoji }}</i>
+                                } @else {
+                                    <i [class]="tema.icon"></i>
+                                }
+                                <span class="p-button-label ms-2">{{ tema.titulo }}</span>
+                            </div>
+                        </p-button>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        <!-- Versión con imagen personalizada
                         @if (tema.img) {
                             <p-button
                                 styleClass=""
@@ -59,7 +90,6 @@
                                     </div>
                             </p-button>
 
-                        <!-- Versión con emoji o icono -->
                         } @else {
                             <p-button
                                 styleClass=""
@@ -72,7 +102,8 @@
                                 [routerLink]="!tema.habilitado ? null : ['/tema', tema.id]"
                                 raised="true">
                             </p-button>
-                        }
+                        } 
+                        -->
                     }
                 </div>
 
