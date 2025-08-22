@@ -20,7 +20,7 @@ export class CodeHeader {
       this.messageService.add({ 
         severity: 'success', 
         summary: 'Copiado', 
-        detail: '¡Código copiado al portapapeles!' 
+        detail: `¡Código ${this.lenguaje.toUpperCase()} copiado al portapapeles!` 
       });
     });
   }
