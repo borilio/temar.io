@@ -3,6 +3,7 @@ import { CodeHeader } from '../code-header/code-header'; // Componente code-head
 import { PRIMENG_IMPORTS } from '../../shared/primeng.imports';
 import { MarkdownService } from '../../services/markdown.service';
 import { MenuItem, MessageService } from 'primeng/api';
+import { Image } from 'primeng/image';
 
 // Importamos DomSanitizer para evitar que Angular elimine los estilos
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
@@ -113,6 +114,7 @@ export class Contenido implements OnInit {
         setTimeout(() => {
           this.mejorarBloquesDeCodigo(); // Mejora los bloques de código del HTML generado original
           this.extraerTocParaDrawer(); // Extrae el TOC y lo coloca en el drawer lateral
+          this.transformarImagenesPreview(); 
         }, 0);
 
       })
@@ -228,6 +230,28 @@ export class Contenido implements OnInit {
     }
   }
 
+  /**
+   * Busca imágenes marcadas y las reemplaza por p-image con preview
+   */
+  private transformarImagenesPreview(): void {
+    // Buscamos todas las imágenes que tengan la clase img-preview
+    const imagesToTransform: NodeListOf<HTMLImageElement> = 
+      this.elementRef.nativeElement.querySelectorAll('img.img-preview');
+
+    // Sustituimos todos los img.img-preview por p-image.
+    imagesToTransform.forEach(imgElement => {
+      // Crea una instancia del componente p-image
+      const componentRef = this.viewContainerRef.createComponent(Image);
+
+      // Pasa las propiedades del <img> original al nuevo componente
+      componentRef.instance.src = imgElement.src;
+      componentRef.instance.alt = imgElement.alt;
+      componentRef.instance.preview = true;
+
+      // Reemplaza el <img> del DOM por el nuevo componente <p-image>
+      imgElement.parentNode?.replaceChild(componentRef.location.nativeElement, imgElement);
+    });
+  }
 
 
   ngOnDestroy(): void {

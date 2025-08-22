@@ -37,13 +37,19 @@ Aquí añadiremos estilos para forzar algunos estilos contenido html generado po
 
 
 /*
-  Las imágenes, las convierte en elementos de bloque y las centra horizontalmente.
+  Las imágenes y las tablas por defecto, las convierte en elementos de bloque y las centra horizontalmente.
 */
 .markdown-body img,
 .markdown-body table {
   display: block;
-  margin-left: auto;
-  margin-right: auto;
+  margin: 1rem auto; /* 1rem arriba y abajo, y auto izquierda y derecha */
+}
+
+/* Anulación para imágenes en línea */
+.markdown-body img.img-inline {
+  display: inline-block; /* La hace en línea */
+  margin: 0 0.25rem;    /* Le da un pequeño margen */
+  vertical-align: middle; /* La alinea verticalmente con el texto */
 }
 
 /* ==============================================

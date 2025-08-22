@@ -1,3 +1,5 @@
+[TOC]
+
 # Ejemplo de Markdown completo
 
 ¡Aquí tienes un pequeño “cóctel” con todo lo básico y avanzado que puedes usar en Markdown! Puedes copiar este trozo y probarlo donde quieras.
@@ -69,11 +71,18 @@ Puedes visitar [Google](https://www.google.com) o hacer una referencia a [Sectio
 
 ## 6. Imágenes
 
+Todas las imágenes se ven por defecto en bloque y centradas verticalmente como la siguiente:
 ![Logo Markdown](https://markdown-here.com/img/icon256.png "Ejemplo de imagen")
 
-![Otra imagen](img/01 - word/barra_zoom.gif)
+Y así es como se vería una imagen en línea con el texto, por ejemplo para indicar una barra de zoom que se ve así ![Otra imagen](img/01 - word/barra_zoom.gif){.img-inline} entre otro texto que le siga al párrafo.
 
-![Otra imagen](img\01 - word\barra_zoom.gif)
+También se pueden añadir imágenes especiales con preview si le añadimos la clase `img-preview`.
+
+![¿Dónde está Wally?](img/wally.jpg){.img-preview}
+
+> [!tip] 
+> Se pueden añadir las clases `img-inline` o `img-preview` usando la sintaxis de html `<img src='...' class='img-inline' />` o con markdown `![Alt](ruta){.img-preview}`.
+
 
 ---
 

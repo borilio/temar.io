@@ -4,14 +4,15 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import MarkdownIt from 'markdown-it';
-import katex from 'markdown-it-katex';
-import hljs from 'highlight.js';
-import tocDoneRight from 'markdown-it-toc-done-right';
-import anchor from 'markdown-it-anchor';
 
 // Plugins correctos
+import katex from 'markdown-it-katex';
+import hljs from 'highlight.js';
 import githubAlerts from 'markdown-it-github-alerts';
 import markdownItHighlightjs from 'markdown-it-highlightjs';
+import tocDoneRight from 'markdown-it-toc-done-right';
+import anchor from 'markdown-it-anchor';
+import attrs from 'markdown-it-attrs';
 
 @Injectable({
   providedIn: 'root'
@@ -51,6 +52,9 @@ export class MarkdownService {
       slugify: slugify,
       listType: 'ul'
     });
+
+    // Usamos el plugin que permite añadir atributos al markdown (usado para darle estilos a las imágenes)
+    this.mdParser.use(attrs);
   }
 
 
