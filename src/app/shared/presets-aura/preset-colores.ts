@@ -11,7 +11,7 @@ export const MiPresetViolet = definePreset(Aura, {
             200: '#de85f6',
             300: '#d155f3',
             400: '#c425f0',
-            500: '#aa0ed5',  // Color base.
+            500: '#aa0ed5',  // Color base
             600: '#830aa5',
             700: '#70098d',
             800: '#5d0775',
@@ -40,6 +40,25 @@ export const MiPresetBlue = definePreset(Aura, {
         }
     }
 });
+
+export const MiPresetCyan = definePreset(Aura, {
+    semantic: {
+        primary: {
+            50:  '#e0f9fb',  // Muy claro
+            100: '#b3f0f6',
+            200: '#80e6f1',
+            300: '#4ddceb',
+            400: '#26d2e5',
+            500: '#00BCD4',  // Color base
+            600: '#00a5bb',
+            700: '#008a9e',
+            800: '#006e81',
+            900: '#005265',
+            950: '#00363f'   // Muy oscuro
+        }
+    }
+});
+
 
 
 export const MiPresetEmerald = definePreset(Aura, {
@@ -276,11 +295,48 @@ export const MiPresetYellow = definePreset(Aura, {
   }
 });
 
+export const MiPresetWine = definePreset(Aura, {
+    semantic: {
+        primary: {
+            50:  '#f5e9eb',  // Muy claro
+            100: '#e5c8cc',
+            200: '#d4a1a6',
+            300: '#c37a80',
+            400: '#b2535a',
+            500: '#722F37',  // Color base
+            600: '#652a31',
+            700: '#57242a',
+            800: '#491e23',
+            900: '#3b181c',
+            950: '#2c1215'   // Muy oscuro
+        }
+    }
+});
+
+export const MiPresetNeon = definePreset(Aura, {
+  semantic: {
+    primary: {
+      50:  '#fdf4ff',
+      100: '#fae8ff',
+      200: '#f5d0fe',
+      300: '#f0abfc',
+      400: '#e879f9',
+      500: '#ff1cff',
+      600: '#c026d3',
+      700: '#0bffff',
+      800: '#86198f',
+      900: '#701a75',
+      950: '#4a044e'
+    }
+  }
+});
+
 // Y ahora exportamos un objeto con todos los presets
 
 export const PRESETS = {
   MiPresetLight,
   MiPresetBlue,
+  MiPresetCyan,
   MiPresetNoir,
   MiPresetViolet,
   MiPresetEmerald,
@@ -293,7 +349,9 @@ export const PRESETS = {
   MiPresetPink,
   MiPresetRose,
   MiPresetAmber,
-  MiPresetYellow
+  MiPresetYellow,
+  MiPresetWine,
+  MiPresetNeon
 };
 
 
