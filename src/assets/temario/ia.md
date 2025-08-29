@@ -40,7 +40,7 @@ Estas preguntas no tienen una única respuesta y son clave para entender el pape
 
 La **inteligencia artificial generativa** es una rama de la IA que se centra en la **creación de contenido nuevo** y original a partir de datos existentes. Utiliza modelos avanzados de aprendizaje automático para **generar texto, imágenes, música, videos y más**. Por ejemplo, puede escribir un poema, crear una obra de arte digital o componer una melodía.
 
-![A detailed oil painting of figures in a futuristic opera scene](img/ia/1280px-Théâtre_D’opéra_Spatial.png)
+![A detailed oil painting of figures in a futuristic opera scene](img/ia/1280px-Théâtre_D’opéra_Spatial.png){.img-preview}
 
 > [!TIP]
 >
