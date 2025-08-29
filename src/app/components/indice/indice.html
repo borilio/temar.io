@@ -64,46 +64,6 @@
                                 <span class="p-button-label ms-2">{{ tema.titulo }}</span>
                             </div>
                         </p-button>
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        <!-- Versión con imagen personalizada
-                        @if (tema.img) {
-                            <p-button
-                                styleClass=""
-                                [title]="tema.descripcion"
-                                [severity]="$any(tema.severity || 'primary')"
-                                [outlined]="tema.outlined ?? true"
-                                [disabled]="!tema.habilitado"
-                                [routerLink]="!tema.habilitado ? null : ['/tema', tema.id]"
-                                raised="true">
-                                    <div class="boton-contenido">
-                                        <img [src]="tema.img" />
-                                        <span class="p-button-label">{{ tema.titulo }}</span>
-                                    </div>
-                            </p-button>
-
-                        } @else {
-                            <p-button
-                                styleClass=""
-                                [label]="tema.emoji ? `${tema.emoji} ${tema.titulo}` : tema.titulo"
-                                [icon]="tema.emoji ? undefined : tema.icon"
-                                [title]="tema.descripcion"
-                                [severity]="$any(tema.severity || 'primary')"
-                                [outlined]="tema.outlined ?? true"
-                                [disabled]="!tema.habilitado"
-                                [routerLink]="!tema.habilitado ? null : ['/tema', tema.id]"
-                                raised="true">
-                            </p-button>
-                        } 
-                        -->
                     }
                 </div>
 
