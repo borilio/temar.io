@@ -48,3 +48,9 @@
   display: flex;
   align-items: center;
 }
+
+/* Para centrar las imágenes */
+.img-centrada {
+  display: block;
+  margin: 1rem auto; /* 1rem arriba y abajo, y auto izquierda y derecha */
+}
