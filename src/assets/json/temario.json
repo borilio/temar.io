@@ -1,7 +1,7 @@
 {
   "tituloGeneral": "Curso DEMO",
   "descripcion": "Esto es un curso Demo para probar la app Temar.io. ",
-  "img": "",
+  "img": "img/logo-320x320.png",
   "mostrarBloquesEnMenu": false,
   "bloques": [
     {
