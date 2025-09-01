@@ -30,7 +30,12 @@
                 "glob": "**/*",
                 "input": "src/assets/temario/img",
                 "output": "img"
-              }
+              },
+              { 
+                "glob": "_redirects", 
+                "input": "src", 
+                "output": "/" 
+              } 
             ],
             "styles": [
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
