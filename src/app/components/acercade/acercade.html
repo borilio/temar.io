@@ -1,5 +1,59 @@
 <div class="container-acercade">
-    <p-card>
-        <p>acercade works!</p>
+    <p-card header="Acerca de">
+        <!-- Logo y título -->
+        <section class="text-center">
+            <img alt="Logo" class="w-50" src="img/logo-500x400.png" />
+            <h5>{{app[0].name}}</h5>
+        </section>
+        
+        <!-- Tabla con la información de la app -->
+        <section class="tabla-app mt-5">
+            <p-table [value]="app" size="small">
+                
+                <!-- El cuerpo de la tabla -->
+                <ng-template pTemplate="body" let-app>
+                    <tr>
+                        <!-- Celda del icono para el nombre en clave -->
+                        <td>
+                            <i class="pi pi-bookmark"></i>
+                        </td>
+                        <td>Nombre en clave</td>
+                        <td class="text-end"><p-tag [value]="app.codename" /></td>
+                    </tr>
+                    <tr>
+                        <!-- Celda del icono para la versión -->
+                        <td>
+                            <i class="pi pi-box"></i>
+                        </td>
+                        <td>Versión</td>
+                        <td class="text-end"><p-tag [value]="app.version" /></td>
+                    </tr>
+                    <tr>
+                        <!-- Celda del icono para la fecha -->
+                        <td>
+                            <i class="pi pi-calendar"></i>
+                        </td>
+                        <td>Fecha de compilación</td>
+                        <td class="text-end"><p-tag [value]="app.date" /></td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </section>
+
+        <!-- Texto del copyright obtenido del config.json -->
+        <section class="mt-5">
+            <p>
+                {{footer.copyright}}
+            </p>
+        </section>
+
+        <!-- Texto con el copyright genérico y el año automático -->
+        <section class="mt-5">
+            <p-message severity="secondary" icon="pi pi-sparkles" pTooltip="Creado con ♥️" tooltipPosition="top" showDelay="3000">
+                Copyright by ExprimeAndroid &copy; '{{this.year}}
+            </p-message>
+        </section>
+
+
     </p-card>
 </div>

@@ -5,15 +5,11 @@
 
             @for (logo of footer.logos; track logo) {
             <div class="col mb-1">
-                <a [href]="logo.link">
+                <a [href]="logo.link" target="_blank">
                     <img [src]="logo.img" [alt]="logo.alt" class="footer-logo img-fluid" />
                 </a>
             </div>
             }
-        </div>
-        
-        <div class="row text-center p-2 small fuente-firacode" pTooltip="Creado con ♥️" showDelay="3000">
-            <span><i class="bi bi-c-circle"></i> {{footer.copyright}} '{{year}}</span>
         </div>
 
     </div>

@@ -3,7 +3,7 @@
     "defaultThemeId": "typora",
     "devMode": false,
     "footer": {
-        "copyright": "Temar.io by ExprimeAndroid",
+        "copyright": "Aquí se puede poner un texto adicional que se mostrará en el componente 'Acerca de'. Si no quieres que se muestre, déjalo en blanco.",
         "logos": [
             {
                 "img": "img/logo1.png",

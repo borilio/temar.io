@@ -19,6 +19,8 @@ import { FieldsetModule } from 'primeng/fieldset';
 import { PanelModule } from 'primeng/panel';
 import { ImageModule } from 'primeng/image';
 import { SkeletonModule} from 'primeng/skeleton';
+import { TableModule } from 'primeng/table';
+import { MessageModule } from 'primeng/message';
 
 //1. Pega aquí
 
@@ -43,7 +45,9 @@ export const PRIMENG_IMPORTS = [
     FieldsetModule,
     PanelModule,
     ImageModule,
-    SkeletonModule
+    SkeletonModule,
+    TableModule,
+    MessageModule
 
     //2. Añade aquí
 ];

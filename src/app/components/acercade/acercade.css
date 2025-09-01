@@ -19,3 +19,12 @@
     margin-right: auto;
   }
 }
+
+p-table i, section h5 {
+  color: var(--p-primary-500);
+}
+
+.tabla-app {
+  max-width: fit-content;
+  margin: auto;
+}
