@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Config, Footer, Theme } from '../models/config.model';
+import { Config, Data, Theme } from '../models/config.model';
 import { CONFIG } from '../shared/constantes';
 
 @Injectable({
@@ -19,11 +19,11 @@ export class ConfigService {
   }
 
   /**
-   * Devuelve el objeto con el footer
-   * @returns El objeto de tipo Footer (contiene las imágenes y los enlaces)
+   * Devuelve el objeto con las cosas para el footer y el copyright
+   * @returns El objeto de tipo Data (contiene las imágenes y los enlaces)
    */
-  getFooter(): Footer {
-    return CONFIG.footer;
+  getData(): Data {
+    return CONFIG.data;
   }
 
   /**

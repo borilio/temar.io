@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { PRIMENG_IMPORTS } from '../../shared/primeng.imports';
 import packageInfo from '../../../../package.json'; // Para leer los metadatos del package.json con la versión, fecha, nombre, etc.
 import { AppModel } from '../../models/app.model';
-import { Footer } from '../../models/config.model';
+import { Data } from '../../models/config.model';
 import { ConfigService } from '../../services/config.service';
 
 @Component({
@@ -13,7 +13,7 @@ import { ConfigService } from '../../services/config.service';
 })
 export class Acercade {
 
-  public footer: Footer;
+  public appData: Data;
   public app : AppModel[]; // Tiene que ser un array para mostrarlo en un p-table
   public year: number;
 
@@ -25,8 +25,8 @@ export class Acercade {
       date: packageInfo.date
     }];
 
-    // Cargamos cosillas del footer
-    this.footer = this.configService.getFooter();
+    // Cargamos cosillas del copyright
+    this.appData = this.configService.getData();
 
     // Ponemos el año actual
     const fechaActual: Date = new Date();

@@ -2,11 +2,11 @@ export interface Config {
     preset: string;
     defaultThemeId: string;
     devMode: boolean;
-    footer: Footer;
+    data: Data;
     themes: Theme[];
 }
 
-export interface Footer {
+export interface Data {
     copyright: string;
     logos: Logo[];
 }
