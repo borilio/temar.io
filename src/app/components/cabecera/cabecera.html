@@ -18,23 +18,27 @@
             <ng-template #end>
                 <div class="flex items-center gap-2">
                     <p-buttongroup>
-                        <p-button 
-                            icon="pi pi-question-circle" 
-                            rounded="true" 
-                            routerLink="/acerca"
+                        <!-- <p-button 
+                            icon="pi pi-info-circle" 
+                            routerLink="/acercade"
                             pTooltip="Acerca de"
                             tooltipPosition="bottom"
                             text="true"
-                            raised="true"
                         />
                         <p-button 
+                            icon="pi pi-external-link" 
+                            routerLink="/enlaces"
+                            pTooltip="Enlaces externos"
+                            tooltipPosition="bottom"
+                            text="true"
+                        /> -->
+                        <p-button 
                             icon="pi pi-cog" 
-                            rounded="true" 
                             (onClick)="this.mostrarDialogo()" 
                             pTooltip="Configuración"
-                            tooltipPosition="left"
+                            tooltipPosition="left" 
                             text="true"
-                            raised="true"
+                            rounded="true"
                         />
                     </p-buttongroup>
                 </div>

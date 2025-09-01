@@ -1,0 +1,21 @@
+.container-enlaces {
+  margin-top: 8rem;
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+  /* Borde simple y redondeado usando el color primario de PrimeNG */
+  border: 1px solid var(--p-primary-500);
+  border-radius: 10px;
+  overflow: hidden; /* Para que el contenido respete los bordes */
+}
+
+/*
+  Cuando la pantalla sea más ancha de 1200px,
+  limitamos el ancho del contenedor y lo centramos.
+*/
+@media (min-width: 1200px) {
+  .container-enlaces {
+    max-width: 1024px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}

@@ -3,10 +3,11 @@ import { PRIMENG_IMPORTS } from '../../shared/primeng.imports';
 import { MenuItem, MessageService, PrimeIcons } from 'primeng/api';
 import { Config } from "../config/config";
 import { TemarioService } from '../../services/temario.service';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-cabecera',
-  imports: [PRIMENG_IMPORTS, Config],
+  imports: [PRIMENG_IMPORTS, Config, RouterModule],
   providers: [MessageService],
   templateUrl: './cabecera.html',
   styleUrl: './cabecera.css'
@@ -37,7 +38,18 @@ export class Cabecera implements OnInit {
         label: 'Contenidos',
         icon: PrimeIcons.BOOK,
         items: subItemsContenidos, // <----- Aquí cargamos los contenidos del temario.json
+      },
+      {
+        label: 'Enlaces externos',
+        icon: PrimeIcons.EXTERNAL_LINK,
+        routerLink: 'enlaces'
+      },
+      {
+        label: 'Acerca de',
+        icon: PrimeIcons.INFO_CIRCLE,
+        routerLink: 'acercade'
       }
+
     ];
   }
 

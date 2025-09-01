@@ -2,6 +2,8 @@ import { Routes } from '@angular/router';
 import { Indice } from './components/indice/indice';
 import { Contenido } from './components/contenido/contenido';
 import { Config } from './components/config/config';
+import { Acercade } from './components/acercade/acercade';
+import { Enlaces } from './components/enlaces/enlaces';
 
 export const routes: Routes = [
   // Ruta raíz ('/')
@@ -16,9 +18,13 @@ export const routes: Routes = [
     path: 'tema/:id', 
     component: Contenido
   },
-  { 
-    path: 'config', 
-    component: Config,
+  {
+    path: 'acercade',
+    component: Acercade
+  },
+  {
+    path: 'enlaces',
+    component: Enlaces
   },
   // (Opcional pero recomendado) Redirige cualquier otra ruta al índice
   // TODO hacer una página 404
