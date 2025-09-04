@@ -4,6 +4,7 @@ export interface Config {
     devMode: boolean;
     data: Data;
     themes: Theme[];
+    enlacesExternos: EnlacesExternos;
 }
 
 export interface Data {
@@ -23,4 +24,17 @@ export interface Theme {
     baseMode: string;
     markdownThemeFile: string;
     highlightThemeFile: string;
+}
+
+export interface EnlacesExternos {
+    texto:   string;
+    enlaces: Enlace[];
+}
+
+export interface Enlace {
+    icon:        string;
+    desc:        string;
+    descLarga?:  string;
+    href:        string;
+    disabled?:   boolean;
 }

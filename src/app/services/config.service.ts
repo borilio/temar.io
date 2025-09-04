@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Config, Data, Theme } from '../models/config.model';
+import { Config, Data, EnlacesExternos, Theme } from '../models/config.model';
 import { CONFIG } from '../shared/constantes';
 
 @Injectable({
@@ -32,6 +32,15 @@ export class ConfigService {
    */
   getThemes(): Theme[] {
     return CONFIG.themes;
+  }
+
+  /**
+   * Devuelve el objeto EnlacesExternos. Contiene un array con los enlaces
+   * externos que se usarán en el curso. 
+   * @returns El objeto EnlacesExternos
+   */
+  getEnlacesExternos(): EnlacesExternos {
+    return CONFIG.enlacesExternos;
   }
 
   isDevMode(): boolean {

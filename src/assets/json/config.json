@@ -1,5 +1,5 @@
 {
-    "preset": "MiPresetFuchsia",
+    "preset": "MiPresetSky",
     "defaultThemeId": "typora",
     "devMode": true,
     "data": {
@@ -44,5 +44,28 @@
             "markdownThemeFile": "github-markdown-darky.css",
             "highlightThemeFile": "base16/dracula.css"
         }
-    ]
+    ],
+    "enlacesExternos": {
+        "texto": "Aquí se mostrarán todos los enlaces externos que usaremos durante el curso, tales como ejercicios, calendarios, plataforma educativa, plataforma de mensajería, etc.",
+        "enlaces": [
+            {
+                "icon": "pi pi-folder-open",
+                "desc": "Ejercicios resueltos",
+                "descLarga": "Carpeta en mega con todos los ejercicios realizados en directo durante el curso",
+                "href": "https://docs.google.com/document/d/1jPZfcXDulo9aGIQiA5WFM3Kk-hXhe5qtO1H-zMJSVfU/edit?tab=t.0"
+            },
+            {
+                "icon": "pi pi-discord",
+                "desc": "Acceso al servidor de Discord",
+                "href": "https://discord.com/"
+            },
+            {
+                "icon": "pi pi-ban",
+                "desc": "Ejemplo de enlace deshabilitado",
+                "descLarga": "Un enlace externo se mostrará deshabilitado cuando su href esté vacío o esté explícitamente deshabilitado",
+                "href" : "https://discord.com/",
+                "disabled": true
+            }
+        ]
+    }
 }
