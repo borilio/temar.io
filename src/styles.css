@@ -2,7 +2,7 @@
 
 /* Los CSS insertados de Bootstrap y demás están declarados en el angular.json */
 
-@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&display=swap");
 
 html {
   background: var(--p-surface-100); /* Claro */
@@ -18,13 +18,18 @@ body {
 }
 
 .fuente-firacode {
-  font-family: 'Fira Code', monospace;
+  font-family: "Fira Code", monospace;
 }
 
 /* Para usar el color primario de fondo */
 .bg-primario {
-    background-color: var(--p-primary-500);
-    color: var(--p-primary-color-text, #fff);
+  background-color: var(--p-primary-500);
+  color: var(--p-primary-color-text, #fff);
+}
+
+/* Para usar el color primario */
+.color-primario {
+  color: var(--p-primary-500, #fff);
 }
 
 /* Aplicamos un degrado usando los colores del preset */
@@ -37,13 +42,17 @@ body {
   color: var(--p-primary-color-text, #fff);
 }
 
-
 /*
   Esta regla se aplica al elemento <li> del menú cuando está activo,
   dándole un color de fondo para resaltarlo.
 */
 .p-menubar .p-menuitem.p-highlight {
-  background-color: rgba(0, 0, 0, 0.1); /* Un fondo semitransparente de ejemplo */
+  background-color: rgba(
+    0,
+    0,
+    0,
+    0.1
+  ); /* Un fondo semitransparente de ejemplo */
 }
 
 /* Para el tema oscuro, puedes querer un resaltado más claro */

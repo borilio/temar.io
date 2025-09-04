@@ -7,8 +7,7 @@
             <!-- Cabecera de la tabla -->
             <ng-template #header>
                 <tr>
-                    <th></th>
-                    <th>Descripción</th>
+                    <th colspan="2">Descripción</th>
                     <th class="text-center">Enlace</th>
                 </tr>
             </ng-template>
@@ -16,7 +15,7 @@
             <!-- Cuerpo de la tabla -->
             <ng-template #body let-enlace>
                 <tr [pTooltip]="enlace.descLarga" tooltipPosition="top" showDelay="1500">
-                    <td><i [class]="enlace.icon"></i></td>
+                    <td class="color-primario"><i [class]="enlace.icon"></i></td>
                     <td>{{enlace.desc}}</td>
                     <td class="text-center">
                         @if (enlace.href && !enlace.disabled) {
@@ -47,6 +46,6 @@
 
         </p-table>
 
-        
+
     </p-card>
 </div>
