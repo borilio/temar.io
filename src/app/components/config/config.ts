@@ -15,7 +15,7 @@ import { ConfigService } from '../../services/config.service';
 export class Config {
   public devMode: boolean;
 
-  constructor(private configService: ConfigService){
+  constructor(public configService: ConfigService){
     this.devMode = this.configService.isDevMode();
   }
 

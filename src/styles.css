@@ -21,6 +21,12 @@ body {
   font-family: "Fira Code", monospace;
 }
 
+/* Para deshabilitar las ligaduras de fuente */
+.disable-ligaduras {
+  font-feature-settings: "liga" 0, "clig" 0 !important;
+  font-variant-ligatures: none !important;
+}
+
 /* Para usar el color primario de fondo */
 .bg-primario {
   background-color: var(--p-primary-500);

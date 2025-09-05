@@ -7,6 +7,7 @@ import { CONFIG } from '../shared/constantes';
 })
 export class ConfigService {
  
+  private _mostrarLigaduras: boolean = CONFIG.mostrarLigadurasFuentes;
 
   constructor() { }
 
@@ -43,9 +44,21 @@ export class ConfigService {
     return CONFIG.enlacesExternos;
   }
 
+  
   isDevMode(): boolean {
     return CONFIG.devMode;
   }
+
+  // Retorna lo que valga su atributo (es mutable, puede cambiar, pero será temporal)
+  get mostrarLigaduras(): boolean {
+    return this._mostrarLigaduras;
+  }
+
+  // Establece un nuevo valor para mostrarLigaduras
+  set mostrarLigaduras(valor: boolean) {
+    this._mostrarLigaduras = valor;
+  }
+
 
 
 }

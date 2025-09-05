@@ -1,15 +1,29 @@
 <!-- El cuadro de dialogo se muestra en la cabecera.html, aquí se crea el contenido que se muestra DENTRO del cuadro de diálogo -->
 
 <div class="config-container">
-    <p-panel>
-        <ng-template #header>
-            <div class="flex align-items-center gap-2">
-                <i class="pi pi-palette"></i>
-                <span class="fw-bold"> Tema</span>
-            </div>
-        </ng-template>
+  <p-panel>
+    <ng-template #header>
+      <div class="flex align-items-center gap-2">
+        <i class="pi pi-palette"></i>
+        <span class="fw-bold"> Aspecto visual</span>
+      </div>
+    </ng-template>
 
-        <app-temas id="theme-selector"></app-temas>
+    <!-- Select de temas -->
+    <app-temas id="theme-selector"></app-temas>
+
+    <!-- Switch de ligaduras -->
+    <div class="mt-3 d-flex align-items-center gap-2" tooltipPosition="top" [pTooltip]="configService.mostrarLigaduras ? 'Habilitadas': 'Deshabilitadas'"  >
+      <p-toggleswitch id="ligature-switch" [(ngModel)]="this.configService.mostrarLigaduras" />        
+      <label for="ligature-switch">Activar ligaduras de fuente</label>
+    </div>
+
+    <!-- Ejemplo de código dentro de p-message -->
+    <div class="mt-3 alert alert-light">
+        <code class="fuente-firacode color-primario" [class.disable-ligaduras]="!configService.mostrarLigaduras" >
+          const ejemplo = x => (x >= 0 && x != 10);
+        </code>
+    </div>
   </p-panel>
 
   <p-panel [hidden]="!this.devMode" toggleable="true">

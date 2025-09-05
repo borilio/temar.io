@@ -1,6 +1,7 @@
 {
     "preset": "MiPresetSky",
     "defaultThemeId": "typora",
+    "mostrarLigadurasFuentes": true,
     "devMode": true,
     "data": {
         "copyright": "Aquí se puede poner un texto adicional que se mostrará en el componente 'Acerca de'. Se configura en el config.json > data > copyright. Si no quieres que se muestre, déjalo en blanco.",

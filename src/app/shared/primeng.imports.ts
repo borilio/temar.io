@@ -21,6 +21,7 @@ import { ImageModule } from 'primeng/image';
 import { SkeletonModule} from 'primeng/skeleton';
 import { TableModule } from 'primeng/table';
 import { MessageModule } from 'primeng/message';
+import { ToggleSwitchModule } from 'primeng/toggleswitch';
 
 //1. Pega aquí
 
@@ -47,7 +48,8 @@ export const PRIMENG_IMPORTS = [
     ImageModule,
     SkeletonModule,
     TableModule,
-    MessageModule
+    MessageModule,
+    ToggleSwitchModule
 
     //2. Añade aquí
 ];

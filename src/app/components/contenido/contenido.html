@@ -24,7 +24,7 @@
     </p-card>
     } @else {
     <!-- Si todo fue bien y ya tenemos los contenidos -->
-    <div [innerHTML]="contenidoHTML" class="markdown-body"></div>
+    <div [innerHTML]="contenidoHTML" class="markdown-body" [class.disable-ligaduras]="!configService.mostrarLigaduras"></div>
     }
 </div>
 

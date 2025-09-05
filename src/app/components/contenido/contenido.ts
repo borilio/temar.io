@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, OnInit, Renderer2, ViewContainerRef, ViewEncapsulation } from '@angular/core';
+import { Component, ElementRef, OnInit, Renderer2, ViewContainerRef, ViewEncapsulation } from '@angular/core';
 import { CodeHeader } from '../code-header/code-header'; // Componente code-header (cabecera para los bloques de código)
 import { PRIMENG_IMPORTS } from '../../shared/primeng.imports';
 import { MarkdownService } from '../../services/markdown.service';
@@ -10,6 +10,7 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { TemarioService } from '../../services/temario.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { ConfigService } from '../../services/config.service';
 
 @Component({
   selector: 'app-contenido',
@@ -48,6 +49,8 @@ export class Contenido implements OnInit {
     private temarioService: TemarioService,
     private route: ActivatedRoute,
     private router: Router,
+    // Para la configuración...
+    public configService: ConfigService //Tiene que ser público, para poder usarlo desde HTML
 
   ) {
     this.contenidoHTML = "";

@@ -1,6 +1,7 @@
 export interface Config {
     preset: string;
     defaultThemeId: string;
+    mostrarLigadurasFuentes: boolean;
     devMode: boolean;
     data: Data;
     themes: Theme[];
