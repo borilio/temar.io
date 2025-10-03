@@ -2,7 +2,7 @@
   "name": "Temar.io",
   "version": "0.1.0a",
   "codename": "imperioso",
-  "date": "2025-09-01",
+  "date": "2025-10-03",
   "scripts": {
     "ng": "ng",
     "start": "ng serve --open --host 0.0.0.0",
