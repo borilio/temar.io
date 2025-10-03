@@ -12,6 +12,19 @@
     <!-- Select de temas -->
     <app-temas id="theme-selector"></app-temas>
 
+    
+  </p-panel>
+
+  <p-panel [hidden]="!this.devMode" toggleable="true" collapsed="true">
+    <ng-template #header>
+      <div class="flex align-items-center gap-2" style="color: var(--p-primary-color)">
+        <i class="bi bi-flask"></i>
+        <span class="fw-bold"> Labs</span>
+      </div>
+    </ng-template>
+
+    <p class="small">Aquí se mostrarán opciones solo cuando el modo desarrollador está activado</p>
+
     <!-- Switch de ligaduras -->
     <div class="mt-3 d-flex align-items-center gap-2" tooltipPosition="top" [pTooltip]="configService.mostrarLigaduras ? 'Habilitadas': 'Deshabilitadas'"  >
       <p-toggleswitch id="ligature-switch" [(ngModel)]="this.configService.mostrarLigaduras" />        
@@ -24,17 +37,8 @@
           const ejemplo = x => (x >= 0 && x != 10);
         </code>
     </div>
-  </p-panel>
 
-  <p-panel [hidden]="!this.devMode" toggleable="true">
-    <ng-template #header>
-      <div class="flex align-items-center gap-2" style="color: var(--p-primary-color)">
-        <i class="bi bi-flask"></i>
-        <span class="fw-bold"> Labs</span>
-      </div>
-    </ng-template>
 
-    <p class="small">Aquí se mostrarán opciones solo cuando el modo desarrollador está activado</p>
   </p-panel>
 
 </div>
