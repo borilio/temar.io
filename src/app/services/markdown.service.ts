@@ -70,12 +70,15 @@ export class MarkdownService {
     // Usamos una función para arreglar posibles errores en las rutas
     const markdownConRutasCorregidas = this.convertirSintaxisImagen(markdown);
 
+    // Traduce los títulos de las notas (github-alerts)
+    const markdownTraducidoConRutasCorregidas = this.traduceAlerts(markdownConRutasCorregidas);
+
     //Añadimos un retardo artificial a la consulta, para probar barras de progreso
     if (this.retardoActivo) {
       await new Promise(resolve => setTimeout(resolve, 2000)); // 2 segundos de espera
     }
 
-    return this.mdParser.render(markdownConRutasCorregidas);
+    return this.mdParser.render(markdownTraducidoConRutasCorregidas);
 
   }
 
@@ -99,6 +102,20 @@ export class MarkdownService {
         return `![${altText}](${encodedPath}${titlePart})`;
       }
     );
+  }
+
+  /**
+   * Modifica los títulos en español en las admonitions GitHub-style, añadiendo la traducción
+   * Markdown-it permite añadir el texto del título justo después. Así que lo que hacemos es añadirlo siempre.
+   * Ej.:  > [!note]        ->  > [!note] Nota
+   */
+  private traduceAlerts(src: string): string {
+    return src
+      .replace(/^(\s*>\s*\[!note\])\s*$/gim,      '$1 Nota')
+      .replace(/^(\s*>\s*\[!tip\])\s*$/gim,       '$1 Consejo')
+      .replace(/^(\s*>\s*\[!warning\])\s*$/gim,   '$1 Aviso')
+      .replace(/^(\s*>\s*\[!caution\])\s*$/gim,   '$1 Precaución')
+      .replace(/^(\s*>\s*\[!important\])\s*$/gim, '$1 Importante');
   }
 
 }
