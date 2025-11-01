@@ -8,6 +8,7 @@
   background-color: var(--p-gray-800);
   font-family: -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji";
   font-size: 16px;
+  font-weight: 300;
   line-height: 1.5;
   word-wrap: break-word;
 }
@@ -323,7 +324,7 @@
 
 .markdown-body ol ol,
 .markdown-body ul ol {
-  list-style-type: lower-roman;
+  list-style-type: lower-alpha;
 }
 
 .markdown-body ul ul ol,
@@ -512,7 +513,7 @@
 }
 
 .markdown-body ol[type="i s"] {
-  list-style-type: lower-roman;
+  list-style-type: lower-alpha;
 }
 
 .markdown-body ol[type="I s"] {
