@@ -22,7 +22,7 @@ body {
 }
 
 /* Para deshabilitar las ligaduras de fuente */
-.disable-ligaduras {
+.disable-ligaduras, .disable-ligaduras * {
   font-feature-settings: "liga" 0, "clig" 0 !important;
   font-variant-ligatures: none !important;
 }
