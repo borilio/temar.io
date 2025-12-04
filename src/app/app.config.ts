@@ -11,6 +11,7 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import { providePrimeNG } from 'primeng/config';
 import Aura from '@primeuix/themes/aura'; // En el preset, para usar Aura por defecto, quita "MiPreset" y cámbialo por Aura
 import { PRESETS } from './shared/presets-aura/preset-colores';
+import { MessageService } from 'primeng/api';
 
 
 export const appConfig: ApplicationConfig = {
@@ -30,6 +31,7 @@ export const appConfig: ApplicationConfig = {
     
     
     // PrimeNG
+    MessageService,
     provideAnimationsAsync(),
     providePrimeNG({
       ripple: true,

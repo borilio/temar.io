@@ -68,5 +68,11 @@
                 "disabled": true
             }
         ]
+    },
+    "caducidad": {
+        "fecha": "2026-01-01",
+        "aviso": 30,
+        "mensajeAviso": "Los contenidos de este curso se cerrarán próximamente.",
+        "mensajeCerrado": "Lo sentimos, este curso ya no está disponible."
     }
 }

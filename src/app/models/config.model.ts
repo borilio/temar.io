@@ -6,6 +6,7 @@ export interface Config {
     data: Data;
     themes: Theme[];
     enlacesExternos: EnlacesExternos;
+    caducidad: Caducidad;
 }
 
 export interface Data {
@@ -38,4 +39,11 @@ export interface Enlace {
     descLarga?:  string;
     href:        string;
     disabled?:   boolean;
+}
+
+export interface Caducidad {
+    fecha:         string;
+    aviso:          number;
+    mensajeAviso:   string;
+    mensajeCerrado: string;
 }

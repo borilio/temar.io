@@ -4,19 +4,22 @@ import { Contenido } from './components/contenido/contenido';
 import { Config } from './components/config/config';
 import { Acercade } from './components/acercade/acercade';
 import { Enlaces } from './components/enlaces/enlaces';
+import { Cerrado } from './components/cerrado/cerrado';
+import { ExpirationGuard } from './guards/caducidad.guard.ts-guard';
 
 export const routes: Routes = [
   // Ruta raíz ('/')
   { 
     path: '', 
     component: Indice, 
-    pathMatch: 'full' 
+    pathMatch: 'full',
   },
   
   // Ruta para un tema específico (ej. '/tema/01-intro')
   { 
     path: 'tema/:id', 
-    component: Contenido
+    component: Contenido,
+    canActivate: [ExpirationGuard] // Los temas están protegidos por el guard
   },
   {
     path: 'acercade',
@@ -24,7 +27,12 @@ export const routes: Routes = [
   },
   {
     path: 'enlaces',
-    component: Enlaces
+    component: Enlaces,
+    canActivate: [ExpirationGuard] // Los enlaces están protegidos por el guard
+  },
+  {
+    path: 'cerrado',
+    component: Cerrado
   },
   // (Opcional pero recomendado) Redirige cualquier otra ruta al índice
   // TODO hacer una página 404

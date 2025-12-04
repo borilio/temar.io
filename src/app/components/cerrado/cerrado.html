@@ -1,0 +1,17 @@
+<div class="container-cerrado">
+    <p-card>
+        <h3>Curso cerrado</h3>
+        
+        <div class="my-5">
+            <!-- Si en el config.json tiene un mensaje, lo mostramos, si no mostramos uno genérico -->
+            <p-message severity="error" size="large" icon="pi pi-lock">
+                @if (caducidad.mensajeCerrado) {
+                    <span>{{caducidad.mensajeCerrado}}</span>
+                } @else {
+                    <span>Lo sentimos, este curso ya no está disponible.</span>
+                }
+            </p-message>
+        </div>
+        <img class="img-fluid rounded-4" src="img/curso-cerrado.png" />
+    </p-card>
+</div>

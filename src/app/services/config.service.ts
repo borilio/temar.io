@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
-import { Config, Data, EnlacesExternos, Theme } from '../models/config.model';
+import { Caducidad, Config, Data, EnlacesExternos, Theme } from '../models/config.model';
 import { CONFIG } from '../shared/constantes';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ConfigService {
- 
+   
   private _mostrarLigaduras: boolean = CONFIG.mostrarLigadurasFuentes;
 
   constructor() { }
@@ -42,6 +42,14 @@ export class ConfigService {
    */
   getEnlacesExternos(): EnlacesExternos {
     return CONFIG.enlacesExternos;
+  }
+
+  /**
+   * Retorna la caducidad del curso, que incluye fecha, días de aviso, y mensajes
+   * @returns El objeto Caducidad
+   */
+  getCaducidad(): Caducidad {
+    return CONFIG.caducidad;
   }
 
   
