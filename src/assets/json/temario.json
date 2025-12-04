@@ -19,7 +19,7 @@
       "habilitado": true,
       "temas": [
         {
-          "id": "demo",
+          "id": "demo-1",
           "orden": 1,
           "titulo": "Demo de contenido con imagen",
           "descripcion": "Demo con todas las posibles combinaciones de elementos en markdown",
@@ -32,7 +32,7 @@
           "habilitado": true
         },
         {
-          "id": "demo",
+          "id": "demo-2",
           "orden": 2,
           "titulo": "Demo de contenido con emoji",
           "descripcion": "Demo con todas las posibles combinaciones de elementos en markdown",
@@ -45,7 +45,7 @@
           "habilitado": true
         },
         {
-          "id": "demo",
+          "id": "demo-3",
           "orden": 3,
           "titulo": "Demo de contenido con icono (sin img ni emoji)",
           "descripcion": "Demo con todas las posibles combinaciones de elementos en markdown",
