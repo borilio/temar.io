@@ -76,7 +76,7 @@
         {
           "id": "ia",
           "orden": 1,
-          "titulo": "Inteligencia Artificial",
+          "titulo": "Inteligencia Artificial (sin TOC)",
           "descripcion": "Descripción del tema de IA",
           "archivoMd": "ia.md",
           "icon": "pi pi-android",

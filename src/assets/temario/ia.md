@@ -3,11 +3,6 @@
 </div>
 
 
-[TOC]
-
----
-
-
 
 # ✨Inteligencia Artificial
 
