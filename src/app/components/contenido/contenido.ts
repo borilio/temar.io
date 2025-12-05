@@ -2,7 +2,7 @@ import { Component, ElementRef, OnInit, Renderer2, ViewContainerRef, ViewEncapsu
 import { CodeHeader } from '../code-header/code-header'; // Componente code-header (cabecera para los bloques de código)
 import { PRIMENG_IMPORTS } from '../../shared/primeng.imports';
 import { MarkdownService } from '../../services/markdown.service';
-import { MenuItem, MessageService } from 'primeng/api';
+import { MenuItem, MessageService, PrimeIcons } from 'primeng/api';
 import { Image } from 'primeng/image';
 
 // Importamos DomSanitizer para evitar que Angular elimine los estilos
@@ -11,6 +11,7 @@ import { TemarioService } from '../../services/temario.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { ConfigService } from '../../services/config.service';
+import { Tema } from '../../models/temario.model';
 
 @Component({
   selector: 'app-contenido',
@@ -29,13 +30,18 @@ export class Contenido implements OnInit {
   public hayError: boolean;
   public fraseCargando: string = "Cargando contenidos..."; //TODO hacer que salgan frases aleatorias
   private routeSuscripcion!: Subscription; // Para estar al corriente de los cambios que se hacen de url
+  
+  // Para la navegación, tener info del tema actual, siguiente y anterior
+  public temaActual: Tema | undefined;
+  public temaSiguiente: Tema | null = null;
+  public temaAnterior: Tema | null = null;
 
-  //TOC
+  // TOC
   public mostrarDrawer: boolean; // Para mostrar el menú lateral con el TOC
-  public tocHTML: SafeHtml = "";
+  public tocHTML: SafeHtml;
   public anclasTocArregladas: boolean; // Las anclas del TOC se arreglan una vez, en el drawer onShow.
 
-  //SpeedDial
+  // SpeedDial
   public speedDialItems: MenuItem[] = []; // Propiedad para los items del Speed Dial
 
   constructor(
@@ -54,6 +60,7 @@ export class Contenido implements OnInit {
 
   ) {
     this.contenidoHTML = "";
+    this.tocHTML = "";
     this.cargandoContenido = true;
     this.hayError = false;
     this.mostrarDrawer = false;
@@ -65,21 +72,75 @@ export class Contenido implements OnInit {
     this.routeSuscripcion = this.route.paramMap.subscribe(params => {
       const id = params.get('id');
       if (id) {
+        // Guarda el tema actual, siguiente y anterior (para la navegación y cabecera)
+        this.temaActual = this.temarioService.getTemaById(id); 
+        this.temaAnterior = this.temarioService.getTemaAnterior(id);
+        this.temaSiguiente = this.temarioService.getTemaSiguiente(id);
+
         // Cargamos el contenido md de la id del tema que tenemos en la url
         this.cargarContenidoDelTema(id);
       }
     });
 
-    // Inicializamos los elementos del speeddial (deshabilitado)
+    // Inicializamos los elementos del speeddial
     this.speedDialItems = [
       {
-        icon: "pi pi-list",
-        tooltip: "Indice de contenidos",
+        icon: PrimeIcons.LIST,
+        label: "Indice de contenidos",
         command: () => {
-          this.mostrarDrawer = true;
+          this.abrirDrawer();
+        }
+      },      
+      {
+        icon: PrimeIcons.ANGLE_DOUBLE_LEFT,
+        label: "Anterior",
+        command: () =>{
+          this.irAnterior();
+        }
+      },
+      {
+        icon: PrimeIcons.ANGLE_DOUBLE_RIGHT,
+        label: "Siguiente",
+        command: () =>{
+          this.irSiguiente();
         }
       }
     ];
+  }
+
+  /**
+   * Método que inicia la acción de abrir el drawer para mostrar el TOC
+   */
+  public abrirDrawer() {
+    //Si tiene TOC abrimos el drawer, si no mostramos el toast
+    if (this.tocHTML) {
+      this.mostrarDrawer = true;
+    } else {
+      this.messageService.add({
+        severity: "info",
+        summary: "Sin índice",
+        detail: "Este contenido no tiene índices",
+        life: 4000
+      });
+    }
+  }
+
+  /**
+   * Método que inicia la acción de ir al siguiente contenido
+   */
+  public irSiguiente(){
+    if (this.temaSiguiente) {
+      this.router.navigate(["/tema/", this.temaSiguiente.id]);
+    }
+  }
+  
+  /**
+   * Método que inicia la acción de ir al anterior contenido
+   */
+  public irAnterior(){
+    if (this.temaAnterior) {
+      this.router.navigate(["/tema/", this.temaAnterior.id]);
+    }
   }
 
   // Vuelca el contenido HTML según la id de un tema recibido
@@ -225,11 +286,13 @@ export class Contenido implements OnInit {
     // Busca el índice que ya está en la página
     const tocOriginal = this.elementRef.nativeElement.querySelector('.markdown-body .table-of-contents');
 
+    // Si existe el TOC en el contenido lo asignamos a la variable que se mostrará en el drawer
     if (tocOriginal) {
       // Copia su HTML y lo asigna a la variable del drawer
       this.tocHTML = this.sanitizer.bypassSecurityTrustHtml(tocOriginal.innerHTML);
     } else {
-      console.error("Hubo un error al extraer el TOC del HTML");
+      this.tocHTML = ""; // Limpiamos por si había restos de un TOC anterior cacheado
+      console.warn("No hay TOC en el md, o bien hubo algún error al extraerlo");
     }
   }
 

@@ -83,24 +83,36 @@ export class TemarioService {
     }
   }
 
+  /**
+   * Obtiene el tema siguiente al tema con la ID proporcionada.
+   * Devuelve null si no hay tema siguiente.
+   */
+  public getTemaSiguiente(id: string): Tema | null {
+    const todosLosTemas = TEMARIO.bloques.flatMap(bloque => bloque.temas);
+    const indiceActual = todosLosTemas.findIndex(tema => tema.id === id);
 
-  // getTemasAsMenuItems(): MenuItem[] {
-  //   return TEMARIO.bloques
-  //     .sort((a, b) => a.orden - b.orden) // Ordena los bloques
-  //     .map(bloque => ({
-  //       label: bloque.titulo, // El título del bloque es el elemento principal del menú
-  //       icon: bloque.icon,
-  //       disabled: !bloque.habilitado, // Deshabilita el bloque entero si está marcado
-  //       items: bloque.temas // Los temas del bloque son los sub-items
-  //         .sort((a, b) => a.orden - b.orden) // Ordena los temas dentro del bloque
-  //         .map(tema => ({
-  //           label: tema.titulo,
-  //           icon: tema.icon,
-  //           routerLink: `/tema/${tema.id}`,
-  //           disabled: !tema.habilitado // Deshabilita el tema si está marcado
-  //         }))
-  //     }));
-  // }
+    if (indiceActual === -1 || indiceActual === todosLosTemas.length - 1) {
+      return null; // No existe tema actual o es el último
+    }
 
+    return todosLosTemas[indiceActual + 1];
+  }
+
+  /**
+   * Obtiene el tema anterior al tema con la ID proporcionada.
+   * Devuelve null si no hay tema anterior.
+   */
+  public getTemaAnterior(id: string): Tema | null {
+    const todosLosTemas = TEMARIO.bloques.flatMap(bloque => bloque.temas);
+    const indiceActual = todosLosTemas.findIndex(tema => tema.id === id);
+
+    if (indiceActual <= 0) {
+      return null; // No existe tema actual o es el primero
+    }
+
+    return todosLosTemas[indiceActual - 1];
+  }
+
+  
 
 }

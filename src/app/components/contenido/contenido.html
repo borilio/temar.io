@@ -23,22 +23,58 @@
         </div>
     </p-card>
     } @else {
-    <!-- Si todo fue bien y ya tenemos los contenidos -->
+    <!-- ******* Si todo fue bien y ya tenemos los contenidos *******-->
+    <!-- Cabecera automática de los contenidos -->
+    <div class="cabecera-temario degradado">
+        <p>{{temaActual?.titulo}}</p>
+    </div>
+    
+    <!-- El contenido markdown que le sigue -->
     <div [innerHTML]="contenidoHTML" class="markdown-body" [class.disable-ligaduras]="!configService.mostrarLigaduras"></div>
-    }
+    
+    <!-- La navegación para siguiente y anterior -->
+    <div class="navegacion-temario degradado">
+        <p-button
+            icon="pi pi-angle-left"
+            severity="primary"            
+            rounded="true"
+            tooltipPosition="left"
+            [pTooltip]="temaAnterior?.titulo || 'No hay tema anterior'"
+            [disabled]="!temaAnterior"
+            (click)="irAnterior()"
+        ></p-button>
+            
+        <p-button
+            icon="pi pi-angle-right"
+            severity="primary"            
+            rounded="true"
+            tooltipPosition="right"
+            [pTooltip]="temaSiguiente?.titulo || 'No hay tema siguiente'"
+            [disabled]="!temaSiguiente"
+            (click)="irSiguiente()"
+        ></p-button>
+    </div>
+    
+
+}
 </div>
 
 
 <!-- DE AQUÍ PARA ABAJO HAY ELEMENTOS VARIOS POSICIONADOS DE FORMA ABSOLUTA -->
 
 <!-- Botón flotante para mostrar TOC (o speeddial si hay más acciones) -->
-<!-- No se muestra si estamos cargando contenido o si no hay TOC -->
-<p-button [hidden]="this.cargandoContenido || !tocHTML" icon="pi pi-list" pTooltip="Mostrar índice de contenidos"
+<!-- <p-button [hidden]="this.cargandoContenido || !tocHTML" icon="pi pi-list" pTooltip="Mostrar índice de contenidos"
     tooltipPosition="right" severity="primary" outlined="true" rounded="true" class="boton-flotante"
-    (click)="this.mostrarDrawer = true" />
-<!-- Si en un futuro en lugar de un botón para abrir el drawer, le vamos a añadir más acciones (imprimir, descargar, hacer piruetas...) usaremos el speeddial que ya estaba funcionando, por eso no lo he borrado. Solo habría que borrar el p-button de arriba y listo.
-    <p-speeddial [model]="speedDialItems" direction="up" class="boton-flotante" /> 
--->
+    (click)="this.mostrarDrawer = true" /> -->
+    <p-speeddial 
+        [hidden]="this.cargandoContenido"
+        [model]="speedDialItems" 
+        showIcon="pi pi-compass" 
+        direction="right"    
+        class="boton-flotante" 
+        [buttonProps]="{ severity: 'primary'}" 
+        [tooltipOptions]="{ tooltipPosition: 'top' }"
+    /> 
 
 <!-- 
     Menú lateral (drawer) donde mostraremos el índice de contenidos TOC del tema 

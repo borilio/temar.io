@@ -16,3 +16,18 @@
   left: 1.5rem;
   z-index: 1000;
 }
+
+.cabecera-temario {
+  padding: 1.5rem;
+  text-align: center; 
+  font-size: 2.5rem; 
+  display: inline-block; 
+  width: 100%;
+}
+
+.navegacion-temario {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  padding: 1.5rem;
+}

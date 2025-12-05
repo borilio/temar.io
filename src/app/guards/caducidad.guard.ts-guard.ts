@@ -45,15 +45,14 @@ export class ExpirationGuard implements CanActivate {
     }
     
     //Si llegamos hasta aquí, es que tenemos que dejar pasar
-    console.warn("El guard te deja pasar...");
     return true;
   }
 
-  // Método que obtiene la fecha actual (ahora local, después del servidor)
+  // Método que obtiene la fecha actual (por ahora local)
+  // TODO Mejorar la seguridad obteniendo la fecha actual por otro sistema
   private getFechaActual(): Date {
-    // Usamos esta fecha para probar
-    const fechaActual = new Date("2025-12-04");
-    console.warn("El guard dice que hoy estamos a:", fechaActual.toDateString());
+    const fechaActual = new Date();
+    // const fechaActual = new Date("2025-12-04"); // Si quieres probar con una fecha concreta, usa esta línea
     return fechaActual;
   }
 
