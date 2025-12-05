@@ -2,12 +2,26 @@
 Aquí añadiremos estilos para forzar algunos estilos contenido html generado por el markdown-it
 */
 
+
 /* 1. El contenedor principal (.markdown-body)
    Sigue teniendo el borde y los márgenes de página.
    Le quitamos el padding porque ahora lo gestiona el grid. */
 .markdown-body {
   padding: 2rem;
+  animation: fadeInUp 0.6s ease-out;
 }
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px); /* Sube 20px */
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 
 /* 2. Para pantallas grandes, activamos la maquetación Grid */
 @media (min-width: 1200px) {
