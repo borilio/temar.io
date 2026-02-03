@@ -24,7 +24,7 @@ export class ExpirationGuard implements CanActivate {
     // Calculamos el tiempo en días que le quedan al curso
     const caducidadDate : Date = new Date(caducidad.fecha);
     const diffMs = caducidadDate.getTime() - hoy.getTime(); // nos da la diferencia en ms
-    const diasRestantes = diffMs / (1000 * 60 * 60 * 24) // Lo convertimos a días, si es positivo, son los días que quedan, si son negativos, son los días que lleva cerrado el curso.
+    const diasRestantes = Math.floor(diffMs / (1000 * 60 * 60 * 24)); // Lo convertimos a días (entero), si es positivo, son los días que quedan, si son negativos, son los días que lleva cerrado el curso.
     console.warn("Guard: Días que falte para que cierre: ", diasRestantes);
 
     // Si el curso ha caducado, retornamos un false, si no seguimos...
