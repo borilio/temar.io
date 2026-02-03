@@ -5,7 +5,7 @@ import { Config } from './components/config/config';
 import { Acercade } from './components/acercade/acercade';
 import { Enlaces } from './components/enlaces/enlaces';
 import { Cerrado } from './components/cerrado/cerrado';
-import { ExpirationGuard } from './guards/caducidad.guard.ts-guard';
+import { ExpirationGuard } from './guards/caducidad.guard';
 
 export const routes: Routes = [
   // Ruta raíz ('/')
