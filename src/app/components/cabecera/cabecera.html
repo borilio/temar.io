@@ -1,12 +1,8 @@
-<header class="fixed-top degradado text-light p-3 rounded-bottom-4">
-    <!-- TODO Mejorar esto -->
-    <div class="mb-3" [hidden]="true">
-        <span class="lead">Temar.io</span>
-    </div>
-
+<header class="fixed-top py-2 px-4">
+  
     <!-- Navegación -->
     <div>
-        <p-menubar [model]="items">
+        <p-menubar [model]="items" class="rounded-5 bg-primario acrilico sombra-grande">
             <ng-template #start>
                 <div class="logo-container">
                     <img class="menubar-logo" src="img/logo-700x700.png" alt="Logo" />

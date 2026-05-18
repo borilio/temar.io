@@ -71,7 +71,8 @@
         [model]="speedDialItems" 
         showIcon="pi pi-compass" 
         direction="right"    
-        class="boton-flotante" 
+        class="boton-flotante"
+        buttonClassName="acrilico"
         [buttonProps]="{ severity: 'primary'}" 
         [tooltipOptions]="{ tooltipPosition: 'top' }"
     /> 
@@ -82,8 +83,10 @@
 -->
 <p-drawer [(visible)]="mostrarDrawer" closeOnEscape="true" position="left" (onShow)="this.arreglarAnclas()">
     <ng-template pTemplate="header">
-        <h3>Índice de contenidos</h3>
+        <h2>{{temaActual?.titulo}}</h2>
     </ng-template>
+    <hr>
+    <h4>Índice de contenidos</h4>
 
     <div [innerHTML]="tocHTML" class="table-of-contents"></div>
 </p-drawer>

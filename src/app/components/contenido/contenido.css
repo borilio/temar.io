@@ -17,6 +17,13 @@
   z-index: 1000;
 }
 
+.acrilico {
+  background-color: color-mix(in srgb, var(--p-primary-500) 30%, transparent);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid var(--p-primary-500, #fff);
+}
+
 .cabecera-temario {
   padding: 1.5rem;
   text-align: center; 

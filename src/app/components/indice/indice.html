@@ -3,7 +3,7 @@
     <!-- Si hay un temario... -->
     @if (temario) {
     <p-card>
-        <h1>{{temario.tituloGeneral}}</h1>
+        <h1 class="text-center">{{temario.tituloGeneral}}</h1>
         @if (temario.img) {
             <img [src]="temario.img" class="my-4 img-fluid img-centrada" alt="Imagen general representativa del curso" />
         }
