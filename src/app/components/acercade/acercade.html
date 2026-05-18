@@ -6,11 +6,11 @@
             <img alt="Logo" class="w-50" src="img/logo-500x400.png" />
             <h5>{{app[0].name}}</h5>
         </section>
-        
+
         <!-- Tabla con la información de la app -->
         <section class="tabla-app mt-5">
             <p-table [value]="app" size="small">
-                
+
                 <!-- El cuerpo de la tabla -->
                 <ng-template pTemplate="body" let-app>
                     <tr>
@@ -48,10 +48,27 @@
             </p>
         </section>
 
+        <!-- Info de la caducidad, solo si hay una fecha -->
+        @if (this.appCaducidad.fecha) {
+        <section class="mt-4">
+            <p-message severity="warn" icon="pi pi-calendar">
+                <div>
+                    Este temario dejará de estar disponible el
+                    <span class="fw-bolder">{{this.appCaducidad.fecha | date:'fullDate' }}</span>.
+                    Se mostrará un aviso
+                    <span class="fw-bolder">{{this.appCaducidad.aviso}}</span>
+                    días antes del cierre.
+                </div>
+            </p-message>
+        </section>
+        }
+
         <!-- Texto con el copyright genérico y el año automático -->
-        <section class="mt-5">
-            <p-message severity="secondary" icon="pi pi-sparkles" pTooltip="Creado con ♥️" tooltipPosition="top" showDelay="3000">
-                <span>Este material está bajo licencia Creative Commons BY-NC-ND 4.0 Internacional. '{{this.year}} </span>
+        <section class="mt-4">
+            <p-message severity="secondary" icon="pi pi-sparkles" pTooltip="Creado con ♥️" tooltipPosition="top"
+                showDelay="3000">
+                <span>Este material está bajo licencia Creative Commons BY-NC-ND 4.0 Internacional. '{{this.year}}
+                </span>
                 <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.es" target="_blank">
                     <img src="https://mirrors.creativecommons.org/presskit/icons/cc.svg" height="20">
                     <img src="https://mirrors.creativecommons.org/presskit/icons/by.svg" height="20">
