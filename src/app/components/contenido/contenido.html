@@ -83,10 +83,10 @@
 -->
 <p-drawer [(visible)]="mostrarDrawer" closeOnEscape="true" position="left" (onShow)="this.arreglarAnclas()">
     <ng-template pTemplate="header">
-        <h2>{{temaActual?.titulo}}</h2>
+        <h3>Índice de contenidos</h3>
     </ng-template>
-    <hr>
-    <h4>Índice de contenidos</h4>
+    <p-divider></p-divider>
+    <h5>{{temaActual?.titulo}}</h5>
 
     <div [innerHTML]="tocHTML" class="table-of-contents"></div>
 </p-drawer>
