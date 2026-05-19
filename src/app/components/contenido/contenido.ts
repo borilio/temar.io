@@ -28,9 +28,9 @@ export class Contenido implements OnInit {
   public contenidoHTML: SafeHtml;
   public cargandoContenido: boolean;
   public hayError: boolean;
-  public fraseCargando: string = "Cargando contenidos..."; //TODO hacer que salgan frases aleatorias
+  public fraseCargando: string = "Cargando contenidos..."; // Se cambia por una al azar en el constructor
   private routeSuscripcion!: Subscription; // Para estar al corriente de los cambios que se hacen de url
-  
+
   // Para la navegación, tener info del tema actual, siguiente y anterior
   public temaActual: Tema | undefined;
   public temaSiguiente: Tema | null = null;
@@ -65,15 +65,21 @@ export class Contenido implements OnInit {
     this.hayError = false;
     this.mostrarDrawer = false;
     this.anclasTocArregladas = false;
+    
+    // Inicializamos el array con frases aleatorias 
+    this.fraseCargando = this.elegirFrase();
+
   }
 
   ngOnInit(): void {
+
+
     // Nos suscribimos a los cambios de URL
     this.routeSuscripcion = this.route.paramMap.subscribe(params => {
       const id = params.get('id');
       if (id) {
         // Guarda el tema actual, siguiente y anterior (para la navegación y cabecera)
-        this.temaActual = this.temarioService.getTemaById(id); 
+        this.temaActual = this.temarioService.getTemaById(id);
         this.temaAnterior = this.temarioService.getTemaAnterior(id);
         this.temaSiguiente = this.temarioService.getTemaSiguiente(id);
 
@@ -90,22 +96,64 @@ export class Contenido implements OnInit {
         command: () => {
           this.abrirDrawer();
         }
-      },      
+      },
       {
         icon: PrimeIcons.ANGLE_DOUBLE_LEFT,
         label: "Anterior",
-        command: () =>{
+        command: () => {
           this.irAnterior();
         }
       },
       {
         icon: PrimeIcons.ANGLE_DOUBLE_RIGHT,
         label: "Siguiente",
-        command: () =>{
+        command: () => {
           this.irSiguiente();
         }
       }
     ];
+  }
+
+  /**
+   * Método que retorna una frase de inicialización de contenidos al azar
+   * @returns string aleatorio que se mostrará al cargar el contenido
+   */
+  private elegirFrase(): string {
+    const frases: string[] = [
+      "Cargando contenidos...",
+      "Descargando conocimientos...",
+      "Compilando apuntes...",
+      "Afinando píxeles educativos...",
+      "Despertando a los servidores...",
+      "Preparando café para el procesador ☕",
+      "Buscando el punto y coma perdido...",
+      "Ordenando bits y bytes...",
+      "Conectando cables imaginarios...",
+      "Actualizando neuronas digitales...",
+      "Encendiendo el modo estudiante...",
+      "Instalando sabiduría...",
+      "Cifrando conocimiento...",
+      "Desfragmentando ideas...",
+      "Puliendo ejercicios prácticos...",
+      "Abriendo la caja de herramientas...",
+      "Sincronizando competencias digitales...",
+      "Convenciendo al WiFi de colaborar...",
+      "Preparando comandos secretos...",
+      "Reiniciando la creatividad...",
+      "Cargando toneladas de informática...",
+      "Ejecutando scripts educativos...",
+      "Limpiando el polvo del teclado...",
+      "Calibrando el ratón...",
+      "Invocando a los dioses del CSS...",
+      "Convirtiendo café en contenido...",
+      "Recopilando conocimientos ancestrales...",
+      "Escaneando memes educativos...",
+      "Formateando la paciencia...",
+      "Subiendo de nivel académico..."
+    ];
+
+    const indice = Math.floor(Math.random() * frases.length);
+    return frases[indice];
   }
 
   /**
@@ -128,16 +176,16 @@ export class Contenido implements OnInit {
   /**
    * Método que inicia la acción de ir al siguiente contenido
    */
-  public irSiguiente(){
+  public irSiguiente() {
     if (this.temaSiguiente) {
       this.router.navigate(["/tema/", this.temaSiguiente.id]);
     }
   }
-  
+
   /**
    * Método que inicia la acción de ir al anterior contenido
    */
-  public irAnterior(){
+  public irAnterior() {
     if (this.temaAnterior) {
       this.router.navigate(["/tema/", this.temaAnterior.id]);
     }
@@ -178,7 +226,7 @@ export class Contenido implements OnInit {
         setTimeout(() => {
           this.mejorarBloquesDeCodigo(); // Mejora los bloques de código del HTML generado original
           this.extraerTocParaDrawer(); // Extrae el TOC y lo coloca en el drawer lateral
-          this.transformarImagenesPreview(); 
+          this.transformarImagenesPreview();
         }, 0);
 
       })
@@ -301,7 +349,7 @@ export class Contenido implements OnInit {
    */
   private transformarImagenesPreview(): void {
     // Buscamos todas las imágenes que tengan la clase img-preview
-    const imagesToTransform: NodeListOf<HTMLImageElement> = 
+    const imagesToTransform: NodeListOf<HTMLImageElement> =
       this.elementRef.nativeElement.querySelectorAll('img.img-preview');
 
     // Sustituimos todos los img.img-preview por p-image.
