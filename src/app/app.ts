@@ -1,7 +1,7 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { Cabecera } from "./components/cabecera/cabecera";
-import { Pie } from "./components/pie/pie";
+import { Cabecera } from "./components/layout/cabecera/cabecera";
+import { Pie } from './components/layout/pie/pie';
 import { PRIMENG_IMPORTS } from './shared/primeng.imports';
 
 @Component({

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { PRIMENG_IMPORTS } from '../../shared/primeng.imports';
-import { TemarioService } from '../../services/temario.service';
-import { Temario } from '../../models/temario.model';
+import { PRIMENG_IMPORTS } from '../../../shared/primeng.imports';
+import { TemarioService } from '../../../services/temario.service';
+import { Temario } from '../../../models/temario.model';
 import { RouterLink } from '@angular/router';
 
 @Component({

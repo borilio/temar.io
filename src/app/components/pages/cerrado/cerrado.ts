@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
-import { PRIMENG_IMPORTS } from '../../shared/primeng.imports';
-import { ConfigService } from '../../services/config.service';
-import { Caducidad } from '../../models/config.model';
+import { PRIMENG_IMPORTS } from '../../../shared/primeng.imports';
+import { ConfigService } from '../../../services/config.service';
+import { Caducidad } from '../../../models/config.model';
 
 @Component({
   selector: 'app-cerrado',

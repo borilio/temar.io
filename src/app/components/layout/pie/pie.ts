@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { PRIMENG_IMPORTS } from '../../shared/primeng.imports';
-import { Config, Data } from '../../models/config.model';
-import { ConfigService } from '../../services/config.service';
+import { PRIMENG_IMPORTS } from '../../../shared/primeng.imports';
+import { Config, Data } from '../../../models/config.model';
+import { ConfigService } from '../../../services/config.service';
 
 @Component({
   selector: 'app-pie',

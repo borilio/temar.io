@@ -1,17 +1,17 @@
 import { Component, ElementRef, OnInit, Renderer2, ViewContainerRef, ViewEncapsulation } from '@angular/core';
-import { CodeHeader } from '../code-header/code-header'; // Componente code-header (cabecera para los bloques de código)
-import { PRIMENG_IMPORTS } from '../../shared/primeng.imports';
-import { MarkdownService } from '../../services/markdown.service';
+import { CodeHeader } from '../../layout/code-header/code-header'; // Componente code-header (cabecera para los bloques de código)
+import { PRIMENG_IMPORTS } from '../../../shared/primeng.imports';
+import { MarkdownService } from '../../../services/markdown.service';
 import { MenuItem, MessageService, PrimeIcons } from 'primeng/api';
 import { Image } from 'primeng/image';
 
 // Importamos DomSanitizer para evitar que Angular elimine los estilos
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import { TemarioService } from '../../services/temario.service';
+import { TemarioService } from '../../../services/temario.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { ConfigService } from '../../services/config.service';
-import { Tema } from '../../models/temario.model';
+import { ConfigService } from '../../../services/config.service';
+import { Tema } from '../../../models/temario.model';
 
 @Component({
   selector: 'app-contenido',

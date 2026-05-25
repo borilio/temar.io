@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { PRIMENG_IMPORTS } from '../../shared/primeng.imports';
+import { PRIMENG_IMPORTS } from '../../../shared/primeng.imports';
 import { MenuItem, MessageService, PrimeIcons } from 'primeng/api';
-import { Config } from "../config/config";
-import { TemarioService } from '../../services/temario.service';
+import { TemarioService } from '../../../services/temario.service';
 import { RouterModule } from '@angular/router';
+import { Config } from '../config/config';
 
 @Component({
   selector: 'app-cabecera',

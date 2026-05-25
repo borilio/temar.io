@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Temas } from "../temas/temas";
-import { PRIMENG_IMPORTS } from '../../shared/primeng.imports';
-import { ConfigService } from '../../services/config.service';
+import { PRIMENG_IMPORTS } from '../../../shared/primeng.imports';
+import { ConfigService } from '../../../services/config.service';
 
 @Component({
   selector: 'app-config',

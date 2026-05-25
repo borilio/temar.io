@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Theme } from '../../models/config.model';
-import { ThemeService } from '../../services/theme.service';
-import { PRIMENG_IMPORTS } from '../../shared/primeng.imports';
+import { Theme } from '../../../models/config.model';
+import { ThemeService } from '../../../services/theme.service';
+import { PRIMENG_IMPORTS } from '../../../shared/primeng.imports';
 import { Subscription } from 'rxjs';
 
 @Component({

@@ -1,11 +1,11 @@
 import { Routes } from '@angular/router';
-import { Indice } from './components/indice/indice';
-import { Contenido } from './components/contenido/contenido';
-import { Config } from './components/config/config';
-import { Acercade } from './components/acercade/acercade';
-import { Enlaces } from './components/enlaces/enlaces';
-import { Cerrado } from './components/cerrado/cerrado';
 import { ExpirationGuard } from './guards/caducidad.guard';
+
+import { Indice } from './components/pages/indice/indice';
+import { Contenido } from './components/pages/contenido/contenido';
+import { Acercade } from './components/pages/acercade/acercade';
+import { Enlaces } from './components/pages/enlaces/enlaces';
+import { Cerrado } from './components/pages/cerrado/cerrado';
 
 export const routes: Routes = [
   // Ruta raíz ('/')

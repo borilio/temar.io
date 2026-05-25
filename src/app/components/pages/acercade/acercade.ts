@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
-import { PRIMENG_IMPORTS } from '../../shared/primeng.imports';
-import packageInfo from '../../../../package.json'; // Para leer los metadatos del package.json con la versión, fecha, nombre, etc.
-import { AppModel } from '../../models/app.model';
-import { Caducidad, Data } from '../../models/config.model';
-import { ConfigService } from '../../services/config.service';
+import { PRIMENG_IMPORTS } from '../../../shared/primeng.imports';
+import packageInfo from '../../../../../package.json'; // Para leer los metadatos del package.json con la versión, fecha, nombre, etc.
+import { AppModel } from '../../../models/app.model';
+import { Caducidad, Data } from '../../../models/config.model';
+import { ConfigService } from '../../../services/config.service';
 import { CommonModule } from '@angular/common';
 
 @Component({
