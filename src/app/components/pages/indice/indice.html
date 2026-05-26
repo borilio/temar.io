@@ -5,10 +5,10 @@
     <p-card>
         <h1 class="text-center">{{temario.tituloGeneral}}</h1>
         @if (temario.img) {
-            <img [src]="temario.img" class="my-4 img-fluid img-centrada" alt="Imagen general representativa del curso" />
+            <img [src]="temario.img" class="my-4 img-fluid img-centrada rounded-4" alt="Imagen general representativa del curso" />
         }
 
-        <p class="my-5">{{temario.descripcion}}</p>
+        <p class="my-5 permite-saltos">{{temario.descripcion}}</p>
 
         <div class="bloques-container">
 
