@@ -37,6 +37,8 @@ export interface Enlace {
     icon:        string;
     desc:        string;
     descLarga?:  string;
+    botonText?:  string;
+    botonIcon?:  string;
     href:        string;
     disabled?:   boolean;
 }

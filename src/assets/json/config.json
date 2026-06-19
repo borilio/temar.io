@@ -56,6 +56,14 @@
                 "href": "https://docs.google.com/document/d/1jPZfcXDulo9aGIQiA5WFM3Kk-hXhe5qtO1H-zMJSVfU/edit?tab=t.0"
             },
             {
+                "icon": "pi pi-folder-open",
+                "desc": "Ejercicios resueltos (con botón personalizado)",
+                "descLarga": "Carpeta externa con todos los ejercicios realizados en directo durante el curso",
+                "botonText": "Abrir en Google Docs",
+                "botonIcon": "pi pi-folder-open",
+                "href": "https://docs.google.com/document/d/1jPZfcXDulo9aGIQiA5WFM3Kk-hXhe5qtO1H-zMJSVfU/edit?tab=t.0"
+            },
+            {
                 "icon": "pi pi-discord",
                 "desc": "Acceso al servidor de Discord",
                 "href": "https://discord.com/"

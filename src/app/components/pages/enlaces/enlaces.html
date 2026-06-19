@@ -8,7 +8,7 @@
             <ng-template #header>
                 <tr>
                     <th colspan="2">Descripción</th>
-                    <th class="text-center">Enlace</th>
+                    <th class="text-center">Acción</th>
                 </tr>
             </ng-template>
 
@@ -26,8 +26,8 @@
                                 pRipple="true"
                                 class="p-button p-button-rounded p-button-primary p-component text-decoration-none"
                             >
-                                <span class="p-button-icon"><i class="pi pi-external-link"></i></span>                            
-                                <span class="p-button-label">Abrir</span>
+                                <span class="p-button-icon"><i [class]="enlace.botonIcon || 'pi pi-external-link'"></i></span>                            
+                                <span class="p-button-label">{{enlace.botonText || "Abrir"}}</span>
                             </a>
                         } @else {
                             <p-button 
