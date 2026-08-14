@@ -13,7 +13,7 @@
       "img": "",
       "emoji": "🪵",
       "icon": "pi pi-box",
-      "color": "",
+      "color": "color-mix(in srgb, var(--p-primary-500) 10%, transparent)",
       "expandible": true,
       "contraido": false,
       "habilitado": true,
