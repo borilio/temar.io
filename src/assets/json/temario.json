@@ -56,6 +56,19 @@
           "severity": "primary",
           "outlined": false,
           "habilitado": true
+        },
+        {
+          "id": "widgets",
+          "orden": 4,
+          "titulo": "Widgets",
+          "descripcion": "Documentación y ejemplos para ver widgets en funcionamiento y copiar su estructura",
+          "archivoMd": "widgets.md",
+          "img": "",
+          "emoji": "",
+          "icon": "pi pi-android",
+          "severity": "primary",
+          "outlined": false,
+          "habilitado": true
         }
       ]
     },
