@@ -1,8 +1,8 @@
 {
   "name": "Temar.io",
-  "version": "0.2.0b",
-  "codename": "thanelosio",
-  "date": "2026-05-25",
+  "version": "0.3.0b",
+  "codename": "jason",
+  "date": "2026-11-11",
   "scripts": {
     "ng": "ng",
     "curso": "node scripts/curso.mjs",
