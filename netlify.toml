@@ -1,0 +1,11 @@
+# Construcción del sitio del demo de la app en Netlify.
+# El repo de la app no lleva ningún curso enchufado (la carpeta "contenido"
+# está en .gitignore), así que primero se enchufa el curso demo y luego se construye.
+# (Netlify instala las dependencias por su cuenta al ver el package.json).
+
+[build]
+  command = "node scripts/curso.mjs demo && npx ng build"
+  publish = "dist/temar.io/browser"
+
+[build.environment]
+  NODE_VERSION = "22"          # la app pide Node ^22.16
