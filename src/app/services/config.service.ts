@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Caducidad, Config, Data, EnlacesExternos, Theme } from '../models/config.model';
 import { CONFIG } from '../shared/constantes';
+import { CATALOGO_TEMAS } from '../shared/temas';
 
 @Injectable({
   providedIn: 'root'
@@ -28,11 +29,36 @@ export class ConfigService {
   }
 
   /**
-   * Devuelve un array con los objetos Theme que hay disponibles
+   * Devuelve los temas que ofrece este curso: los del catálogo de la app (temas.ts)
+   * filtrados y ordenados según "temasDisponibles" del config.json.
+   * Si el curso no indica "temasDisponibles", devuelve el catálogo completo.
    * @returns Un array de Themes
    */
   getThemes(): Theme[] {
-    return CONFIG.themes;
+    const ids = CONFIG.temasDisponibles;
+    if (!ids || ids.length === 0) {
+      return CATALOGO_TEMAS;
+    }
+
+    const temas: Theme[] = [];
+    for (const id of ids) {
+      const tema = CATALOGO_TEMAS.find(t => t.id === id);
+      if (tema) {
+        temas.push(tema);
+      } else {
+        console.warn(`config.json > temasDisponibles: el tema "${id}" no existe en el catálogo (temas.ts)`);
+      }
+    }
+
+    // Si ningún id era válido, mejor ofrecer todos que dejar la app sin temas
+    return temas.length > 0 ? temas : CATALOGO_TEMAS;
+  }
+
+  /**
+   * Devuelve el nombre del curso (config.json > nombreCurso), o una cadena vacía si no hay
+   */
+  getNombreCurso(): string {
+    return CONFIG.nombreCurso?.trim() ?? '';
   }
 
   /**

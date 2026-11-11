@@ -1,10 +1,11 @@
 export interface Config {
+    nombreCurso?: string;           // Nombre del curso (p. ej. en la pestaña: "Temar.io - SQLite")
     preset: string;
     defaultThemeId: string;
+    temasDisponibles?: string[];    // Ids de los temas del catálogo que ofrece el curso (si no se indica, todos)
     mostrarLigadurasFuentes: boolean;
     devMode: boolean;
     data: Data;
-    themes: Theme[];
     enlacesExternos: EnlacesExternos;
     caducidad: Caducidad;
 }

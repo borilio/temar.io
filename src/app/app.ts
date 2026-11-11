@@ -1,5 +1,7 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
+import { Title } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
+import { ConfigService } from './services/config.service';
 import { Cabecera } from "./components/layout/cabecera/cabecera";
 import { Pie } from './components/layout/pie/pie';
 import { PRIMENG_IMPORTS } from './shared/primeng.imports';
@@ -19,8 +21,20 @@ export class App implements OnInit {
   protected readonly title = signal('temar.io');
 
 
+  private titleService = inject(Title);
+  private configService = inject(ConfigService);
+
   ngOnInit(): void {
     this.actualizarMetaThemeColor();
+    this.actualizarTituloPestana();
+  }
+
+  /**
+   * Pone el título de la pestaña: "Temar.io - {nombreCurso}", o "Temar.io" si el curso no tiene nombre
+   */
+  private actualizarTituloPestana(): void {
+    const nombre = this.configService.getNombreCurso();
+    this.titleService.setTitle(nombre ? `Temar.io - ${nombre}` : 'Temar.io');
   }
 
   /**

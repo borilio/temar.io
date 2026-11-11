@@ -6,6 +6,9 @@
 /out-tsc
 /bazel-out
 
+# Enlace al curso activo (se crea con "npm run curso")
+/contenido
+
 # Node
 /node_modules
 npm-debug.log

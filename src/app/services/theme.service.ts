@@ -13,15 +13,21 @@ export class ThemeService {
 
 
   constructor(private configService: ConfigService) {
-    // Obtenemos el tema por defecto que nos indica el servicio y lo ponemos como tema activo
-    const defaultTheme = this.getThemeById(this.configService.getFullConfig().defaultThemeId);
-    
+    // Obtenemos el tema por defecto del config.json. Si no existe o el curso no lo ofrece,
+    // usamos el primero de los temas disponibles
+    const defaultId = this.configService.getFullConfig().defaultThemeId;
+    let defaultTheme = this.getThemeById(defaultId);
+    if (!defaultTheme) {
+      defaultTheme = this.getAvailableThemes()[0];
+      console.warn(`config.json > defaultThemeId: "${defaultId}" no está entre los temas disponibles. Se usa "${defaultTheme.id}"`);
+    }
+
     // Inicializamos los observables del tema actual y el tema activo
-    this.activeTheme$ = new BehaviorSubject<Theme>(defaultTheme!);
+    this.activeTheme$ = new BehaviorSubject<Theme>(defaultTheme);
     this.currentTheme$ = this.activeTheme$.asObservable();
 
     // Aplica el tema inicial al arrancar
-    this.setTheme(this.configService.getFullConfig().defaultThemeId);
+    this.setTheme(defaultTheme.id);
 
   }
 

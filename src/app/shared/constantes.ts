@@ -1,5 +1,5 @@
-import configJson from "../../assets/json/config.json";
-import temarioJson from "../../assets/json/temario.json";
+import configJson from "../../../contenido/json/config.json";
+import temarioJson from "../../../contenido/json/temario.json";
 
 // Interfaces tipadas para manejar los archivos json
 import { Config } from "../models/config.model";

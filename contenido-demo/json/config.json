@@ -1,4 +1,5 @@
 {
+    "nombreCurso": "Demo",
     "preset": "MiPresetSky",
     "defaultThemeId": "typora",
     "mostrarLigadurasFuentes": true,
@@ -23,29 +24,6 @@
             }
         ]
     },
-    "themes": [
-        {
-            "id": "github-light",
-            "name": "GitHub Claro",
-            "baseMode": "light",
-            "markdownThemeFile": "github-markdown-light.css",
-            "highlightThemeFile": "github.css"
-        },
-        {
-            "id": "github-dark",
-            "name": "GitHub Oscuro",
-            "baseMode": "dark",
-            "markdownThemeFile": "github-markdown-dark.css",
-            "highlightThemeFile": "github-dark.css"
-        },
-        {
-            "id": "typora",
-            "name": "Typora",
-            "baseMode": "dark",
-            "markdownThemeFile": "github-markdown-darky.css",
-            "highlightThemeFile": "base16/dracula.css"
-        }
-    ],
     "enlacesExternos": {
         "texto": "Aquí se mostrarán todos los enlaces externos que usaremos durante el curso, tales como ejercicios, calendarios, plataforma educativa, plataforma de mensajería, etc.",
         "enlaces": [
@@ -72,7 +50,7 @@
                 "icon": "pi pi-ban",
                 "desc": "Ejemplo de enlace deshabilitado",
                 "descLarga": "Un enlace externo se mostrará deshabilitado cuando su href esté vacío o esté explícitamente deshabilitado",
-                "href" : "https://discord.com/",
+                "href": "https://discord.com/",
                 "disabled": true
             }
         ]
