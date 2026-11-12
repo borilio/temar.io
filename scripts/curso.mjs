@@ -6,6 +6,7 @@
 //   npm run curso ../cursos/sqlite      -> usa el curso que está en esa ruta
 //   npm run curso demo                  -> vuelve al curso demo (contenido-demo)
 //   npm run curso desenchufar           -> igual que "demo"
+//   npm run curso descargar             -> clona todos los cursos del listado que falten
 //   npm run curso ayuda                 -> muestra esta ayuda
 //
 // Los cursos salen de dos sitios: las carpetas de cursos/ y el archivo listado-cursos.mjs.
@@ -31,6 +32,7 @@ const archivoListado = path.join(carpetaScripts, 'listado-cursos.mjs');
 const archivosObligatorios = ['json/config.json', 'json/temario.json'];
 const palabrasDemo = ['demo', 'desenchufar'];
 const palabrasAyuda = ['ayuda', 'help'];
+const palabrasDescargar = ['descargar'];
 
 // ─── Colores de la terminal (se desactivan si no es una terminal real) ──────
 const conColor = process.stdout.isTTY && !process.env.NO_COLOR;
@@ -69,6 +71,7 @@ function mostrarAyuda() {
   npm run curso ${cian('<carpeta>')}          ${gris('enchufa cursos/<carpeta> (si está en el listado y no se ha descargado, ofrece clonarlo)')}
   npm run curso ${cian('<ruta>')}             ${gris('enchufa el curso de esa ruta (p. ej. ../cursos/sqlite)')}
   npm run curso demo               ${gris('vuelve al curso demo (también: desenchufar)')}
+  npm run curso descargar          ${gris('clona todos los cursos del listado que falten (no cambia el curso enchufado)')}
   npm run curso ayuda              ${gris('muestra esta ayuda')}
 
   ${gris('Listado de cursos para clonar: scripts/listado-cursos.mjs')}
@@ -195,39 +198,70 @@ function preguntarSiNo(pregunta) {
   });
 }
 
-// ─── Menú interactivo: devuelve el curso elegido (o null si se cancela) ─────
-async function menu() {
+// ─── Menú interactivo ────────────────────────────────────────────────────────
+// Dos grupos: los cursos que hay EN ESTE EQUIPO y los que están SOLO EN GITHUB
+// (en el listado, sin descargar). Si faltan cursos, al final hay una opción para
+// descargarlos todos.
+// Devuelve { tipo: 'curso', curso }, { tipo: 'descargar' } o null si se cancela.
+async function menu(conBanner = true) {
   const cursos = await listarCursos();
+  const locales = cursos.filter(curso => curso.descargado);
+  const remotos = cursos.filter(curso => !curso.descargado);
   const activo = rutaReal(enlace);
-  const indiceActivo = cursos.findIndex(curso => curso.descargado && rutaReal(curso.carpeta) === activo);
-  let seleccionado = Math.max(indiceActivo, 0);
+
+  // Líneas del menú (títulos, cursos, separadores y acciones). Solo cursos y acciones se pueden elegir.
+  const lineas = [{ tipo: 'titulo', texto: 'EN ESTE EQUIPO' }];
+  for (const curso of locales) lineas.push({ tipo: 'curso', curso });
+  lineas.push({ tipo: 'vacia' }, { tipo: 'titulo', texto: 'SOLO EN GITHUB (sin descargar)' });
+  if (remotos.length === 0) {
+    lineas.push({ tipo: 'aviso', texto: 'Sin elementos (todos los cursos de GitHub están descargados)' });
+  } else {
+    for (const curso of remotos) lineas.push({ tipo: 'curso', curso });
+    lineas.push({ tipo: 'vacia' }, { tipo: 'separador' });
+    lineas.push({ tipo: 'descargar', texto: `⬇ Descargar todos los de GitHub que faltan (${remotos.length})` });
+  }
+
+  const elegibles = lineas.map((linea, i) => i).filter(i => ['curso', 'descargar'].includes(lineas[i].tipo));
+  const posicionActivo = elegibles.findIndex(i => lineas[i].curso?.descargado && rutaReal(lineas[i].curso.carpeta) === activo);
+  let posicion = Math.max(posicionActivo, 0); // posición dentro de "elegibles"
 
   const anchoId = Math.max(...cursos.map(curso => curso.id.length));
   const anchoNombre = Math.max(...cursos.map(curso => curso.nombre.length));
 
-  mostrarBanner();
-  console.log(gris('  ↑↓ para moverte · Intro para enchufar · Esc para salir\n'));
-
-  const etiquetaDe = (curso, i) => {
-    if (i === indiceActivo) return verde(' ● activo');
-    if (!curso.descargado) return amarillo(' ⬇ sin descargar');
-    if (!curso.repo && curso.id !== 'demo') return gris(' solo local');
+  const etiquetaDe = (curso) => {
+    if (curso.descargado && rutaReal(curso.carpeta) === activo) return verde('● enchufado');
+    if (curso.descargado && !curso.repo && curso.id !== 'demo') return amarillo('⚠ no está en GitHub');
     return '';
   };
 
-  const pintarLista = (repintar) => {
-    if (repintar) process.stdout.write(`\x1b[${cursos.length}A`); // subimos el cursor al principio de la lista
-    cursos.forEach((curso, i) => {
-      const marcado = i === seleccionado;
-      const flecha = marcado ? cian('❯') : ' ';
-      const id = curso.id.padEnd(anchoId);
-      const nombre = curso.nombre.padEnd(anchoNombre);
-      process.stdout.write(`\x1b[2K  ${flecha} ${marcado ? cian(negrita(id)) : id}   ${gris(nombre)}${etiquetaDe(curso, i)}\n`);
+  const textoDe = (linea, marcado) => {
+    const flecha = marcado ? cian('❯') : ' ';
+    switch (linea.tipo) {
+      case 'titulo': return `  ${negrita(linea.texto)}`;
+      case 'vacia': return '';
+      case 'aviso': return gris(`    ${linea.texto}`);
+      case 'separador': return gris('  ' + '─'.repeat(anchoId + anchoNombre + 8));
+      case 'descargar': return `  ${flecha} ${marcado ? cian(negrita(linea.texto)) : amarillo(linea.texto)}`;
+      case 'curso': {
+        const id = linea.curso.id.padEnd(anchoId);
+        const nombre = linea.curso.nombre.padEnd(anchoNombre);
+        return `  ${flecha} ${marcado ? cian(negrita(id)) : id}   ${gris(nombre)}   ${etiquetaDe(linea.curso)}`;
+      }
+    }
+  };
+
+  const pintar = (repintar) => {
+    if (repintar) process.stdout.write(`\x1b[${lineas.length}A`); // subimos el cursor al principio del menú
+    lineas.forEach((linea, i) => {
+      process.stdout.write(`\x1b[2K${textoDe(linea, i === elegibles[posicion])}\n`);
     });
   };
 
+  if (conBanner) mostrarBanner();
+  else console.log();
+  console.log(gris('  ↑↓ para moverte · Intro para elegir · Esc para salir\n'));
   process.stdout.write('\x1b[?25l'); // ocultamos el cursor mientras se usa el menú
-  pintarLista(false);
+  pintar(false);
 
   return new Promise(resolve => {
     prepararTeclado();
@@ -235,8 +269,8 @@ async function menu() {
       if (!info) return;
       if (info.name === 'up' || info.name === 'down') {
         const paso = info.name === 'up' ? -1 : 1;
-        seleccionado = (seleccionado + paso + cursos.length) % cursos.length;
-        pintarLista(true);
+        posicion = (posicion + paso + elegibles.length) % elegibles.length;
+        pintar(true);
         return;
       }
       const elegir = info.name === 'return';
@@ -247,31 +281,61 @@ async function menu() {
       soltarTeclado();
       process.stdout.write('\x1b[?25h'); // volvemos a mostrar el cursor
       console.log();
-      resolve(elegir ? cursos[seleccionado] : null);
+      if (!elegir) return resolve(null);
+      const linea = lineas[elegibles[posicion]];
+      resolve(linea.tipo === 'descargar' ? { tipo: 'descargar' } : { tipo: 'curso', curso: linea.curso });
     };
     process.stdin.on('keypress', alPulsar);
   });
 }
 
 // ─── Clonar un curso del listado ─────────────────────────────────────────────
-function clonar(curso) {
+function comprobarGit() {
   if (spawnSync('git', ['--version'], { stdio: 'ignore' }).status !== 0) {
-    console.error(rojo('❌ No encuentro git instalado. No se puede clonar el curso.'));
+    console.error(rojo('❌ No encuentro git instalado. No se puede clonar ningún curso.'));
     process.exit(1);
   }
+}
 
+// Clona el curso. Devuelve true si todo fue bien (no termina el programa si falla).
+function clonar(curso) {
   console.log(gris(`\n  git clone ${curso.repo} ${curso.carpeta}\n`));
   const resultado = spawnSync('git', ['clone', curso.repo, curso.carpeta], { stdio: 'inherit' });
   if (resultado.status !== 0) {
-    console.error(rojo('\n❌ No se pudo clonar el curso (revisa la URL del repo y la conexión). No se ha cambiado el curso activo.'));
-    process.exit(1);
+    console.error(rojo(`\n❌ No se pudo clonar "${curso.id}" (revisa la URL del repo y la conexión).`));
+    return false;
+  }
+  if (!esCursoValido(curso.carpeta)) {
+    console.error(rojo(`\n❌ "${curso.id}" se ha clonado, pero no parece un curso: le faltan ${archivosObligatorios.join(' o ')}.`));
+    return false;
+  }
+  console.log(verde(`\n✅ Curso "${curso.id}" clonado.`));
+  return true;
+}
+
+// Clona todos los cursos del listado que no estén descargados (sin cambiar el curso enchufado).
+// Devuelve el número de cursos que dieron error.
+async function descargarTodos() {
+  const pendientes = (await listarCursos()).filter(curso => !curso.descargado);
+  const yaEstaban = (await leerListado()).length - pendientes.length;
+
+  if (pendientes.length === 0) {
+    console.log(verde(`✅ Todos los cursos del listado ya están descargados (${yaEstaban}).`));
+    return 0;
   }
 
-  if (!esCursoValido(curso.carpeta)) {
-    console.error(rojo(`\n❌ Clonado, pero no parece un curso: le faltan ${archivosObligatorios.join(' o ')}. No se ha cambiado el curso activo.`));
-    process.exit(1);
+  comprobarGit();
+  console.log(`Cursos por descargar: ${pendientes.map(curso => negrita(curso.id)).join(', ')}`);
+
+  let clonados = 0;
+  let errores = 0;
+  for (const curso of pendientes) {
+    if (clonar(curso)) clonados++;
+    else errores++;
   }
-  console.log(verde('\n✅ Curso clonado.'));
+
+  console.log(`\n${verde(`✅ ${clonados} clonados`)} · ${gris(`⏭ ${yaEstaban} ya estaban`)} · ${errores ? rojo(`❌ ${errores} con error`) : gris('❌ 0 con error')}`);
+  return errores;
 }
 
 // Si el curso no está descargado, pregunta si clonarlo (solo con terminal interactiva)
@@ -287,7 +351,11 @@ async function asegurarDescargado(curso) {
     console.log(gris('\n  Sin cambios.'));
     process.exit(0);
   }
-  clonar(curso);
+  comprobarGit();
+  if (!clonar(curso)) {
+    console.error(rojo('   No se ha cambiado el curso activo.'));
+    process.exit(1);
+  }
 }
 
 // ─── Enchufar: quita el enlace anterior y crea el nuevo ─────────────────────
@@ -324,17 +392,39 @@ const argumento = process.argv[2];
 if (argumento && palabrasAyuda.includes(argumento.toLowerCase())) {
   mostrarBanner();
   mostrarAyuda();
+} else if (argumento && palabrasDescargar.includes(argumento.toLowerCase())) {
+  const errores = await descargarTodos();
+  if (errores) process.exit(1);
 } else if (argumento) {
   const curso = await resolverArgumento(argumento);
   await asegurarDescargado(curso);
   enchufar(curso.carpeta);
 } else if (process.stdin.isTTY) {
-  const curso = await menu();
-  if (!curso) {
-    console.log(gris('  Sin cambios.'));
-  } else {
-    await asegurarDescargado(curso);
+  // El menú se repite mientras se descargan cursos; termina al enchufar uno o al salir (Esc)
+  let primeraVez = true;
+  while (true) {
+    const eleccion = await menu(primeraVez);
+    primeraVez = false;
+
+    if (!eleccion) {
+      console.log(gris('  Sin cambios.'));
+      break;
+    }
+    if (eleccion.tipo === 'descargar') {
+      await descargarTodos();
+      continue; // volvemos al menú: los cursos descargados ya salen en "EN ESTE EQUIPO"
+    }
+    const curso = eleccion.curso;
+    if (!curso.descargado) {
+      const clonarlo = await preguntarSiNo(`El curso ${negrita(curso.id)} no está descargado. ¿Clonarlo desde ${cian(curso.repo)}?`);
+      if (clonarlo) {
+        comprobarGit();
+        clonar(curso);
+      }
+      continue; // solo se descarga; para enchufarlo, se elige después en el menú
+    }
     enchufar(curso.carpeta);
+    break;
   }
 } else {
   // Sin terminal interactiva (p. ej. en Netlify) no se puede mostrar el menú
