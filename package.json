@@ -6,6 +6,7 @@
   "scripts": {
     "ng": "ng",
     "curso": "node scripts/curso.mjs",
+    "comprimir": "node scripts/comprimir.mjs",
     "start": "ng serve --open --host 0.0.0.0",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
