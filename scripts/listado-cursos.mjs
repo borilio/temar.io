@@ -19,6 +19,10 @@ export default [
     repo: 'https://github.com/borilio/curso-competencias-digitales.git',
   },
   {
+    carpeta: 'microsoft365',
+    repo: 'https://github.com/borilio/curso-microsoft365.git',
+  },
+  {
     carpeta: 'sqlite',
     repo: 'https://github.com/borilio/curso-sqlite.git',
   },
