@@ -23,6 +23,10 @@ export default [
     repo: 'https://github.com/borilio/curso-microsoft365.git',
   },
   {
+    carpeta: 'seguridad-informatica',
+    repo: 'https://github.com/borilio/curso-seguridad-informatica.git',
+  },
+  {
     carpeta: 'sqlite',
     repo: 'https://github.com/borilio/curso-sqlite.git',
   },
