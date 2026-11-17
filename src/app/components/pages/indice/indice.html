@@ -58,7 +58,7 @@
                                 @if (tema.img) {
                                     <img [src]="tema.img" [alt]="tema.titulo" />
                                 } @else if (tema.emoji) {
-                                    <i>{{ tema.emoji }}</i>
+                                    <span>{{ tema.emoji }}</span>
                                 } @else {
                                     <i [class]="tema.icon"></i>
                                 }
