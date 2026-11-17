@@ -33,18 +33,28 @@ export function mostrarBanner(subtitulo) {
   console.log(gris(`  ${subtitulo}\n`));
 }
 
-// ─── Pregunta de sí/no con una sola tecla (s / n; Esc = no) ─────────────────
+// ─── Teclado (lectura tecla a tecla) ─────────────────────────────────────────
 let tecladoPreparado = false;
 
+export function prepararTeclado() {
+  if (!tecladoPreparado) {
+    readline.emitKeypressEvents(process.stdin);
+    tecladoPreparado = true;
+  }
+  process.stdin.setRawMode(true);
+  process.stdin.resume();
+}
+
+export function soltarTeclado() {
+  process.stdin.setRawMode(false);
+  process.stdin.pause();
+}
+
+// ─── Pregunta de sí/no con una sola tecla (s / n; Esc = no) ─────────────────
 export function preguntarSiNo(pregunta) {
   return new Promise(resolve => {
     process.stdout.write(`${pregunta} ${gris('(s/n)')} `);
-    if (!tecladoPreparado) {
-      readline.emitKeypressEvents(process.stdin);
-      tecladoPreparado = true;
-    }
-    process.stdin.setRawMode(true);
-    process.stdin.resume();
+    prepararTeclado();
     const alPulsar = (_tecla, info) => {
       if (!info) return;
       const respuesta = info.name === 's' ? true
@@ -52,8 +62,7 @@ export function preguntarSiNo(pregunta) {
         : null;
       if (respuesta === null) return;
       process.stdin.off('keypress', alPulsar);
-      process.stdin.setRawMode(false);
-      process.stdin.pause();
+      soltarTeclado();
       console.log(respuesta ? 's' : 'n');
       resolve(respuesta);
     };

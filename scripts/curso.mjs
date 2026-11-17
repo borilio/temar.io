@@ -17,9 +17,12 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
-import readline from 'node:readline';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import {
+  mostrarBanner, preguntarSiNo, prepararTeclado, soltarTeclado,
+  cian, verde, amarillo, rojo, gris, negrita,
+} from './comun.mjs';
 
 // ─── Rutas (si cambia la estructura de carpetas, se ajusta aquí) ─────────────
 const carpetaScripts = path.dirname(fileURLToPath(import.meta.url));
@@ -34,36 +37,7 @@ const palabrasDemo = ['demo', 'desenchufar'];
 const palabrasAyuda = ['ayuda', 'help'];
 const palabrasDescargar = ['descargar'];
 
-// ─── Colores de la terminal (se desactivan si no es una terminal real) ──────
-const conColor = process.stdout.isTTY && !process.env.NO_COLOR;
-const color = (codigo) => (texto) => conColor ? `\x1b[${codigo}m${texto}\x1b[0m` : texto;
-const naranja = color('38;5;208');
-const cian = color('36');
-const verde = color('32');
-const amarillo = color('33');
-const rojo = color('31');
-const gris = color('90');
-const negrita = color('1');
-
-// ─── Banner ──────────────────────────────────────────────────────────────────
-const letras = [
-  [" _____ ", "|_   _|", "  | |  ", "  | |  ", "  |_|  "],           // T
-  ["      ", "  ___ ", " / _ \\", "|  __/", " \\___|"],               // e
-  ["           ", " _ __ ___  ", "| '_ ` _ \\ ", "| | | | | |", "|_| |_| |_|"], // m
-  ["       ", "  __ _ ", " / _` |", "| (_| |", " \\__,_|"],          // a
-  ["      ", " _ __ ", "| '__|", "| |   ", "|_|   "],               // r
-  ["    ", "    ", "    ", " _  ", "(_) "],                         // .
-  [" _ ", "(_)", "| |", "| |", "|_|"],                              // i
-  ["       ", "  ___  ", " / _ \\ ", "| (_) |", " \\___/ "],         // o
-];
-
-function mostrarBanner() {
-  console.log();
-  for (let fila = 0; fila < 5; fila++) {
-    console.log('  ' + naranja(letras.map(letra => letra[fila]).join('')));
-  }
-  console.log(gris('  Selector de cursos\n'));
-}
+const subtituloBanner = 'Selector de cursos';
 
 function mostrarAyuda() {
   console.log(`${negrita('Uso:')}
@@ -162,42 +136,6 @@ async function resolverArgumento(argumento) {
     ?? { id: argumento, carpeta: path.join(carpetaCursos, argumento), descargado: true };
 }
 
-// ─── Teclado ─────────────────────────────────────────────────────────────────
-let tecladoPreparado = false;
-function prepararTeclado() {
-  if (!tecladoPreparado) {
-    readline.emitKeypressEvents(process.stdin);
-    tecladoPreparado = true;
-  }
-  process.stdin.setRawMode(true);
-  process.stdin.resume();
-}
-
-function soltarTeclado() {
-  process.stdin.setRawMode(false);
-  process.stdin.pause();
-}
-
-// Pregunta de sí/no con una sola tecla (s / n; Esc = no)
-function preguntarSiNo(pregunta) {
-  return new Promise(resolve => {
-    process.stdout.write(`${pregunta} ${gris('(s/n)')} `);
-    prepararTeclado();
-    const alPulsar = (_tecla, info) => {
-      if (!info) return;
-      const respuesta = info.name === 's' ? true
-        : (info.name === 'n' || info.name === 'escape' || (info.ctrl && info.name === 'c')) ? false
-        : null;
-      if (respuesta === null) return;
-      process.stdin.off('keypress', alPulsar);
-      soltarTeclado();
-      console.log(respuesta ? 's' : 'n');
-      resolve(respuesta);
-    };
-    process.stdin.on('keypress', alPulsar);
-  });
-}
-
 // ─── Menú interactivo ────────────────────────────────────────────────────────
 // Dos grupos: los cursos que hay EN ESTE EQUIPO y los que están SOLO EN GITHUB
 // (en el listado, sin descargar). Si faltan cursos, al final hay una opción para
@@ -257,7 +195,7 @@ async function menu(conBanner = true) {
     });
   };
 
-  if (conBanner) mostrarBanner();
+  if (conBanner) mostrarBanner(subtituloBanner);
   else console.log();
   console.log(gris('  ↑↓ para moverte · Intro para elegir · Esc para salir\n'));
   process.stdout.write('\x1b[?25l'); // ocultamos el cursor mientras se usa el menú
@@ -390,7 +328,7 @@ function enchufar(destino) {
 const argumento = process.argv[2];
 
 if (argumento && palabrasAyuda.includes(argumento.toLowerCase())) {
-  mostrarBanner();
+  mostrarBanner(subtituloBanner);
   mostrarAyuda();
 } else if (argumento && palabrasDescargar.includes(argumento.toLowerCase())) {
   const errores = await descargarTodos();
