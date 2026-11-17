@@ -6,7 +6,7 @@ import { firstValueFrom } from 'rxjs';
 import MarkdownIt from 'markdown-it';
 
 // Plugins correctos
-import katex from 'markdown-it-katex';
+import katex from '@vscode/markdown-it-katex';
 import hljs from 'highlight.js';
 import githubAlerts from 'markdown-it-github-alerts';
 import markdownItHighlightjs from 'markdown-it-highlightjs';
