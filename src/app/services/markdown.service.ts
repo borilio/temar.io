@@ -3,7 +3,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
-import MarkdownIt from 'markdown-it';
+import MarkdownIt, { type MarkdownIt as Parser } from 'markdown-it';
 
 // Plugins correctos
 import katex from '@vscode/markdown-it-katex';
@@ -18,7 +18,7 @@ import attrs from 'markdown-it-attrs';
   providedIn: 'root'
 })
 export class MarkdownService {
-  private mdParser: MarkdownIt;
+  private mdParser: Parser;
   private retardoActivo: boolean = true;
 
   constructor(private http: HttpClient) {
