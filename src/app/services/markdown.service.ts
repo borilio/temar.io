@@ -13,15 +13,18 @@ import markdownItHighlightjs from 'markdown-it-highlightjs';
 import tocDoneRight from 'markdown-it-toc-done-right';
 import anchor from 'markdown-it-anchor';
 import attrs from 'markdown-it-attrs';
+import { ConfigService } from './config.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MarkdownService {
   private mdParser: Parser;
-  private retardoActivo: boolean = true;
+  private retardoActivo: boolean; // Se configura en config.json > retardoCarga (si no está, true)
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private configService: ConfigService) {
+    this.retardoActivo = this.configService.getRetardoCarga();
+
     // Creamos una función 'slugify' consistente para crear los enlaces ancla a las secciones del documento
     // Convierte espacios a guiones y luego codifica de forma segura CUALQUIER caracter restante.
     const slugify = (s: string) => encodeURIComponent(String(s).trim().toLowerCase().replace(/\s+/g, '-'));

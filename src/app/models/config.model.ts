@@ -5,6 +5,7 @@ export interface Config {
     temasDisponibles?: string[];    // Ids de los temas del catálogo que ofrece el curso (si no se indica, todos)
     mostrarLigadurasFuentes: boolean;
     devMode: boolean;
+    retardoCarga?: boolean;         // Pantalla de carga 2 s al abrir cada tema (si no se indica, true). false: carga al instante (cómodo al editar)
     data: Data;
     enlacesExternos: EnlacesExternos;
     caducidad: Caducidad;

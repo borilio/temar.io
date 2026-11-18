@@ -62,6 +62,14 @@ export class ConfigService {
   }
 
   /**
+   * Retardo artificial al cargar cada tema, para lucir la pantalla de carga (config.json > retardoCarga).
+   * Si el curso no lo indica, true.
+   */
+  getRetardoCarga(): boolean {
+    return CONFIG.retardoCarga ?? true;
+  }
+
+  /**
    * Devuelve el objeto EnlacesExternos. Contiene un array con los enlaces
    * externos que se usarán en el curso. 
    * @returns El objeto EnlacesExternos

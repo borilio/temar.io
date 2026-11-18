@@ -13,6 +13,9 @@ import { Subscription } from 'rxjs';
 import { ConfigService } from '../../../services/config.service';
 import { Tema } from '../../../models/temario.model';
 
+// Clave en sessionStorage donde se guarda el tema y la posición del scroll antes de recargar
+const CLAVE_SCROLL = 'temario-scroll';
+
 @Component({
   selector: 'app-contenido',
   imports: [PRIMENG_IMPORTS],
@@ -44,6 +47,9 @@ export class Contenido implements OnInit {
 
   // SpeedDial
   public speedDialItems: MenuItem[] = []; // Propiedad para los items del Speed Dial
+
+  // Al recargar la página (al guardar el .md con "npm start", o con F5) se vuelve a donde se estaba
+  private scrollRestaurado = false; // solo se intenta en la primera carga tras recargar
 
   constructor(
     private markdownService: MarkdownService,
@@ -228,6 +234,7 @@ export class Contenido implements OnInit {
           this.mejorarBloquesDeCodigo(); // Mejora los bloques de código del HTML generado original
           this.extraerTocParaDrawer(); // Extrae el TOC y lo coloca en el drawer lateral
           this.transformarImagenesPreview();
+          this.restaurarScrollTrasRecarga(id); // Si venimos de recargar la página, vuelve a donde se estaba
         }, 0);
 
       })
@@ -246,6 +253,42 @@ export class Contenido implements OnInit {
         );
       }
       );
+  }
+
+  /** Justo antes de recargar la página, guardamos el tema actual y la posición del scroll */
+  @HostListener('window:pagehide')
+  guardarScroll(): void {
+    if (!this.temaActual) return;
+    try {
+      sessionStorage.setItem(CLAVE_SCROLL, JSON.stringify({ id: this.temaActual.id, y: window.scrollY }));
+    } catch { /* si el navegador no deja usar sessionStorage, no pasa nada */ }
+  }
+
+  /** Si la página viene de una recarga y es el mismo tema, vuelve a la posición guardada */
+  private restaurarScrollTrasRecarga(id: string): void {
+    if (this.scrollRestaurado) return;
+    this.scrollRestaurado = true;
+
+    let guardado: { id: string; y: number } | null = null;
+    try {
+      guardado = JSON.parse(sessionStorage.getItem(CLAVE_SCROLL) ?? 'null');
+      sessionStorage.removeItem(CLAVE_SCROLL);
+    } catch { return; }
+
+    const navegacion = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming | undefined;
+    if (!guardado || guardado.id !== id || navegacion?.type !== 'reload') return;
+
+    // Esperamos a que carguen las imágenes (si no, la página aún es más corta), como mucho 3 segundos,
+    // y a que se pinte el siguiente fotograma (las cabeceras de los bloques de código se pintan después)
+    const imagenes: HTMLImageElement[] = Array.from(this.elementRef.nativeElement.querySelectorAll('.markdown-body img'));
+    const cargadas = imagenes.map(img => img.complete ? Promise.resolve() : new Promise(fin => {
+      img.addEventListener('load', fin, { once: true });
+      img.addEventListener('error', fin, { once: true });
+    }));
+    const limite = new Promise(fin => setTimeout(fin, 3000));
+    const y = guardado.y;
+    Promise.race([Promise.all(cargadas), limite])
+      .then(() => requestAnimationFrame(() => window.scrollTo({ top: y, behavior: 'instant' })));
   }
 
   /**
