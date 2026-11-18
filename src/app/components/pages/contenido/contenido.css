@@ -38,3 +38,54 @@
   justify-content: center;
   padding: 1.5rem;
 }
+/* Pantallas fijas en lugar del .md: tema en construcción, no disponible o que no existe */
+.aviso-tema {
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+/* Botón "Volver al índice" de las pantallas "no existe" y "no disponible" */
+.volver-indice {
+  display: flex;
+  justify-content: center;
+  margin-top: 1.5rem;
+}
+
+/* Pantalla "en construcción": imagen arriba y aviso centrado debajo */
+.imagen-construccion {
+  display: block;
+  width: 100%;
+  border-radius: 1rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 10px 30px rgb(0 0 0 / 0.25);
+}
+
+/* El texto del p-message solo ocupa lo que mide: lo estiramos para poder centrarlo */
+.mensaje-construccion .p-message-text {
+  flex: 1;
+}
+
+.contenido-construccion {
+  width: 100%;
+  text-align: center;
+  padding: 0.5rem 0;
+}
+
+.icono-construccion {
+  display: block;
+  font-size: 2.5rem;
+  line-height: 1;
+  margin-bottom: 0.5rem;
+}
+
+.titulo-construccion {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+}
+
+.texto-construccion {
+  font-weight: 400;
+  margin-bottom: 0.25rem;
+}

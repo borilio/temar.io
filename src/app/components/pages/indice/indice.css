@@ -47,6 +47,13 @@
 .boton-contenido {
   display: flex;
   align-items: center;
+  width: 100%;
+}
+
+/* Etiqueta "🚧 En construcción" a la derecha del botón del tema */
+.etiqueta-construccion {
+  margin-left: auto;
+  padding-left: 0.75rem;
 }
 
 /* Para centrar las imágenes */

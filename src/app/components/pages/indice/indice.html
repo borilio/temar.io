@@ -12,7 +12,7 @@
 
         <div class="bloques-container">
 
-            @for (bloque of temario.bloques; track bloque.id) {
+            @for (bloque of bloques; track bloque.id) {
 
             <p-panel 
                 [showHeader]="bloque.mostrarTitulo" 
@@ -50,8 +50,8 @@
                             [title]="tema.descripcion"
                             [severity]="$any(tema.severity || 'primary')"
                             [outlined]="tema.outlined ?? true"
-                            [disabled]="!tema.habilitado"
-                            [routerLink]="!tema.habilitado ? null : ['/tema', tema.id]"
+                            [disabled]="!habilitado(bloque, tema)"
+                            [routerLink]="!habilitado(bloque, tema) ? null : ['/tema', tema.id]"
                             raised="true">
                             <div class="boton-contenido">
                                 <!-- Usamos en orden img o emoji o icon -->
@@ -63,6 +63,9 @@
                                     <i [class]="tema.icon"></i>
                                 }
                                 <span class="p-button-label ms-2">{{ tema.titulo }}</span>
+                                @if (enConstruccion(bloque, tema)) {
+                                    <p-tag severity="warn" value="🚧 En construcción" class="etiqueta-construccion" />
+                                }
                             </div>
                         </p-button>
                     }

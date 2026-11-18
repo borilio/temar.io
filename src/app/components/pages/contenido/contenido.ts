@@ -7,7 +7,7 @@ import { Image } from 'primeng/image';
 
 // Importamos DomSanitizer para evitar que Angular elimine los estilos
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import { TemarioService } from '../../../services/temario.service';
+import { EstadoTema, TemarioService } from '../../../services/temario.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { ConfigService } from '../../../services/config.service';
@@ -37,6 +37,7 @@ export class Contenido implements OnInit {
 
   // Para la navegación, tener info del tema actual, siguiente y anterior
   public temaActual: Tema | undefined;
+  public estadoTema: EstadoTema = 'normal'; // normal (su .md), construccion o noDisponible (pantallas fijas), noExiste
   public temaSiguiente: Tema | null = null;
   public temaAnterior: Tema | null = null;
 
@@ -189,6 +190,11 @@ export class Contenido implements OnInit {
     }
   }
 
+  /** Vuelve al índice (desde las pantallas de "no existe" y "no disponible") */
+  public volverAlIndice() {
+    this.router.navigate(["/"]);
+  }
+
   /**
    * Método que inicia la acción de ir al anterior contenido
    */
@@ -204,6 +210,17 @@ export class Contenido implements OnInit {
     this.cargandoContenido = true;
     this.hayError = false;
     this.anclasTocArregladas = false; // Para que se vuelva a arreglar las anclas del nuevo contenido
+
+    // Si el tema no existe, no está disponible o está en construcción, no se descarga su .md:
+    // se muestra la pantalla fija que corresponda (ver contenido.html)
+    this.estadoTema = this.temarioService.getEstadoTema(id);
+    if (this.estadoTema !== 'normal') {
+      this.contenidoHTML = "";
+      this.tocHTML = "";
+      this.hayError = this.estadoTema === 'noExiste';
+      this.cargandoContenido = false;
+      return;
+    }
 
     // Obtenemos el nombre del archivo md que tenemos que cargar
     const archivoMd = this.temarioService.getTemaById(id)?.archivoMd;
