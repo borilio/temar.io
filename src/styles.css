@@ -47,3 +47,23 @@ body {
   );
   color: var(--p-primary-color-text, #fff);
 }
+/* Botones flotantes (índice lateral y volver arriba): fondo translúcido del color del tema
+   y el icono del mismo color que los de la barra de navegación (oscuro en claro, claro en oscuro) */
+.p-button.boton-acrilico {
+  background-color: color-mix(in srgb, var(--p-primary-500) 30%, transparent);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid var(--p-primary-500);
+  color: var(--p-primary-700);
+}
+.p-button.boton-acrilico:not(:disabled):hover {
+  background-color: color-mix(in srgb, var(--p-primary-500) 45%, transparent);
+  border-color: var(--p-primary-500);
+  color: var(--p-primary-800);
+}
+html.dark-mode .p-button.boton-acrilico {
+  color: var(--p-primary-300);
+}
+html.dark-mode .p-button.boton-acrilico:not(:disabled):hover {
+  color: var(--p-primary-200);
+}

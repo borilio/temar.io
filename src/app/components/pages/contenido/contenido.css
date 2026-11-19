@@ -17,27 +17,275 @@
   z-index: 1000;
 }
 
-.acrilico {
-  background-color: color-mix(in srgb, var(--p-primary-500) 30%, transparent);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid var(--p-primary-500, #fff);
-}
 
+/* Cabecera del tema: bloque (pequeño), título y debajo la fila de navegación */
 .cabecera-temario {
-  padding: 1.5rem;
-  text-align: center; 
-  font-size: 2.5rem; 
-  display: inline-block; 
   width: 100%;
+  padding: 1.5rem;
+  text-align: center;
 }
 
+.cabecera-bloque {
+  display: block;
+  font-size: 0.95rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.85;
+  margin-bottom: 0.25rem;
+}
+
+.cabecera-titulo {
+  font-size: 2.5rem;
+  margin: 0 0 1rem;
+}
+
+/* Pie del tema */
 .navegacion-temario {
-  display: flex;
-  gap: 1rem;
-  justify-content: center;
   padding: 1.5rem;
 }
+
+/* Fila de navegación (cabecera y pie): anterior a la izquierda y siguiente a la derecha.
+   Si no caben los dos (móvil), el siguiente baja debajo */
+.fila-navegacion {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+/* ─── Patrones decorativos de la cabecera y el pie (encima del degradado) ───
+   Se pintan en un ::before con blanco translúcido, así que van con el color de cualquier curso.
+   Cada tema tiene siempre el mismo patrón y la misma esquina: los calcula contenido.ts a partir del id
+   del tema (clases patron-a … patron-n y esquina-0 … esquina-3).
+   Todos están dibujados naciendo de la esquina superior derecha; las otras esquinas se consiguen volteándolos */
+.con-patron {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+.con-patron::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* Esquinas: 0 = superior derecha (como están dibujados), 1 = superior izquierda, 2 = inferior derecha, 3 = inferior izquierda */
+.esquina-1::before { transform: scaleX(-1); }
+.esquina-2::before { transform: scaleY(-1); }
+.esquina-3::before { transform: scale(-1, -1); }
+
+/* A. Puntos: rejilla de puntitos que nace en la esquina superior derecha */
+.patron-a::before {
+  background-image: radial-gradient(rgb(255 255 255 / 0.4) 1.5px, transparent 1.75px);
+  background-size: 18px 18px;
+  -webkit-mask-image: radial-gradient(circle at 100% 0%, #000 0%, transparent 65%);
+  mask-image: radial-gradient(circle at 100% 0%, #000 0%, transparent 65%);
+}
+
+/* B. Cuadrícula de plano: líneas finas tipo papel milimetrado */
+.patron-b::before {
+  background-image:
+    linear-gradient(rgb(255 255 255 / 0.18) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(255 255 255 / 0.18) 1px, transparent 1px);
+  background-size: 24px 24px;
+  -webkit-mask-image: radial-gradient(circle at 100% 0%, #000 0%, transparent 70%);
+  mask-image: radial-gradient(circle at 100% 0%, #000 0%, transparent 70%);
+}
+
+/* C. Ondas: círculos concéntricos que salen de la esquina superior derecha */
+.patron-c::before {
+  background-image: repeating-radial-gradient(circle at 100% 0%, transparent 0 22px, rgb(255 255 255 / 0.16) 22px 24px);
+  -webkit-mask-image: radial-gradient(circle at 100% 0%, #000 0%, transparent 70%);
+  mask-image: radial-gradient(circle at 100% 0%, #000 0%, transparent 70%);
+}
+
+/* D. Aurora: manchas de luz difuminadas en tonos del tema */
+.patron-d::before {
+  background-image:
+    radial-gradient(circle at 85% 0%, color-mix(in srgb, var(--p-primary-200) 55%, transparent), transparent 45%),
+    radial-gradient(circle at 5% 100%, color-mix(in srgb, var(--p-primary-950) 45%, transparent), transparent 50%),
+    radial-gradient(circle at 55% 130%, rgb(255 255 255 / 0.18), transparent 40%);
+}
+
+/* E. Diagonales: rayas finas en diagonal en la esquina superior derecha */
+.patron-e::before {
+  background-image: repeating-linear-gradient(45deg, rgb(255 255 255 / 0.16) 0 2px, transparent 2px 14px);
+  -webkit-mask-image: linear-gradient(225deg, #000 0%, transparent 45%);
+  mask-image: linear-gradient(225deg, #000 0%, transparent 45%);
+}
+
+/* F. Rombos: celosía de líneas cruzadas en diagonal */
+.patron-f::before {
+  background-image:
+    repeating-linear-gradient(45deg, rgb(255 255 255 / 0.14) 0 1px, transparent 1px 20px),
+    repeating-linear-gradient(-45deg, rgb(255 255 255 / 0.14) 0 1px, transparent 1px 20px);
+  -webkit-mask-image: radial-gradient(circle at 100% 0%, #000 0%, transparent 65%);
+  mask-image: radial-gradient(circle at 100% 0%, #000 0%, transparent 65%);
+}
+
+/* G. Zigzag: franjas en zigzag */
+.patron-g::before {
+  background:
+    linear-gradient(135deg, rgb(255 255 255 / 0.13) 25%, transparent 25%) -12px 0 / 24px 24px,
+    linear-gradient(225deg, rgb(255 255 255 / 0.13) 25%, transparent 25%) -12px 0 / 24px 24px,
+    linear-gradient(315deg, rgb(255 255 255 / 0.13) 25%, transparent 25%) 0 0 / 24px 24px,
+    linear-gradient(45deg, rgb(255 255 255 / 0.13) 25%, transparent 25%) 0 0 / 24px 24px;
+  -webkit-mask-image: radial-gradient(circle at 100% 0%, #000 0%, transparent 60%);
+  mask-image: radial-gradient(circle at 100% 0%, #000 0%, transparent 60%);
+}
+
+/* H. Líneas de escaneo: rayas horizontales finas, como una pantalla antigua */
+.patron-h::before {
+  background-image: repeating-linear-gradient(0deg, rgb(255 255 255 / 0.12) 0 1px, transparent 1px 6px);
+  -webkit-mask-image: linear-gradient(240deg, #000 0%, transparent 55%);
+  mask-image: linear-gradient(240deg, #000 0%, transparent 55%);
+}
+
+/* I. Burbujas: círculos de distintos tamaños, solo el contorno */
+.patron-i::before {
+  background-image:
+    radial-gradient(circle at 92% 20%, transparent 38px, rgb(255 255 255 / 0.22) 39px 41px, transparent 42px),
+    radial-gradient(circle at 80% 75%, transparent 18px, rgb(255 255 255 / 0.18) 19px 21px, transparent 22px),
+    radial-gradient(circle at 70% 10%, transparent 10px, rgb(255 255 255 / 0.2) 11px 12px, transparent 13px),
+    radial-gradient(circle at 98% 85%, transparent 60px, rgb(255 255 255 / 0.12) 61px 63px, transparent 64px),
+    radial-gradient(circle at 62% 55%, rgb(255 255 255 / 0.15) 0 5px, transparent 6px);
+}
+
+/* J. Rayos: haces de luz que salen de la esquina */
+.patron-j::before {
+  background-image: repeating-conic-gradient(from 180deg at 100% 0%, rgb(255 255 255 / 0.12) 0deg 3deg, transparent 3deg 12deg);
+  -webkit-mask-image: radial-gradient(circle at 100% 0%, #000 0%, transparent 75%);
+  mask-image: radial-gradient(circle at 100% 0%, #000 0%, transparent 75%);
+}
+
+/* K. Panal: hexágonos (SVG) */
+.patron-k::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='49'%3E%3Cpath fill='white' fill-opacity='0.14' d='M13.99 9.25l13 7.5v15l-13 7.5L1 31.75v-15l12.99-7.5zM3 17.9v12.7l10.99 6.34 11-6.35V17.9l-11-6.34L3 17.9zM0 15l12.98-7.5V0h-2v6.35L0 12.69v2.3zm0 18.5L12.98 41v8h-2v-6.85L0 35.81v-2.3zM15 0v7.5L27.99 15H28v-2.31h-.01L17 6.35V0h-2zm0 49v-8l12.99-7.5H28v2.31h-.01L17 42.15V49h-2z'/%3E%3C/svg%3E");
+  -webkit-mask-image: radial-gradient(circle at 100% 0%, #000 0%, transparent 65%);
+  mask-image: radial-gradient(circle at 100% 0%, #000 0%, transparent 65%);
+}
+
+/* L. Cruces: pequeños signos + repartidos (SVG) */
+.patron-l::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='26' height='26'%3E%3Cpath d='M13 8v10M8 13h10' stroke='white' stroke-opacity='0.28' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+  -webkit-mask-image: radial-gradient(circle at 100% 0%, #000 0%, transparent 65%);
+  mask-image: radial-gradient(circle at 100% 0%, #000 0%, transparent 65%);
+}
+
+/* M. Binario: ceros y unos (SVG) */
+.patron-m::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='72' height='36'%3E%3Cg fill='white' fill-opacity='0.2' font-family='Consolas,monospace' font-size='12'%3E%3Ctext x='2' y='14'%3E1 0 1 1 0%3C/text%3E%3Ctext x='8' y='32'%3E0 1 0 0 1%3C/text%3E%3C/g%3E%3C/svg%3E");
+  -webkit-mask-image: radial-gradient(circle at 100% 0%, #000 0%, transparent 65%);
+  mask-image: radial-gradient(circle at 100% 0%, #000 0%, transparent 65%);
+}
+
+/* El binario no se voltea (los números saldrían en espejo): se mueve la zona visible a la otra esquina */
+.patron-m.esquina-1::before,
+.patron-m.esquina-2::before,
+.patron-m.esquina-3::before { transform: none; }
+.patron-m.esquina-1::before { -webkit-mask-image: radial-gradient(circle at 0% 0%, #000 0%, transparent 65%); mask-image: radial-gradient(circle at 0% 0%, #000 0%, transparent 65%); }
+.patron-m.esquina-2::before { -webkit-mask-image: radial-gradient(circle at 100% 100%, #000 0%, transparent 65%); mask-image: radial-gradient(circle at 100% 100%, #000 0%, transparent 65%); }
+.patron-m.esquina-3::before { -webkit-mask-image: radial-gradient(circle at 0% 100%, #000 0%, transparent 65%); mask-image: radial-gradient(circle at 0% 100%, #000 0%, transparent 65%); }
+
+/* N. Tablero: cuadros alternos muy suaves */
+.patron-n::before {
+  background: conic-gradient(rgb(255 255 255 / 0.09) 25%, transparent 0 50%, rgb(255 255 255 / 0.09) 0 75%, transparent 0) 0 0 / 28px 28px;
+  -webkit-mask-image: radial-gradient(circle at 100% 0%, #000 0%, transparent 60%);
+  mask-image: radial-gradient(circle at 100% 0%, #000 0%, transparent 60%);
+}
+
+/* En pantallas pequeñas (móvil), los botones de navegación solo muestran la flecha, sin el título */
+@media (max-width: 576px) {
+  .fila-navegacion {
+    flex-wrap: nowrap;
+  }
+  .boton-navegacion .p-button-label {
+    display: none;
+  }
+  .boton-navegacion .p-button {
+    padding: 0.5rem 0.75rem;
+    font-size: 1.25rem;
+  }
+}
+
+/* ─── Estilos del botón de navegación (sobre el degradado del color del tema) ───
+   Se elige con estiloNavegacion en contenido.ts ('a' … 'e'). En uso: D */
+.boton-navegacion .p-button {
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
+}
+
+/* A. Blanco relleno, con el texto del color del tema */
+.estilo-a .p-button {
+  background: #fff;
+  border-color: #fff;
+  color: var(--p-primary-700);
+  border-radius: 999px;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 0.2);
+}
+.estilo-a .p-button:not(:disabled):hover {
+  background: var(--p-primary-50);
+  border-color: var(--p-primary-50);
+  color: var(--p-primary-800);
+}
+
+/* B. Con borde: borde y texto blancos, fondo transparente */
+.estilo-b .p-button {
+  background: transparent;
+  border: 1px solid rgb(255 255 255 / 0.8);
+  color: inherit;
+  border-radius: 999px;
+}
+.estilo-b .p-button:not(:disabled):hover {
+  background: rgb(255 255 255 / 0.15);
+  border-color: #fff;
+  color: inherit;
+}
+
+/* C. Enlace: solo texto y flecha, sin caja; se subraya al pasar el ratón */
+.estilo-c .p-button {
+  background: transparent;
+  border-color: transparent;
+  color: inherit;
+  padding-inline: 0.25rem;
+}
+.estilo-c .p-button:not(:disabled):hover {
+  background: transparent;
+  border-color: transparent;
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 0.25rem;
+}
+
+/* D. Enlace limpio en reposo; al pasar el ratón, una cápsula translúcida (sin subrayado) */
+.estilo-d .p-button {
+  background: transparent;
+  border: 1px solid transparent;
+  color: inherit;
+  border-radius: 999px;
+}
+.estilo-d .p-button:not(:disabled):hover {
+  background: rgb(255 255 255 / 0.18);
+  border-color: rgb(255 255 255 / 0.3);
+  color: inherit;
+}
+
+/* E. Cristal: translúcido con borde fino, a juego con la barra de navegación */
+.estilo-e .p-button {
+  background: rgb(255 255 255 / 0.15);
+  border: 1px solid rgb(255 255 255 / 0.35);
+  color: inherit;
+  border-radius: 999px;
+  backdrop-filter: blur(8px);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.4), 0 2px 8px rgb(0 0 0 / 0.15);
+}
+.estilo-e .p-button:not(:disabled):hover {
+  background: rgb(255 255 255 / 0.25);
+  border-color: rgb(255 255 255 / 0.5);
+  color: inherit;
+}
+
 /* Pantallas fijas en lugar del .md: tema en construcción, no disponible o que no existe */
 .aviso-tema {
   max-width: 900px;

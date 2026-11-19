@@ -142,6 +142,16 @@ export class TemarioService {
   }
 
   /**
+   * Título del bloque del tema para la cabecera, solo si aporta algo: null si el curso tiene
+   * un único bloque visible o si el bloque oculta su título en el índice (mostrarTitulo: false).
+   */
+  public getBloqueParaCabecera(id: string): string | null {
+    const bloque = this.getBloqueDeTema(id);
+    if (!bloque || !bloque.mostrarTitulo) return null;
+    return this.getBloquesVisibles().length > 1 ? bloque.titulo : null;
+  }
+
+  /**
    * Obtiene el siguiente tema disponible (salta los deshabilitados y los ocultos).
    * Devuelve null si no hay tema siguiente.
    */

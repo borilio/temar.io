@@ -32,8 +32,44 @@
     } @else {
     <!-- ******* Si todo fue bien y ya tenemos los contenidos *******-->
     <!-- Cabecera automática de los contenidos -->
-    <div class="cabecera-temario degradado">
-        <p>{{temaActual?.titulo}}</p>
+    <!--
+        Botón de navegación entre temas (se usa en la cabecera y en el pie).
+        Parámetros: tema (anterior o siguiente), direccion ('anterior' | 'siguiente') y estilo (letra del estilo del botón)
+    -->
+    <ng-template #botonNavegacion let-tema="tema" let-direccion="direccion" let-estilo="estilo">
+        <span [class]="'boton-navegacion estilo-' + estilo">
+            <p-button
+                [label]="tema.titulo"
+                [icon]="direccion === 'anterior' ? 'pi pi-angle-left' : 'pi pi-angle-right'"
+                [iconPos]="direccion === 'anterior' ? 'left' : 'right'"
+                [pTooltip]="direccion === 'anterior' ? 'Tema anterior' : 'Tema siguiente'"
+                tooltipPosition="top"
+                (onClick)="direccion === 'anterior' ? irAnterior() : irSiguiente()"
+            />
+        </span>
+    </ng-template>
+
+    <!-- Fila con el botón del tema anterior (izquierda) y el del siguiente (derecha) -->
+    <ng-template #filaNavegacion let-estilo="estilo">
+        <div class="fila-navegacion">
+            @if (temaAnterior) {
+            <ng-container *ngTemplateOutlet="botonNavegacion; context: { tema: temaAnterior, direccion: 'anterior', estilo: estilo }" />
+            } @else {
+            <span></span>
+            }
+            @if (temaSiguiente) {
+            <ng-container *ngTemplateOutlet="botonNavegacion; context: { tema: temaSiguiente, direccion: 'siguiente', estilo: estilo }" />
+            }
+        </div>
+    </ng-template>
+
+    <!-- Cabecera: bloque (si aporta), título y debajo la fila de navegación. Patrón decorativo propio de cada tema -->
+    <div class="cabecera-temario degradado" [class]="clasePatron">
+        @if (bloqueCabecera) {
+        <span class="cabecera-bloque">{{bloqueCabecera}}</span>
+        }
+        <p class="cabecera-titulo">{{temaActual?.titulo}}</p>
+        <ng-container *ngTemplateOutlet="filaNavegacion; context: { estilo: estiloNavegacion }" />
     </div>
     
     @if (estadoTema === 'construccion') {
@@ -66,28 +102,10 @@
     <div [innerHTML]="contenidoHTML" class="markdown-body" [class.disable-ligaduras]="!configService.mostrarLigaduras"></div>
     }
     
-    <!-- La navegación para siguiente y anterior -->
-    <div class="navegacion-temario degradado">
-        <p-button
-            icon="pi pi-angle-left"
-            severity="primary"            
-            rounded="true"
-            tooltipPosition="left"
-            [pTooltip]="temaAnterior?.titulo || 'No hay tema anterior'"
-            [disabled]="!temaAnterior"
-            (click)="irAnterior()"
-        ></p-button>
-            
-        <p-button
-            icon="pi pi-angle-right"
-            severity="primary"            
-            rounded="true"
-            tooltipPosition="right"
-            [pTooltip]="temaSiguiente?.titulo || 'No hay tema siguiente'"
-            [disabled]="!temaSiguiente"
-            (click)="irSiguiente()"
-        ></p-button>
-    </div>
+    <!-- Pie: la misma fila de navegación (también con las flechas ← → del teclado) -->
+    <nav class="navegacion-temario degradado" [class]="clasePatron" aria-label="Navegación entre temas">
+        <ng-container *ngTemplateOutlet="filaNavegacion; context: { estilo: estiloNavegacion }" />
+    </nav>
     
 
 }
@@ -96,20 +114,18 @@
 
 <!-- DE AQUÍ PARA ABAJO HAY ELEMENTOS VARIOS POSICIONADOS DE FORMA ABSOLUTA -->
 
-<!-- Botón flotante para mostrar TOC (o speeddial si hay más acciones) -->
-<!-- <p-button [hidden]="this.cargandoContenido || !tocHTML" icon="pi pi-list" pTooltip="Mostrar índice de contenidos"
-    tooltipPosition="right" severity="primary" outlined="true" rounded="true" class="boton-flotante"
-    (click)="this.mostrarDrawer = true" /> -->
-    <p-speeddial 
+<!-- Botón flotante para abrir el índice lateral (si el tema no tiene índice, muestra un aviso).
+     Si algún día hace falta más de una acción aquí, se puede volver a un p-speeddial -->
+    <p-button
         [hidden]="this.cargandoContenido"
-        [model]="speedDialItems" 
-        showIcon="pi pi-compass" 
-        direction="right"    
+        icon="pi pi-compass"
+        [rounded]="true"
+        styleClass="boton-acrilico"
         class="boton-flotante"
-        buttonClassName="acrilico"
-        [buttonProps]="{ severity: 'primary'}" 
-        [tooltipOptions]="{ tooltipPosition: 'top' }"
-    /> 
+        pTooltip="Índice (Ctrl+I)"
+        tooltipPosition="right"
+        (onClick)="abrirDrawer()"
+    />
 
 <!-- 
     Menú lateral (drawer) donde mostraremos el índice de contenidos TOC del tema 

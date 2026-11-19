@@ -2,13 +2,18 @@ import { Component, ElementRef, HostListener, OnInit, Renderer2, ViewContainerRe
 import { CodeHeader } from '../../layout/code-header/code-header'; // Componente code-header (cabecera para los bloques de código)
 import { PRIMENG_IMPORTS } from '../../../shared/primeng.imports';
 import { MarkdownService } from '../../../services/markdown.service';
-import { MenuItem, MessageService, PrimeIcons } from 'primeng/api';
+import { MessageService } from 'primeng/api';
 import { Image } from 'primeng/image';
 
 // Importamos DomSanitizer para evitar que Angular elimine los estilos
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { EstadoTema, TemarioService } from '../../../services/temario.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { NgTemplateOutlet } from '@angular/common';
+
+// Patrones decorativos de la cabecera y el pie (definidos en contenido.css: patron-a … patron-n)
+const PATRONES = 'abcdefghijklmn';
+const ESQUINAS = 4; // esquina-0 … esquina-3
 import { Subscription } from 'rxjs';
 import { ConfigService } from '../../../services/config.service';
 import { Tema } from '../../../models/temario.model';
@@ -18,7 +23,7 @@ const CLAVE_SCROLL = 'temario-scroll';
 
 @Component({
   selector: 'app-contenido',
-  imports: [PRIMENG_IMPORTS],
+  imports: [PRIMENG_IMPORTS, NgTemplateOutlet],
   providers: [MessageService],
   templateUrl: './contenido.html',
   styleUrls: [
@@ -40,14 +45,16 @@ export class Contenido implements OnInit {
   public estadoTema: EstadoTema = 'normal'; // normal (su .md), construccion o noDisponible (pantallas fijas), noExiste
   public temaSiguiente: Tema | null = null;
   public temaAnterior: Tema | null = null;
+  public bloqueCabecera: string | null = null; // Título del bloque en la cabecera (solo si aporta algo)
+  // Estilo de los botones anterior/siguiente (cabecera y pie), definidos en contenido.css:
+  // a = blanco relleno · b = con borde · c = enlace subrayado · d = enlace con cápsula al pasar el ratón · e = cristal
+  public estiloNavegacion = 'd';
+  public clasePatron = ''; // Patrón decorativo y esquina de la cabecera y el pie (siempre los mismos para cada tema)
 
   // TOC
   public mostrarDrawer: boolean; // Para mostrar el menú lateral con el TOC
   public tocHTML: SafeHtml;
   public anclasTocArregladas: boolean; // Las anclas del TOC se arreglan una vez, en el drawer onShow.
-
-  // SpeedDial
-  public speedDialItems: MenuItem[] = []; // Propiedad para los items del Speed Dial
 
   // Al recargar la página (al guardar el .md con "npm start", o con F5) se vuelve a donde se estaba
   private scrollRestaurado = false; // solo se intenta en la primera carga tras recargar
@@ -90,36 +97,13 @@ export class Contenido implements OnInit {
         this.temaActual = this.temarioService.getTemaById(id);
         this.temaAnterior = this.temarioService.getTemaAnterior(id);
         this.temaSiguiente = this.temarioService.getTemaSiguiente(id);
+        this.bloqueCabecera = this.temarioService.getBloqueParaCabecera(id);
+        this.clasePatron = this.calcularPatron(id);
 
         // Cargamos el contenido md de la id del tema que tenemos en la url
         this.cargarContenidoDelTema(id);
       }
     });
-
-    // Inicializamos los elementos del speeddial
-    this.speedDialItems = [
-      {
-        icon: PrimeIcons.LIST,
-        label: "Índice (control+i) ",
-        command: () => {
-          this.abrirDrawer();
-        }
-      },
-      {
-        icon: PrimeIcons.ANGLE_DOUBLE_LEFT,
-        label: "Anterior",
-        command: () => {
-          this.irAnterior();
-        }
-      },
-      {
-        icon: PrimeIcons.ANGLE_DOUBLE_RIGHT,
-        label: "Siguiente",
-        command: () => {
-          this.irSiguiente();
-        }
-      }
-    ];
   }
 
   /**
@@ -188,6 +172,21 @@ export class Contenido implements OnInit {
     if (this.temaSiguiente) {
       this.router.navigate(["/tema/", this.temaSiguiente.id]);
     }
+  }
+
+  /**
+   * Patrón decorativo y esquina de la cabecera y el pie, a partir del id del tema.
+   * El id no cambia nunca (es la URL), así que cada tema tiene siempre el mismo dibujo.
+   * Un "hash" sencillo del id: del mismo número sale el patrón (14) y la esquina (4).
+   */
+  private calcularPatron(id: string): string {
+    let hash = 0;
+    for (const caracter of id) {
+      hash = (hash * 31 + caracter.charCodeAt(0)) >>> 0; // >>> 0: se queda en un entero positivo
+    }
+    const patron = PATRONES[hash % PATRONES.length];
+    const esquina = Math.floor(hash / PATRONES.length) % ESQUINAS;
+    return `con-patron patron-${patron} esquina-${esquina}`;
   }
 
   /** Vuelve al índice (desde las pantallas de "no existe" y "no disponible") */
@@ -432,12 +431,36 @@ export class Contenido implements OnInit {
    * Método que captura los eventos de teclado al pulsar teclas. Si coincide las teclas pulsadas con nuestra combinación, lanzamos la función que queramos
    * @param evento Evento de teclado que recibe la función
    */
+  /** El foco está en un campo de texto (input, textarea, select o contenido editable) */
+  private escribiendoEnCampo(evento: KeyboardEvent): boolean {
+    const elemento = evento.target as HTMLElement | null;
+    return !!elemento && (['INPUT', 'TEXTAREA', 'SELECT'].includes(elemento.tagName) || elemento.isContentEditable);
+  }
+
+  /** Hay abierto el índice lateral, un diálogo (p. ej. la configuración o una imagen ampliada) o un desplegable */
+  private hayVentanaAbierta(): boolean {
+    return this.mostrarDrawer || !!document.querySelector('[role="dialog"], .p-select-overlay, .p-overlay');
+  }
+
   @HostListener("window:keydown", ["$event"])
   capturarEventoTeclado(evento: KeyboardEvent) {
     // Control + i
     if (evento.ctrlKey && evento.key.toLocaleLowerCase() === 'i') {
       evento.preventDefault();
       this.abrirDrawer();
+    }
+
+    // Flechas ← y → (sin teclas modificadoras): tema anterior y siguiente.
+    // No actúan si se está escribiendo en un campo (p. ej. un buscador) ni con Alt (atrás/adelante del navegador)
+    if (!evento.ctrlKey && !evento.altKey && !evento.metaKey && !evento.shiftKey
+        && !this.escribiendoEnCampo(evento) && !this.hayVentanaAbierta()) {
+      if (evento.key === 'ArrowLeft' && this.temaAnterior) {
+        evento.preventDefault();
+        this.irAnterior();
+      } else if (evento.key === 'ArrowRight' && this.temaSiguiente) {
+        evento.preventDefault();
+        this.irSiguiente();
+      }
     }
 
     // Puedes crear más eventos de teclado
