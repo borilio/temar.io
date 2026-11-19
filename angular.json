@@ -68,7 +68,10 @@
               "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"
             ],
             "allowedCommonJsDependencies": [
-              "bootstrap"
+              "bootstrap",
+              "@vscode/markdown-it-katex",
+              "markdown-it-highlightjs",
+              "markdown-it-attrs"
             ]
           },
           "configurations": {
@@ -76,13 +79,13 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "2MB",
+                  "maximumWarning": "4MB",
                   "maximumError": "5MB"
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "4kB",
-                  "maximumError": "8kB"
+                  "maximumWarning": "12kB",
+                  "maximumError": "20kB"
                 }
               ],
               "outputHashing": "all"

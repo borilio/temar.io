@@ -39,7 +39,9 @@ export class MarkdownService {
     // Usamos el plugin correcto para las alertas [!TIP]
     this.mdParser.use(githubAlerts);
 
-    // Usamos el plugin de highlight.js 
+    // Usamos el plugin de highlight.js
+    // "texto" y "url" no existen en highlight.js: se tratan como texto plano (sin colorear y sin aviso en consola)
+    hljs.registerAliases(['texto', 'url'], { languageName: 'plaintext' });
     this.mdParser.use(markdownItHighlightjs, { hljs });
 
     // Usamos el plugin katex para las fórmulas
