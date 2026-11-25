@@ -272,6 +272,13 @@ Aquí añadiremos estilos para forzar algunos estilos contenido html generado po
   font-weight: 600;
 }
 
+/* El resultado elegido con ↑ ↓ desde el buscador (Intro salta a él) */
+.indice-enlace.seleccionado {
+  outline: 2px solid color-mix(in srgb, var(--p-primary-500) 70%, transparent);
+  outline-offset: -2px;
+  background: color-mix(in srgb, var(--p-primary-500) 10%, transparent);
+}
+
 /* Lo que coincide con la búsqueda */
 .indice-enlace mark {
   background: color-mix(in srgb, var(--p-primary-500) 35%, transparent);

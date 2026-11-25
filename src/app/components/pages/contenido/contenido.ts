@@ -76,6 +76,9 @@ export class Contenido implements OnInit {
   public idActivo: string | null = null; // Apartado que se está leyendo ("Estás aquí")
   private titulosIndice: HTMLElement[] = []; // Los títulos del tema, en el mismo orden que entradasIndice
   private fotogramaScroll = 0;
+  private focoEnBuscador = false; // Al abrir el panel, poner el cursor en el buscador (solo si se abrió con Ctrl+I)
+  public seleccionIndice = 0; // Resultado elegido con ↑ ↓ en el buscador (Intro salta a él)
+  public buscadorConFoco = false; // La marca del resultado elegido solo se ve mientras se usa el buscador
   public pantallaAncha = false; // La pantalla es lo bastante ancha para el índice fijo
   private consultaAncho?: MediaQueryList;
   private alCambiarAncho = (evento: MediaQueryListEvent) => this.pantallaAncha = evento.matches;
@@ -176,9 +179,11 @@ export class Contenido implements OnInit {
   }
 
   /**
-   * Método que inicia la acción de abrir el drawer para mostrar el TOC
+   * Método que inicia la acción de abrir el drawer para mostrar el TOC.
+   * @param desdeTeclado true si se abre con Ctrl+I: entonces se pone el cursor en el buscador.
+   *   Con un clic o tocando la brújula no (en el móvil abriría el teclado y taparía el índice)
    */
-  public abrirDrawer() {
+  public abrirDrawer(desdeTeclado = false) {
     // Con el índice fijo a la vista, solo ponemos el cursor en su buscador
     if (this.indiceFijoVisible) {
       document.querySelector<HTMLInputElement>('.indice-fijo .indice-buscador input')?.focus();
@@ -186,6 +191,7 @@ export class Contenido implements OnInit {
     }
     //Si tiene TOC abrimos el drawer, si no mostramos el toast
     if (this.entradasIndice.length > 0) {
+      this.focoEnBuscador = desdeTeclado;
       this.mostrarDrawer = true;
     } else {
       this.messageService.add({
@@ -405,6 +411,7 @@ export class Contenido implements OnInit {
     this.titulosIndice = [];
     this.idActivo = null;
     this.filtroIndice = '';
+    this.seleccionIndice = 0;
   }
 
   /** Entradas que coinciden con el buscador (sin distinguir tildes ni mayúsculas) */
@@ -424,11 +431,17 @@ export class Contenido implements OnInit {
       + escaparHtml(texto.slice(posicion + filtro.length));
   }
 
-  /** Al abrir el panel del índice: buscador vacío y con el cursor, y la lista situada en el apartado que se está leyendo */
+  /**
+   * Al abrir el panel del índice: buscador vacío, la lista situada en el apartado que se está leyendo
+   * y el cursor en el buscador solo si se abrió con Ctrl+I
+   */
   public alAbrirIndice(): void {
     this.filtroIndice = '';
+    this.seleccionIndice = 0;
     setTimeout(() => {
-      document.querySelector<HTMLInputElement>('.drawer-indice .indice-buscador input')?.focus();
+      if (this.focoEnBuscador) {
+        document.querySelector<HTMLInputElement>('.drawer-indice .indice-buscador input')?.focus();
+      }
       document.querySelector('.drawer-indice .indice-enlace.activo')?.scrollIntoView({ block: 'center' });
     });
   }
@@ -448,11 +461,7 @@ export class Contenido implements OnInit {
   private situarIndiceFijo(): void {
     const lista = document.querySelector<HTMLElement>('.indice-fijo .indice-lista');
     const activo = lista?.querySelector<HTMLElement>('.indice-enlace.activo');
-    if (!lista || !activo) return;
-    const arriba = activo.offsetTop - lista.offsetTop, abajo = arriba + activo.offsetHeight;
-    if (arriba < lista.scrollTop || abajo > lista.scrollTop + lista.clientHeight) {
-      lista.scrollTop = arriba - lista.clientHeight / 2;
-    }
+    if (lista && activo) this.mostrarEnLista(lista, activo);
   }
 
   /** Salta al apartado elegido y cierra el índice */
@@ -462,10 +471,32 @@ export class Contenido implements OnInit {
     this.mostrarDrawer = false;
   }
 
-  /** Intro en el buscador: salta al primer resultado */
-  public irAlPrimerResultado(evento: Event): void {
-    const primera = this.entradasFiltradas[0];
-    if (primera) this.irAEntrada(evento, primera);
+  /** Intro en el buscador: salta al resultado elegido con ↑ ↓ (si no se ha movido, al primero) */
+  public irAlSeleccionado(evento: Event): void {
+    const entrada = this.entradasFiltradas[this.seleccionIndice] ?? this.entradasFiltradas[0];
+    if (entrada) this.irAEntrada(evento, entrada);
+  }
+
+  /** ↑ ↓ en el buscador: mueve la selección por los resultados (da la vuelta al llegar al final) */
+  public moverSeleccion(evento: Event, paso: number): void {
+    evento.preventDefault(); // que el cursor no se mueva dentro del texto
+    const total = this.entradasFiltradas.length;
+    if (total === 0) return;
+    this.seleccionIndice = (this.seleccionIndice + paso + total) % total;
+    setTimeout(() => {
+      document.querySelectorAll<HTMLElement>('.indice-lista').forEach(lista => {
+        const elegido = lista.querySelector<HTMLElement>('.indice-enlace.seleccionado');
+        if (elegido) this.mostrarEnLista(lista, elegido);
+      });
+    });
+  }
+
+  /** Desplaza una lista del índice (no la página) para que se vea ese apartado */
+  private mostrarEnLista(lista: HTMLElement, elemento: HTMLElement): void {
+    const arriba = elemento.offsetTop - lista.offsetTop, abajo = arriba + elemento.offsetHeight;
+    if (arriba < lista.scrollTop || abajo > lista.scrollTop + lista.clientHeight) {
+      lista.scrollTop = arriba - lista.clientHeight / 2;
+    }
   }
 
   /** URL de un apartado (para el href de los enlaces del índice) */
@@ -536,7 +567,7 @@ export class Contenido implements OnInit {
     // Control + i
     if (evento.ctrlKey && evento.key.toLocaleLowerCase() === 'i') {
       evento.preventDefault();
-      this.abrirDrawer();
+      this.abrirDrawer(true); // desde el teclado: con el cursor en el buscador
     }
 
     // Flechas ← y → (sin teclas modificadoras): tema anterior y siguiente.
