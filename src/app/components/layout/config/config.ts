@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Temas } from "../temas/temas";
 import { PRIMENG_IMPORTS } from '../../../shared/primeng.imports';
 import { ConfigService } from '../../../services/config.service';
+import { PreferenciasService } from '../../../services/preferencias.service';
 
 @Component({
   selector: 'app-config',
@@ -15,7 +16,7 @@ import { ConfigService } from '../../../services/config.service';
 export class Config {
   public devMode: boolean;
 
-  constructor(public configService: ConfigService){
+  constructor(public configService: ConfigService, public preferencias: PreferenciasService){
     this.devMode = this.configService.isDevMode();
   }
 

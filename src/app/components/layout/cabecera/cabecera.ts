@@ -4,6 +4,9 @@ import { MenuItem, MessageService, PrimeIcons } from 'primeng/api';
 import { TemarioService } from '../../../services/temario.service';
 import { RouterModule } from '@angular/router';
 import { Config } from '../config/config';
+import { ThemeService } from '../../../services/theme.service';
+import { ConfigService } from '../../../services/config.service';
+import { PreferenciasService } from '../../../services/preferencias.service';
 
 @Component({
   selector: 'app-cabecera',
@@ -18,7 +21,10 @@ export class Cabecera implements OnInit {
 
   constructor(
     private messageService: MessageService,
-    private temarioService: TemarioService
+    private temarioService: TemarioService,
+    private themeService: ThemeService,
+    private configService: ConfigService,
+    private preferencias: PreferenciasService
   ) {
   }
 
@@ -56,6 +62,22 @@ export class Cabecera implements OnInit {
   // Función para que se muestre la ventana de dialogo
   mostrarDialogo() {
     this.visible = true;
+  }
+
+  /**
+   * Vuelve a las opciones por defecto del curso: el tema y las ligaduras del config.json y el índice fijo activado.
+   * Si el curso guarda las preferencias, también se borran del navegador.
+   */
+  restaurarPredeterminadas() {
+    this.themeService.restaurarTema();
+    this.configService.mostrarLigaduras = this.configService.getLigadurasPorDefecto();
+    this.preferencias.olvidar(); // después de lo anterior, que también anota preferencias
+    this.messageService.add({
+      severity: 'info',
+      summary: 'Opciones restauradas',
+      detail: 'Se han vuelto a poner las opciones por defecto del curso.',
+      life: 3000
+    });
   }
 
 

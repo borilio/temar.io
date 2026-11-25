@@ -2,15 +2,24 @@ import { Injectable } from '@angular/core';
 import { Caducidad, Config, Data, EnlacesExternos, Theme } from '../models/config.model';
 import { CONFIG } from '../shared/constantes';
 import { CATALOGO_TEMAS } from '../shared/temas';
+import { PreferenciasService } from './preferencias.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ConfigService {
-   
-  private _mostrarLigaduras: boolean = CONFIG.mostrarLigadurasFuentes;
 
-  constructor() { }
+  // Ligaduras: la preferencia del usuario si la ha cambiado; si no, la del config.json
+  private _mostrarLigaduras: boolean;
+
+  constructor(private preferencias: PreferenciasService) {
+    this._mostrarLigaduras = this.preferencias.valor('ligaduras') ?? CONFIG.mostrarLigadurasFuentes;
+  }
+
+  /** Ligaduras por defecto del curso (config.json > mostrarLigadurasFuentes) */
+  getLigadurasPorDefecto(): boolean {
+    return CONFIG.mostrarLigadurasFuentes;
+  }
 
   /**
    * Devuelve el objeto de configuración completo
@@ -99,6 +108,7 @@ export class ConfigService {
   // Establece un nuevo valor para mostrarLigaduras
   set mostrarLigaduras(valor: boolean) {
     this._mostrarLigaduras = valor;
+    this.preferencias.cambiar('ligaduras', valor);
   }
 
 

@@ -4,6 +4,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 // Import de la configuración
 import { Theme } from '../models/config.model';
 import { ConfigService } from './config.service';
+import { PreferenciasService } from './preferencias.service';
 
 
 @Injectable({ providedIn: 'root' })
@@ -12,23 +13,32 @@ export class ThemeService {
   public currentTheme$ : Observable<Theme>;
 
 
-  constructor(private configService: ConfigService) {
-    // Obtenemos el tema por defecto del config.json. Si no existe o el curso no lo ofrece,
-    // usamos el primero de los temas disponibles
-    const defaultId = this.configService.getFullConfig().defaultThemeId;
-    let defaultTheme = this.getThemeById(defaultId);
-    if (!defaultTheme) {
-      defaultTheme = this.getAvailableThemes()[0];
-      console.warn(`config.json > defaultThemeId: "${defaultId}" no está entre los temas disponibles. Se usa "${defaultTheme.id}"`);
-    }
+  constructor(private configService: ConfigService, private preferencias: PreferenciasService) {
+    // Tema inicial: el que eligió el usuario (si el curso guarda las preferencias y lo ofrece);
+    // si no, el de por defecto del curso
+    const temaElegido = this.getThemeById(this.preferencias.valor('tema') ?? '');
+    const temaInicial = temaElegido ?? this.getDefaultTheme();
 
     // Inicializamos los observables del tema actual y el tema activo
-    this.activeTheme$ = new BehaviorSubject<Theme>(defaultTheme);
+    this.activeTheme$ = new BehaviorSubject<Theme>(temaInicial);
     this.currentTheme$ = this.activeTheme$.asObservable();
 
     // Aplica el tema inicial al arrancar
-    this.setTheme(defaultTheme.id);
+    this.aplicarTema(temaInicial);
 
+  }
+
+  /**
+   * Tema por defecto del curso (config.json > defaultThemeId). Si no existe o el curso no lo ofrece,
+   * el primero de los temas disponibles
+   */
+  public getDefaultTheme(): Theme {
+    const defaultId = this.configService.getFullConfig().defaultThemeId;
+    const defaultTheme = this.getThemeById(defaultId);
+    if (defaultTheme) return defaultTheme;
+    const primero = this.getAvailableThemes()[0];
+    console.warn(`config.json > defaultThemeId: "${defaultId}" no está entre los temas disponibles. Se usa "${primero.id}"`);
+    return primero;
   }
 
 
@@ -42,25 +52,35 @@ export class ThemeService {
     return this.configService.getThemes().find(t => t.id === id);
   }
 
-  /** Establece el tema activo para toda la aplicación */
+  /** Establece el tema activo para toda la aplicación (y lo recuerda como preferencia del usuario) */
   public setTheme(id: string): void {
     const theme = this.getThemeById(id);
     // Si existe ese tema lo aplicamos, si no mostramos un error por consola para poder depurar
     if (theme) {
-      this.activeTheme$.next(theme);
-
-      // 1. Aplica el modo global (clase y atributo en <html>)
-      const isDark = theme.baseMode === 'dark';
-      document.documentElement.classList.toggle('dark-mode', isDark);
-      document.documentElement.setAttribute('data-theme', theme.baseMode);
-
-      // 2. Carga dinámicamente las hojas de estilo
-      this.loadStylesheet('markdown-theme', `/assets/themes/markdown/${theme.markdownThemeFile}`);
-      this.loadStylesheet('highlight-theme', `/assets/themes/highlight/${theme.highlightThemeFile}`);
-
+      this.aplicarTema(theme);
+      this.preferencias.cambiar('tema', theme.id);
     } else {
       console.error("No se ha podido cargar el theme con id:", id);
     }
+  }
+
+  /** Vuelve al tema por defecto del curso (al restaurar las opciones predeterminadas) */
+  public restaurarTema(): void {
+    this.aplicarTema(this.getDefaultTheme());
+  }
+
+  /** Aplica un tema a la página (sin tocar las preferencias) */
+  private aplicarTema(theme: Theme): void {
+    this.activeTheme$.next(theme);
+
+    // 1. Aplica el modo global (clase y atributo en <html>)
+    const isDark = theme.baseMode === 'dark';
+    document.documentElement.classList.toggle('dark-mode', isDark);
+    document.documentElement.setAttribute('data-theme', theme.baseMode);
+
+    // 2. Carga dinámicamente las hojas de estilo
+    this.loadStylesheet('markdown-theme', `/assets/themes/markdown/${theme.markdownThemeFile}`);
+    this.loadStylesheet('highlight-theme', `/assets/themes/highlight/${theme.highlightThemeFile}`);
   }
 
   /** Ayudante para inyectar o actualizar un <link> en el <head> */

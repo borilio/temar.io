@@ -136,9 +136,17 @@ Aquí añadiremos estilos para forzar algunos estilos contenido html generado po
 }
 
 /******* ÍNDICE FIJO a la izquierda (pantallas anchas) *******/
+/* La columna del índice tiene un fondo neutro propio (blanco en claro, gris oscuro en oscuro; el mismo que el panel
+   desplegable), independiente del tema visual: Retro Gaming, HUD o Cervantes pintan el contenido con su color.
+   Se pinta en toda la columna, de arriba abajo, con la línea de separación incluida */
 .cuerpo-tema.con-indice {
+  --ancho-indice: 18rem;
   display: grid;
-  grid-template-columns: 18rem minmax(0, 1fr);
+  grid-template-columns: var(--ancho-indice) minmax(0, 1fr);
+  background: linear-gradient(to right,
+    var(--p-content-background) calc(var(--ancho-indice) - 1px),
+    var(--p-content-border-color) calc(var(--ancho-indice) - 1px) var(--ancho-indice),
+    transparent var(--ancho-indice));
 }
 
 /* La cabecera y el buscador se quedan arriba; solo se desplaza la lista de apartados */
@@ -150,7 +158,7 @@ Aquí añadiremos estilos para forzar algunos estilos contenido html generado po
   flex-direction: column;
   max-height: calc(100vh - 7rem);
   padding: 1.5rem 1rem 1.5rem 1.25rem;
-  border-right: 1px solid var(--p-content-border-color);
+  color: var(--p-text-color); /* que el tema del contenido no le cambie el color del texto */
 }
 
 .indice-fijo .indice-lista {

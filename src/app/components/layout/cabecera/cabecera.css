@@ -132,3 +132,12 @@
 :host ::ng-deep .barra-cristal.p-menubar-mobile .p-menubar-submenu::after {
   display: none;
 }
+
+/* Pie de la ventana de configuración: Restaurar y Aceptar, los dos a la derecha */
+.pie-configuracion {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+}

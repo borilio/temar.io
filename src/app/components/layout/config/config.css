@@ -1,5 +1,37 @@
 .config-container {
   display: flex;         /* Activa el layout flexible */
   flex-direction: column;  /* Apila los elementos verticalmente */
-  gap: 1.5rem;           /* Añade un espacio de 1.5rem ENTRE cada elemento */
+  gap: 1.25rem;          /* Espacio ENTRE cada elemento */
+  min-width: min(28rem, 80vw);
+}
+
+/* Una fila por opción: nombre y explicación a la izquierda, el control a la derecha */
+.config-fila {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+
+.config-texto {
+  display: flex;
+  flex-direction: column;
+}
+
+.config-nombre {
+  font-weight: 600;
+}
+
+.config-descripcion {
+  font-size: 0.875rem;
+  color: var(--p-text-muted-color);
+}
+
+/* Ejemplo de las ligaduras (Labs): un bloque de código pequeño con los colores del tema elegido */
+.ejemplo-ligaduras {
+  margin: 1rem 0 0;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  font-size: 0.95rem;
+  white-space: pre-wrap;
 }

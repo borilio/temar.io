@@ -1,20 +1,25 @@
-<!-- El cuadro de dialogo se muestra en la cabecera.html, aquí se crea el contenido que se muestra DENTRO del cuadro de diálogo -->
+<!-- El cuadro de diálogo se muestra en la cabecera.html (con su pie: Restaurar y Aceptar); aquí está su contenido -->
 
 <div class="config-container">
-  <p-panel>
-    <ng-template #header>
-      <div class="flex align-items-center gap-2">
-        <i class="pi pi-palette"></i>
-        <span class="fw-bold"> Aspecto visual</span>
-      </div>
-    </ng-template>
 
-    <!-- Select de temas -->
-    <app-temas id="theme-selector"></app-temas>
+  <!-- Una fila por opción: nombre y explicación a la izquierda, el control a la derecha -->
+  <div class="config-fila">
+    <div class="config-texto">
+      <label class="config-nombre" for="selector-tema">Tema visual</label>
+      <span class="config-descripcion">Aspecto de los contenidos</span>
+    </div>
+    <app-temas></app-temas>
+  </div>
 
-    
-  </p-panel>
+  <div class="config-fila">
+    <div class="config-texto">
+      <label class="config-nombre" for="interruptor-indice">Índice fijo</label>
+      <span class="config-descripcion">Muestra siempre el índice en pantallas anchas</span>
+    </div>
+    <p-toggleswitch inputId="interruptor-indice" [(ngModel)]="preferencias.indiceFijado" />
+  </div>
 
+  <!-- Labs: opciones en pruebas, solo en cursos con devMode -->
   <p-panel [hidden]="!this.devMode" toggleable="true" collapsed="true">
     <ng-template #header>
       <div class="flex align-items-center gap-2" style="color: var(--p-primary-color)">
@@ -27,18 +32,22 @@
 
     <!-- Switch de ligaduras -->
     <div class="mt-3 d-flex align-items-center gap-2" tooltipPosition="top" [pTooltip]="configService.mostrarLigaduras ? 'Habilitadas': 'Deshabilitadas'"  >
-      <p-toggleswitch id="ligature-switch" [(ngModel)]="this.configService.mostrarLigaduras" />        
+      <p-toggleswitch id="ligature-switch" [(ngModel)]="this.configService.mostrarLigaduras" />
       <label for="ligature-switch">Activar ligaduras de fuente</label>
     </div>
 
-    <!-- Ejemplo de código dentro de p-message -->
-    <div class="mt-3 alert alert-light">
-        <code class="fuente-firacode color-primario" [class.disable-ligaduras]="!configService.mostrarLigaduras" >
-          const ejemplo = x => (x >= 0 && x != 10);
-        </code>
-    </div>
-
+    <!-- Ejemplo de código coloreado con las clases de highlight.js: toma los colores del tema visual elegido -->
+    <pre class="ejemplo-ligaduras hljs"><code class="fuente-firacode" [class.disable-ligaduras]="!configService.mostrarLigaduras"><span class="hljs-keyword">const</span> <span class="hljs-title function_">ejemplo</span> = <span class="hljs-params">x</span> => (x >= <span class="hljs-number">0</span> && x != <span class="hljs-number">10</span>);</code></pre>
 
   </p-panel>
+
+  <!-- Al final, porque afecta a todas las opciones: si se guardan o no en el navegador (config.json > guardarPreferencias) -->
+  <p-message severity="info" icon="pi pi-info-circle" size="small">
+    @if (preferencias.guardar) {
+      Este curso recordará estas opciones la próxima vez que lo abras en este navegador.
+    } @else {
+      Este curso no guarda estas opciones en el navegador. Al recargar, vuelven a las de por defecto.
+    }
+  </p-message>
 
 </div>

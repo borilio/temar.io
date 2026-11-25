@@ -1,11 +1,10 @@
-<div class="">
-  Temas disponibles
-  <p-select 
-    appendTo="body"
-    [options]="temasDisponibles" 
-    [(ngModel)]="temaSeleccionado"
-    optionLabel="name"
-    (onChange)="onCambiarTema()"
-    placeholder="Selecciona un Tema">
-  </p-select>
-</div>
+<!-- Selector de tema visual (el texto que lo acompaña lo pone la ventana de configuración) -->
+<p-select
+  appendTo="body"
+  inputId="selector-tema"
+  [options]="temasDisponibles"
+  [(ngModel)]="temaSeleccionado"
+  optionLabel="name"
+  (onChange)="onCambiarTema()"
+  placeholder="Selecciona un tema">
+</p-select>

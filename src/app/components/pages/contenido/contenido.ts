@@ -15,9 +15,8 @@ import { NgTemplateOutlet } from '@angular/common';
 const PATRONES = 'abcdefghijklmn';
 const ESQUINAS = 4; // esquina-0 … esquina-3
 
-// Índice fijo a la izquierda: solo en pantallas anchas; la elección (fijado u oculto) se recuerda en el navegador
+// Índice fijo a la izquierda: solo en pantallas anchas (fijado u oculto es una preferencia: PreferenciasService)
 const ANCHO_INDICE_FIJO = '(min-width: 1200px)';
-const CLAVE_INDICE_FIJADO = 'temario-indice-fijado';
 
 /** Un apartado del índice lateral */
 interface EntradaIndice {
@@ -34,6 +33,7 @@ const escaparHtml = (texto: string) =>
   texto.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 import { Subscription } from 'rxjs';
 import { ConfigService } from '../../../services/config.service';
+import { PreferenciasService } from '../../../services/preferencias.service';
 import { Tema } from '../../../models/temario.model';
 
 // Clave en sessionStorage donde se guarda el tema y la posición del scroll antes de recargar
@@ -76,7 +76,6 @@ export class Contenido implements OnInit {
   public idActivo: string | null = null; // Apartado que se está leyendo ("Estás aquí")
   private titulosIndice: HTMLElement[] = []; // Los títulos del tema, en el mismo orden que entradasIndice
   private fotogramaScroll = 0;
-  public indiceFijado = this.leerIndiceFijado(); // Preferencia: índice fijo a la izquierda (por defecto, sí)
   public pantallaAncha = false; // La pantalla es lo bastante ancha para el índice fijo
   private consultaAncho?: MediaQueryList;
   private alCambiarAncho = (evento: MediaQueryListEvent) => this.pantallaAncha = evento.matches;
@@ -96,7 +95,8 @@ export class Contenido implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     // Para la configuración...
-    public configService: ConfigService //Tiene que ser público, para poder usarlo desde HTML
+    public configService: ConfigService, //Tiene que ser público, para poder usarlo desde HTML
+    private preferencias: PreferenciasService
 
   ) {
     this.contenidoHTML = "";
@@ -435,25 +435,13 @@ export class Contenido implements OnInit {
 
   /** El índice fijo a la izquierda se ve: está activado, la pantalla es ancha y el tema tiene [TOC] */
   public get indiceFijoVisible(): boolean {
-    return this.indiceFijado && this.pantallaAncha && this.entradasIndice.length > 0;
+    return this.preferencias.indiceFijado && this.pantallaAncha && this.entradasIndice.length > 0;
   }
 
-  /** Fija el índice a la izquierda (true) o lo oculta (false). Se recuerda en este navegador */
+  /** Fija el índice a la izquierda (true) o lo oculta (false). Es una preferencia (ver PreferenciasService) */
   public fijarIndice(fijar: boolean): void {
-    this.indiceFijado = fijar;
+    this.preferencias.indiceFijado = fijar;
     if (fijar) this.mostrarDrawer = false;
-    try {
-      localStorage.setItem(CLAVE_INDICE_FIJADO, String(fijar));
-    } catch { /* si el navegador no deja guardarlo, solo dura hasta recargar */ }
-  }
-
-  /** Preferencia guardada del índice fijo (si no hay ninguna, fijado) */
-  private leerIndiceFijado(): boolean {
-    try {
-      return localStorage.getItem(CLAVE_INDICE_FIJADO) !== 'false';
-    } catch {
-      return true;
-    }
   }
 
   /** En el índice fijo, mueve su lista (no la página) para que el apartado activo quede a la vista */

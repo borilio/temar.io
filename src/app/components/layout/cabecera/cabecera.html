@@ -48,6 +48,11 @@
 <p-dialog header="Configuración" [modal]="true" [(visible)]="visible" [maximizable]="true">
     <app-config></app-config>
     <ng-template #footer>
-        <p-button label="Aceptar" severity="primary" (click)="visible = false" />
+        <!-- Los dos a la derecha: Restaurar (discreto) y Aceptar -->
+        <div class="pie-configuracion">
+            <p-button label="Restaurar predeterminadas" icon="pi pi-refresh" [text]="true" severity="secondary"
+                (onClick)="restaurarPredeterminadas()" />
+            <p-button label="Aceptar" severity="primary" (click)="visible = false" />
+        </div>
     </ng-template>
 </p-dialog>

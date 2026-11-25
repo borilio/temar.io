@@ -5,6 +5,7 @@ export interface Config {
     temasDisponibles?: string[];    // Ids de los temas del catálogo que ofrece el curso (si no se indica, todos)
     mostrarLigadurasFuentes: boolean;
     devMode: boolean;
+    guardarPreferencias?: boolean;  // true: el tema, las ligaduras y el índice fijo se guardan en el navegador. Si no se indica, false (aulas con ordenadores compartidos)
     retardoCarga?: boolean;         // Pantalla de carga 2 s al abrir cada tema (si no se indica, true). false: carga al instante (cómodo al editar)
     data: Data;
     enlacesExternos: EnlacesExternos;
