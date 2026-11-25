@@ -141,3 +141,11 @@
   gap: 1rem;
   width: 100%;
 }
+
+/* 2.º nivel del submenú "Contenidos" (escritorio): que se ensanche hasta el título más largo.
+   Al abrirse a un lado, el navegador lo limitaba al ancho (estrecho) del primer nivel y partía los títulos.
+   Con un máximo, para que no se salga de la pantalla. En el móvil no hace falta: los niveles van uno debajo de otro */
+:host ::ng-deep .barra-cristal:not(.p-menubar-mobile) .p-menubar-submenu .p-menubar-submenu {
+  width: max-content;
+  max-width: min(26rem, 90vw);
+}
