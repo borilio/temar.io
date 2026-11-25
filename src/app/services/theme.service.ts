@@ -33,7 +33,7 @@ export class ThemeService {
    * el primero de los temas disponibles
    */
   public getDefaultTheme(): Theme {
-    const defaultId = this.configService.getFullConfig().defaultThemeId;
+    const defaultId = this.configService.getFullConfig().defaultThemeId ?? '';
     const defaultTheme = this.getThemeById(defaultId);
     if (defaultTheme) return defaultTheme;
     const primero = this.getAvailableThemes()[0];

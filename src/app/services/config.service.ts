@@ -4,6 +4,16 @@ import { CONFIG } from '../shared/constantes';
 import { CATALOGO_TEMAS } from '../shared/temas';
 import { PreferenciasService } from './preferencias.service';
 
+// Valores por defecto de los bloques del config.json, por si a un curso le falta alguno de sus campos
+const DATA_POR_DEFECTO: Data = { copyright: '', logos: [] };
+const ENLACES_POR_DEFECTO: EnlacesExternos = { texto: '', enlaces: [] };
+const CADUCIDAD_POR_DEFECTO: Caducidad = {
+  fecha: '', // Sin fecha, el curso no caduca nunca
+  aviso: 30,
+  mensajeAviso: 'Los contenidos de este curso se cerrarán próximamente.',
+  mensajeCerrado: 'Lo sentimos, este curso ya no está disponible.'
+};
+
 @Injectable({
   providedIn: 'root'
 })
@@ -13,12 +23,12 @@ export class ConfigService {
   private _mostrarLigaduras: boolean;
 
   constructor(private preferencias: PreferenciasService) {
-    this._mostrarLigaduras = this.preferencias.valor('ligaduras') ?? CONFIG.mostrarLigadurasFuentes;
+    this._mostrarLigaduras = this.preferencias.valor('ligaduras') ?? this.getLigadurasPorDefecto();
   }
 
-  /** Ligaduras por defecto del curso (config.json > mostrarLigadurasFuentes) */
+  /** Ligaduras por defecto del curso (config.json > mostrarLigadurasFuentes). Si falta, true */
   getLigadurasPorDefecto(): boolean {
-    return CONFIG.mostrarLigadurasFuentes;
+    return CONFIG.mostrarLigadurasFuentes ?? true;
   }
 
   /**
@@ -34,7 +44,7 @@ export class ConfigService {
    * @returns El objeto de tipo Data (contiene las imágenes y los enlaces)
    */
   getData(): Data {
-    return CONFIG.data;
+    return { ...DATA_POR_DEFECTO, ...CONFIG.data };
   }
 
   /**
@@ -84,20 +94,21 @@ export class ConfigService {
    * @returns El objeto EnlacesExternos
    */
   getEnlacesExternos(): EnlacesExternos {
-    return CONFIG.enlacesExternos;
+    return { ...ENLACES_POR_DEFECTO, ...CONFIG.enlacesExternos };
   }
 
   /**
-   * Retorna la caducidad del curso, que incluye fecha, días de aviso, y mensajes
+   * Retorna la caducidad del curso, que incluye fecha, días de aviso, y mensajes.
+   * Lo que falte en el config.json se completa con CADUCIDAD_POR_DEFECTO (sin fecha: no caduca)
    * @returns El objeto Caducidad
    */
   getCaducidad(): Caducidad {
-    return CONFIG.caducidad;
+    return { ...CADUCIDAD_POR_DEFECTO, ...CONFIG.caducidad };
   }
 
-  
+  /** Modo desarrollador (panel "Labs" en la configuración). Si falta, false */
   isDevMode(): boolean {
-    return CONFIG.devMode;
+    return CONFIG.devMode ?? false;
   }
 
   // Retorna lo que valga su atributo (es mutable, puede cambiar, pero será temporal)

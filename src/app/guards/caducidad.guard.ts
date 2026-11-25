@@ -19,6 +19,12 @@ export class ExpirationGuard implements CanActivate {
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
     // Extraemos la fecha de caducidad y la fecha de hoy
     const caducidad : Caducidad = this.configService.getCaducidad();
+
+    // Sin fecha de caducidad (o no válida), el curso no caduca nunca
+    if (!caducidad.fecha || isNaN(new Date(caducidad.fecha).getTime())) {
+      return true;
+    }
+
     const hoy: Date = this.getFechaActual();
     
     // Calculamos el tiempo en días que le quedan al curso

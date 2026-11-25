@@ -8,7 +8,8 @@ import { Temario } from "../models/temario.model";
 
 // Para usarla las siguientes constantes, simplemente las importas donde quieras
 
-// Constante CONFIG de tipo ConfigModel con el contenido en json de la configuración del temario
+// Constante CONFIG de tipo ConfigModel con el contenido en json de la configuración del temario.
+// Puede faltarle cualquier campo opcional: los valores por defecto los pone el ConfigService
 export const CONFIG: Config = configJson;
 
 // Creamos una constante TEMARIO con el contenido del temario en json
