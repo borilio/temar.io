@@ -106,48 +106,174 @@ Aquí añadiremos estilos para forzar algunos estilos contenido html generado po
   border-color: var(--p-surface-700) !important;
 }
 
-/******* ESTILOS DEL TOC (tanto el drawer como en contenido) *******/
-.table-of-contents a {
-  display: inline-block;
-  text-decoration: none;
-  color: var(--p-primary-color);
-  background: color-mix(in srgb, var(--p-primary-500) 8%, transparent);
-  border: 1px solid color-mix(in srgb, var(--p-primary-500) 25%, transparent);
-  border-radius: 0.5rem;
-  padding: 0.5rem 0.75rem;
-  margin: 0.25rem 0.25rem 0.25rem 0;
-  transition: all 0.2s ease-in-out;
-  font-size: 0.9rem;
-}
-
-.table-of-contents a:hover {
-  background: color-mix(in srgb, var(--p-primary-500) 18%, transparent);
-  border-color: color-mix(in srgb, var(--p-primary-500) 50%, transparent);
-  text-decoration: none;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.table-of-contents a:active {
-  background: color-mix(in srgb, var(--p-primary-500) 25%, transparent);
-  border-color: var(--p-primary-500);
-  transform: translateY(0);
-}
-
-/* Y lo mismo para la indentación */
-.table-of-contents ul {
-  list-style-type: none;
-  padding-left: 0;
-}
-.table-of-contents ul ul {
-  padding-left: 1.5rem;
-  margin-top: 0.5rem;
-  margin-left: 0.25rem;
-  border-left: 2px solid color-mix(in srgb, var(--p-primary-500) 35%, transparent);
-  opacity: 0.85;
-}
-
-/* Pero ocultamos el TOC principal, solo vemos el del drawer */
+/******* TOC *******/
+/* El [TOC] que genera markdown-it se queda oculto en el contenido: el índice lateral se construye a partir de él */
 .markdown-body .table-of-contents {
   display: none;
+}
+
+/******* ÍNDICE LATERAL (drawer) *******/
+.drawer-indice {
+  width: 22rem;
+}
+
+/* Cabecera del panel desplegable: textos a la izquierda y la chincheta a la derecha */
+.drawer-indice .p-drawer-header > div:first-child {
+  flex: 1;
+}
+
+/* En el panel, como en el índice fijo, el buscador se queda arriba y solo se desplaza la lista */
+.drawer-indice .p-drawer-content {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.drawer-indice .indice-lista {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+/******* ÍNDICE FIJO a la izquierda (pantallas anchas) *******/
+.cuerpo-tema.con-indice {
+  display: grid;
+  grid-template-columns: 18rem minmax(0, 1fr);
+}
+
+/* La cabecera y el buscador se quedan arriba; solo se desplaza la lista de apartados */
+.indice-fijo {
+  position: sticky;
+  top: 5.5rem; /* debajo de la barra de navegación fija */
+  align-self: start;
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - 7rem);
+  padding: 1.5rem 1rem 1.5rem 1.25rem;
+  border-right: 1px solid var(--p-content-border-color);
+}
+
+.indice-fijo .indice-lista {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.indice-fijo-cabecera {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.indice-cabecera {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.indice-etiqueta {
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--p-text-muted-color);
+}
+
+.indice-titulo {
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--p-text-color);
+}
+
+/* Buscador */
+.indice-buscador {
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+.indice-buscador i {
+  position: absolute;
+  left: 0.85rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--p-text-muted-color);
+  pointer-events: none;
+}
+
+.indice-buscador input {
+  width: 100%;
+  padding: 0.55rem 0.85rem 0.55rem 2.4rem;
+  border: 1px solid var(--p-content-border-color);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--p-text-color);
+  font: inherit;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.indice-buscador input:focus {
+  border-color: var(--p-primary-color);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--p-primary-500) 20%, transparent);
+}
+
+/* Lista de apartados: una línea vertical fina y la jerarquía por sangría, tamaño y peso */
+.indice-lista {
+  display: flex;
+  flex-direction: column;
+  border-left: 1px solid var(--p-content-border-color);
+}
+
+.indice-enlace {
+  display: block;
+  margin-left: -1px;
+  padding: 0.35rem 0.75rem;
+  border-left: 2px solid transparent;
+  border-radius: 0 0.5rem 0.5rem 0;
+  color: var(--p-text-muted-color);
+  text-decoration: none;
+  font-size: 0.92rem;
+  line-height: 1.35;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.indice-enlace.nivel-1 {
+  color: var(--p-text-color);
+  font-weight: 600;
+  font-size: 0.98rem;
+  margin-top: 0.35rem;
+}
+.indice-enlace.nivel-2 { padding-left: 1.6rem; }
+.indice-enlace.nivel-3 { padding-left: 2.5rem; font-size: 0.86rem; }
+.indice-enlace.nivel-4,
+.indice-enlace.nivel-5,
+.indice-enlace.nivel-6 { padding-left: 3.25rem; font-size: 0.84rem; }
+
+.indice-enlace:hover {
+  background: color-mix(in srgb, var(--p-primary-500) 10%, transparent);
+  color: var(--p-primary-color);
+  text-decoration: none;
+}
+
+/* "Estás aquí": el apartado que se está leyendo */
+.indice-enlace.activo {
+  border-left-color: var(--p-primary-color);
+  background: color-mix(in srgb, var(--p-primary-500) 14%, transparent);
+  color: var(--p-primary-color);
+  font-weight: 600;
+}
+
+/* Lo que coincide con la búsqueda */
+.indice-enlace mark {
+  background: color-mix(in srgb, var(--p-primary-500) 35%, transparent);
+  color: inherit;
+  border-radius: 0.2rem;
+  padding: 0 0.1rem;
+}
+
+.indice-vacio {
+  padding: 0.5rem 0.75rem;
+  color: var(--p-text-muted-color);
+  font-size: 0.9rem;
 }

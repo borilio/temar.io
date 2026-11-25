@@ -14,6 +14,24 @@ import { NgTemplateOutlet } from '@angular/common';
 // Patrones decorativos de la cabecera y el pie (definidos en contenido.css: patron-a … patron-n)
 const PATRONES = 'abcdefghijklmn';
 const ESQUINAS = 4; // esquina-0 … esquina-3
+
+// Índice fijo a la izquierda: solo en pantallas anchas; la elección (fijado u oculto) se recuerda en el navegador
+const ANCHO_INDICE_FIJO = '(min-width: 1200px)';
+const CLAVE_INDICE_FIJADO = 'temario-indice-fijado';
+
+/** Un apartado del índice lateral */
+interface EntradaIndice {
+  id: string;     // id del título en el contenido (tal cual, puede ir codificado)
+  texto: string;  // texto del título
+  nivel: number;  // 1 = principal, 2 = subapartado…
+}
+
+/** Texto sin tildes y en minúsculas, para buscar sin distinguirlas ("Fórmulas" = "formulas") */
+const normalizar = (texto: string) => texto.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+
+/** Escapa el HTML de un texto (para pintarlo con innerHTML sin riesgos) */
+const escaparHtml = (texto: string) =>
+  texto.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 import { Subscription } from 'rxjs';
 import { ConfigService } from '../../../services/config.service';
 import { Tema } from '../../../models/temario.model';
@@ -51,10 +69,17 @@ export class Contenido implements OnInit {
   public estiloNavegacion = 'd';
   public clasePatron = ''; // Patrón decorativo y esquina de la cabecera y el pie (siempre los mismos para cada tema)
 
-  // TOC
-  public mostrarDrawer: boolean; // Para mostrar el menú lateral con el TOC
-  public tocHTML: SafeHtml;
-  public anclasTocArregladas: boolean; // Las anclas del TOC se arreglan una vez, en el drawer onShow.
+  // Índice lateral (solo si el .md tiene [TOC]): se construye a partir de los enlaces del TOC de markdown-it
+  public mostrarDrawer: boolean; // Para mostrar el índice lateral
+  public entradasIndice: EntradaIndice[] = []; // Apartados del tema (vacío si el .md no tiene [TOC])
+  public filtroIndice = ''; // Texto del buscador del índice
+  public idActivo: string | null = null; // Apartado que se está leyendo ("Estás aquí")
+  private titulosIndice: HTMLElement[] = []; // Los títulos del tema, en el mismo orden que entradasIndice
+  private fotogramaScroll = 0;
+  public indiceFijado = this.leerIndiceFijado(); // Preferencia: índice fijo a la izquierda (por defecto, sí)
+  public pantallaAncha = false; // La pantalla es lo bastante ancha para el índice fijo
+  private consultaAncho?: MediaQueryList;
+  private alCambiarAncho = (evento: MediaQueryListEvent) => this.pantallaAncha = evento.matches;
 
   // Al recargar la página (al guardar el .md con "npm start", o con F5) se vuelve a donde se estaba
   private scrollRestaurado = false; // solo se intenta en la primera carga tras recargar
@@ -75,11 +100,9 @@ export class Contenido implements OnInit {
 
   ) {
     this.contenidoHTML = "";
-    this.tocHTML = "";
     this.cargandoContenido = true;
     this.hayError = false;
     this.mostrarDrawer = false;
-    this.anclasTocArregladas = false;
     
     // Inicializamos el array con frases aleatorias 
     this.fraseCargando = this.elegirFrase();
@@ -87,6 +110,10 @@ export class Contenido implements OnInit {
   }
 
   ngOnInit(): void {
+    // Vigilamos el ancho de la pantalla para mostrar u ocultar el índice fijo
+    this.consultaAncho = window.matchMedia(ANCHO_INDICE_FIJO);
+    this.pantallaAncha = this.consultaAncho.matches;
+    this.consultaAncho.addEventListener('change', this.alCambiarAncho);
 
 
     // Nos suscribimos a los cambios de URL
@@ -152,8 +179,13 @@ export class Contenido implements OnInit {
    * Método que inicia la acción de abrir el drawer para mostrar el TOC
    */
   public abrirDrawer() {
+    // Con el índice fijo a la vista, solo ponemos el cursor en su buscador
+    if (this.indiceFijoVisible) {
+      document.querySelector<HTMLInputElement>('.indice-fijo .indice-buscador input')?.focus();
+      return;
+    }
     //Si tiene TOC abrimos el drawer, si no mostramos el toast
-    if (this.tocHTML) {
+    if (this.entradasIndice.length > 0) {
       this.mostrarDrawer = true;
     } else {
       this.messageService.add({
@@ -208,14 +240,13 @@ export class Contenido implements OnInit {
     // Vamos a cargar contenido, por lo que iniciamos la animación de carga...
     this.cargandoContenido = true;
     this.hayError = false;
-    this.anclasTocArregladas = false; // Para que se vuelva a arreglar las anclas del nuevo contenido
 
     // Si el tema no existe, no está disponible o está en construcción, no se descarga su .md:
     // se muestra la pantalla fija que corresponda (ver contenido.html)
     this.estadoTema = this.temarioService.getEstadoTema(id);
     if (this.estadoTema !== 'normal') {
       this.contenidoHTML = "";
-      this.tocHTML = "";
+      this.vaciarIndice();
       this.hayError = this.estadoTema === 'noExiste';
       this.cargandoContenido = false;
       return;
@@ -248,7 +279,7 @@ export class Contenido implements OnInit {
         // Aunque creas que no hace falta, setTimeout(..., 0) es el paso que garantiza que tu código de manipulación del DOM se ejecute después de que el navegador haya tenido la oportunidad de renderizarlo.
         setTimeout(() => {
           this.mejorarBloquesDeCodigo(); // Mejora los bloques de código del HTML generado original
-          this.extraerTocParaDrawer(); // Extrae el TOC y lo coloca en el drawer lateral
+          this.construirIndice(); // Construye el índice lateral a partir del [TOC] del tema
           this.transformarImagenesPreview();
           this.restaurarScrollTrasRecarga(id); // Si venimos de recargar la página, vuelve a donde se estaba
         }, 0);
@@ -339,68 +370,138 @@ export class Contenido implements OnInit {
   }
 
 
-  // Función que corrige todos los enlaces del TOC (haciendo magia)
-  // Esta función se llama una sola vez al mostrar el Drawer por primera vez 
-  public arreglarAnclas(): void {
-    // Si ya lo hemos hecho, no hacemos nada más y nos vamos de la función.
-    if (this.anclasTocArregladas) {
-      return;
-    }
+  // ─── Índice lateral ────────────────────────────────────────────────────────
 
-    // Obtenemos la ruta actual de la página (ej: /tema/01-word) para añadirla al href y que no queden raros los enlaces (aunque no naveguen a esa ruta)
-    const pathActual = window.location.pathname;
+  /**
+   * Construye el índice lateral a partir del TOC que markdown-it pone en el tema (solo si el .md tiene [TOC]).
+   * Cada enlace del TOC es una entrada: su texto, el id del título al que apunta y su nivel (por anidación).
+   * El TOC original sigue en el contenido, pero oculto (ver contenido-md.css).
+   */
+  private construirIndice(): void {
+    this.vaciarIndice();
+    const toc: HTMLElement | null = this.elementRef.nativeElement.querySelector('.markdown-body .table-of-contents');
+    if (!toc) return; // El .md no tiene [TOC]: al pulsar la brújula saldrá el aviso "Sin índice"
 
-    // Buscamos TODOS los enlaces que haya en el TOC (tanto en drawer como en contenido...)
-    const enlacesDelIndice: NodeListOf<HTMLAnchorElement> = document.querySelectorAll('.table-of-contents a');
+    toc.querySelectorAll('a').forEach(enlace => {
+      const href = enlace.getAttribute('href') ?? '';
+      const id = href.substring(href.lastIndexOf('#') + 1); // Puede estar codificado (%C3%A9…): así está también en el título
+      const titulo = id ? document.getElementById(id) : null;
+      if (!titulo) return;
 
-    enlacesDelIndice.forEach(enlace => {
-
-      // Corregimos el href para que el navegador muestre la URL correcta al pasar el ratón
-      const fragmento = enlace.getAttribute('href');
-      if (fragmento) {
-        const urlCorrecta = pathActual + fragmento;
-        this.renderer.setAttribute(enlace, 'href', urlCorrecta);
+      // Nivel = cuántas listas (<ul>) hay entre el enlace y el TOC (1 = principal)
+      let nivel = 0;
+      for (let el: HTMLElement | null = enlace; el && el !== toc; el = el.parentElement) {
+        if (el.tagName === 'UL') nivel++;
       }
-
-      // Interceptamos los enlaces y evitamos que al hacer click navegue a donde dice su href
-      this.renderer.listen(enlace, 'click', (event) => {
-        event.preventDefault(); // Evitamos que el router navegue
-
-        const href = (event.currentTarget as HTMLAnchorElement).getAttribute('href');
-        if (!href) return;
-
-        // Quitamos el '#' para obtener el ID limpio (aunque esté codificado)
-        const idDelElemento = href.substring(href.lastIndexOf('#') + 1);
-
-        // getElementById es el método más fiable para buscar, incluso con IDs codificados
-        const elementoDestino = document.getElementById(idDelElemento);
-
-        if (elementoDestino) {
-          elementoDestino.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          this.mostrarDrawer = false; // Ocultamos el drawer al hacer click en algún enlace
-        } else {
-          // Este error ahora será muy útil para depurar si algo sigue fallando
-          console.error(`Error definitivo: No se pudo encontrar el elemento con id: '${idDelElemento}'`);
-        }
-      });
+      this.entradasIndice.push({ id, texto: enlace.textContent?.trim() ?? '', nivel: Math.max(nivel, 1) });
+      this.titulosIndice.push(titulo);
     });
-
-    // Una vez arregladas las anclas del TOC, ponemos a true para no volver a hacerlo
-    this.anclasTocArregladas = true;
+    this.actualizarApartadoActivo();
   }
 
-  // Función que extrae el TOC del HTML ya generado y arreglado y lo coloca en el drawer lateral
-  private extraerTocParaDrawer(): void {
-    // Busca el índice que ya está en la página
-    const tocOriginal = this.elementRef.nativeElement.querySelector('.markdown-body .table-of-contents');
+  /** Deja el índice vacío (al cambiar de tema o si el tema no tiene contenido) */
+  private vaciarIndice(): void {
+    this.entradasIndice = [];
+    this.titulosIndice = [];
+    this.idActivo = null;
+    this.filtroIndice = '';
+  }
 
-    // Si existe el TOC en el contenido lo asignamos a la variable que se mostrará en el drawer
-    if (tocOriginal) {
-      // Copia su HTML y lo asigna a la variable del drawer
-      this.tocHTML = this.sanitizer.bypassSecurityTrustHtml(tocOriginal.innerHTML);
-    } else {
-      this.tocHTML = ""; // Limpiamos por si había restos de un TOC anterior cacheado
-      console.warn("No hay TOC en el md, o bien hubo algún error al extraerlo");
+  /** Entradas que coinciden con el buscador (sin distinguir tildes ni mayúsculas) */
+  public get entradasFiltradas(): EntradaIndice[] {
+    const filtro = normalizar(this.filtroIndice.trim());
+    if (!filtro) return this.entradasIndice;
+    return this.entradasIndice.filter(entrada => normalizar(entrada.texto).includes(filtro));
+  }
+
+  /** Texto de una entrada con la parte buscada resaltada (<mark>), ya escapado para usarlo en innerHTML */
+  public resaltar(texto: string): string {
+    const filtro = normalizar(this.filtroIndice.trim());
+    const posicion = filtro ? normalizar(texto).indexOf(filtro) : -1;
+    if (posicion === -1) return escaparHtml(texto);
+    return escaparHtml(texto.slice(0, posicion))
+      + '<mark>' + escaparHtml(texto.slice(posicion, posicion + filtro.length)) + '</mark>'
+      + escaparHtml(texto.slice(posicion + filtro.length));
+  }
+
+  /** Al abrir el panel del índice: buscador vacío y con el cursor, y la lista situada en el apartado que se está leyendo */
+  public alAbrirIndice(): void {
+    this.filtroIndice = '';
+    setTimeout(() => {
+      document.querySelector<HTMLInputElement>('.drawer-indice .indice-buscador input')?.focus();
+      document.querySelector('.drawer-indice .indice-enlace.activo')?.scrollIntoView({ block: 'center' });
+    });
+  }
+
+  /** El índice fijo a la izquierda se ve: está activado, la pantalla es ancha y el tema tiene [TOC] */
+  public get indiceFijoVisible(): boolean {
+    return this.indiceFijado && this.pantallaAncha && this.entradasIndice.length > 0;
+  }
+
+  /** Fija el índice a la izquierda (true) o lo oculta (false). Se recuerda en este navegador */
+  public fijarIndice(fijar: boolean): void {
+    this.indiceFijado = fijar;
+    if (fijar) this.mostrarDrawer = false;
+    try {
+      localStorage.setItem(CLAVE_INDICE_FIJADO, String(fijar));
+    } catch { /* si el navegador no deja guardarlo, solo dura hasta recargar */ }
+  }
+
+  /** Preferencia guardada del índice fijo (si no hay ninguna, fijado) */
+  private leerIndiceFijado(): boolean {
+    try {
+      return localStorage.getItem(CLAVE_INDICE_FIJADO) !== 'false';
+    } catch {
+      return true;
+    }
+  }
+
+  /** En el índice fijo, mueve su lista (no la página) para que el apartado activo quede a la vista */
+  private situarIndiceFijo(): void {
+    const lista = document.querySelector<HTMLElement>('.indice-fijo .indice-lista');
+    const activo = lista?.querySelector<HTMLElement>('.indice-enlace.activo');
+    if (!lista || !activo) return;
+    const arriba = activo.offsetTop - lista.offsetTop, abajo = arriba + activo.offsetHeight;
+    if (arriba < lista.scrollTop || abajo > lista.scrollTop + lista.clientHeight) {
+      lista.scrollTop = arriba - lista.clientHeight / 2;
+    }
+  }
+
+  /** Salta al apartado elegido y cierra el índice */
+  public irAEntrada(evento: Event, entrada: EntradaIndice): void {
+    evento.preventDefault(); // El enlace tiene href solo para que se vea la URL al pasar el ratón
+    document.getElementById(entrada.id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    this.mostrarDrawer = false;
+  }
+
+  /** Intro en el buscador: salta al primer resultado */
+  public irAlPrimerResultado(evento: Event): void {
+    const primera = this.entradasFiltradas[0];
+    if (primera) this.irAEntrada(evento, primera);
+  }
+
+  /** URL de un apartado (para el href de los enlaces del índice) */
+  public urlApartado(id: string): string {
+    return window.location.pathname + '#' + id;
+  }
+
+  /** "Estás aquí": al hacer scroll, marca el último título que ya ha pasado por la parte de arriba */
+  @HostListener('window:scroll')
+  alHacerScroll(): void {
+    if (this.titulosIndice.length === 0) return;
+    cancelAnimationFrame(this.fotogramaScroll);
+    this.fotogramaScroll = requestAnimationFrame(() => this.actualizarApartadoActivo());
+  }
+
+  private actualizarApartadoActivo(): void {
+    const margen = 120; // la barra de navegación fija tapa la parte de arriba
+    let activo: string | null = this.entradasIndice[0]?.id ?? null;
+    this.titulosIndice.forEach((titulo, i) => {
+      if (titulo.getBoundingClientRect().top <= margen) activo = this.entradasIndice[i].id;
+    });
+    if (activo !== this.idActivo) {
+      this.idActivo = activo;
+      if (this.indiceFijoVisible) setTimeout(() => this.situarIndiceFijo()); // tras pintar la nueva marca
     }
   }
 
@@ -473,6 +574,7 @@ export class Contenido implements OnInit {
     if (this.routeSuscripcion) {
       this.routeSuscripcion.unsubscribe();
     }
+    this.consultaAncho?.removeEventListener('change', this.alCambiarAncho);
   }
 
 }

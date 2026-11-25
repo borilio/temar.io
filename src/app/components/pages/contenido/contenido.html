@@ -98,8 +98,20 @@
         </div>
     </div>
     } @else {
-    <!-- El contenido markdown que le sigue -->
-    <div [innerHTML]="contenidoHTML" class="markdown-body" [class.disable-ligaduras]="!configService.mostrarLigaduras"></div>
+    <!-- El contenido markdown, con el índice fijo a la izquierda en pantallas anchas (si está activado) -->
+    <div class="cuerpo-tema" [class.con-indice]="indiceFijoVisible">
+        @if (indiceFijoVisible) {
+        <aside class="indice-fijo">
+            <div class="indice-fijo-cabecera">
+                <span class="indice-etiqueta">Índice</span>
+                <p-button icon="pi pi-angle-double-left" [text]="true" [rounded]="true" size="small"
+                    pTooltip="Ocultar el índice" tooltipPosition="right" (onClick)="fijarIndice(false)" />
+            </div>
+            <ng-container *ngTemplateOutlet="contenidoIndice" />
+        </aside>
+        }
+        <div [innerHTML]="contenidoHTML" class="markdown-body" [class.disable-ligaduras]="!configService.mostrarLigaduras"></div>
+    </div>
     }
     
     <!-- Pie: la misma fila de navegación (también con las flechas ← → del teclado) -->
@@ -117,7 +129,7 @@
 <!-- Botón flotante para abrir el índice lateral (si el tema no tiene índice, muestra un aviso).
      Si algún día hace falta más de una acción aquí, se puede volver a un p-speeddial -->
     <p-button
-        [hidden]="this.cargandoContenido"
+        [hidden]="this.cargandoContenido || indiceFijoVisible"
         icon="pi pi-compass"
         [rounded]="true"
         styleClass="boton-acrilico"
@@ -131,14 +143,38 @@
     Menú lateral (drawer) donde mostraremos el índice de contenidos TOC del tema 
     Está oculto por defecto y se muestra al pulsar el botón     
 -->
-<p-drawer [(visible)]="mostrarDrawer" closeOnEscape="true" position="left" (onShow)="this.arreglarAnclas()">
-    <ng-template pTemplate="header">
-        <h3>Índice de contenidos</h3>
-    </ng-template>
-    <p-divider></p-divider>
-    <h5>{{temaActual?.titulo}}</h5>
+<!-- Contenido del índice (buscador y apartados con "estás aquí"): se usa en el índice fijo y en el panel desplegable -->
+<ng-template #contenidoIndice>
+    <div class="indice-buscador">
+        <i class="pi pi-search"></i>
+        <input type="search" placeholder="Buscar en el índice…" aria-label="Buscar en el índice"
+            [(ngModel)]="filtroIndice" (keydown.enter)="irAlPrimerResultado($event)" />
+    </div>
 
-    <div [innerHTML]="tocHTML" class="table-of-contents"></div>
+    <nav class="indice-lista" aria-label="Apartados del tema">
+        @for (entrada of entradasFiltradas; track entrada.id) {
+        <a class="indice-enlace" [class]="'nivel-' + entrada.nivel" [class.activo]="entrada.id === idActivo"
+            [attr.href]="urlApartado(entrada.id)" (click)="irAEntrada($event, entrada)"
+            [innerHTML]="resaltar(entrada.texto)"></a>
+        } @empty {
+        <p class="indice-vacio">No hay apartados con "{{filtroIndice}}"</p>
+        }
+    </nav>
+</ng-template>
+
+<!-- Índice lateral desplegable (pantallas estrechas, o si el índice fijo está oculto). Solo si el .md tiene [TOC] -->
+<p-drawer [(visible)]="mostrarDrawer" closeOnEscape="true" position="left" styleClass="drawer-indice" (onShow)="alAbrirIndice()">
+    <ng-template #header>
+        <div class="indice-cabecera">
+            <span class="indice-etiqueta">Índice</span>
+            <span class="indice-titulo">{{temaActual?.titulo}}</span>
+        </div>
+        @if (pantallaAncha) {
+        <p-button icon="pi pi-thumbtack" [text]="true" [rounded]="true"
+            pTooltip="Fijar el índice a la izquierda" tooltipPosition="bottom" (onClick)="fijarIndice(true)" />
+        }
+    </ng-template>
+    <ng-container *ngTemplateOutlet="contenidoIndice" />
 </p-drawer>
 
 

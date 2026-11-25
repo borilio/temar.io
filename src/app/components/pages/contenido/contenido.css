@@ -6,7 +6,7 @@
     /* Borde simple y redondeado usando el color primario de PrimeNG */
     border: 1px solid var(--p-primary-500);
     border-radius: 10px; 
-    overflow: hidden; /* Para que el contenido respete los bordes */
+    overflow: clip; /* Para que el contenido respete los bordes (clip y no hidden: con hidden no funciona el índice fijo, position: sticky) */
 }
 
 /* Posiciona el speed dial en la esquina inferior izquierda */
