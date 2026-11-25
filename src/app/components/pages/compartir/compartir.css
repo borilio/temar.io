@@ -1,0 +1,94 @@
+/* Mismo contenedor que "Acerca de" */
+.container-compartir {
+  margin-top: 5rem;
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+  border: 1px solid var(--p-primary-500);
+  border-radius: 10px;
+  overflow: hidden;
+  text-align: center;
+}
+
+@media (min-width: 1200px) {
+  .container-compartir {
+    max-width: 1024px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+.titulo-compartir {
+  font-size: clamp(2rem, 5vw, 3.25rem);
+  margin: 0.5rem 0 1.5rem;
+}
+
+/* El QR, grande pero sin pasarse de la altura de la pantalla (para proyectarlo) */
+.qr-compartir {
+  display: block;
+  width: min(55vh, 80vw);
+  height: auto;
+  margin: 0 auto;
+  border-radius: 1rem;
+  box-shadow: 0 8px 24px rgb(0 0 0 / 0.25);
+}
+
+/* La dirección, muy grande, para poder teclearla desde el fondo del aula */
+.direccion-compartir {
+  margin: 1.5rem 0 0.5rem;
+  font-size: clamp(1.5rem, 4.5vw, 3rem);
+  font-weight: 700;
+  color: var(--p-primary-color);
+  word-break: break-all;
+}
+
+/* Solo el QR generado: aparece con un pequeño zoom y tiene una sombra proyectada.
+   El ratón hace de foco de luz: compartir.ts mueve la sombra al lado contrario (--sombra-x, --sombra-y).
+   Sin ratón, la luz viene de arriba y la sombra cae hacia abajo */
+.qr-generado {
+  --sombra-x: 0px;
+  --sombra-y: 18px;
+  box-shadow:
+    var(--sombra-x) var(--sombra-y) 40px rgb(0 0 0 / 0.45),
+    var(--sombra-x) var(--sombra-y) 70px color-mix(in srgb, var(--p-primary-500) 35%, transparent);
+  transition: box-shadow 0.2s ease-out;
+  animation: aparecer-qr 0.6s ease-out both;
+}
+
+@keyframes aparecer-qr {
+  from { opacity: 0; transform: scale(0.9); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+/* El marco del QR generado: el canvas dentro ocupa todo; recorta el reflejo a las esquinas redondeadas */
+.qr-generado {
+  position: relative;
+  overflow: hidden;
+}
+
+.qr-generado canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* Reflejo de luz que cruza el QR en diagonal cada pocos segundos, como en un cristal */
+.qr-generado::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(115deg, transparent 35%, rgb(255 255 255 / 0.45) 50%, transparent 65%);
+  transform: translateX(-120%);
+  animation: reflejo-qr 6s ease-in-out 1.5s infinite;
+  pointer-events: none;
+}
+
+@keyframes reflejo-qr {
+  0%        { transform: translateX(-120%); }
+  25%, 100% { transform: translateX(120%); }
+}
+
+/* Si el sistema pide reducir el movimiento, sin animaciones (el degradado tampoco gira: ver compartir.ts) */
+@media (prefers-reduced-motion: reduce) {
+  .qr-generado,
+  .qr-generado::after { animation: none; }
+}

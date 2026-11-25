@@ -5,10 +5,11 @@ import { AppModel } from '../../../models/app.model';
 import { Caducidad, Data } from '../../../models/config.model';
 import { ConfigService } from '../../../services/config.service';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-acercade',
-  imports: [PRIMENG_IMPORTS, CommonModule],
+  imports: [PRIMENG_IMPORTS, CommonModule, RouterLink],
   templateUrl: './acercade.html',
   styleUrl: './acercade.css'
 })

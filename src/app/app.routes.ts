@@ -6,6 +6,7 @@ import { Contenido } from './components/pages/contenido/contenido';
 import { Acercade } from './components/pages/acercade/acercade';
 import { Enlaces } from './components/pages/enlaces/enlaces';
 import { Cerrado } from './components/pages/cerrado/cerrado';
+import { Compartir } from './components/pages/compartir/compartir';
 
 export const routes: Routes = [
   // Ruta raíz ('/')
@@ -33,6 +34,11 @@ export const routes: Routes = [
   {
     path: 'cerrado',
     component: Cerrado
+  },
+  // Compartir el curso con un QR, para proyectar en clase (botón "Compartir curso" en "Acerca de")
+  {
+    path: 'qr',
+    component: Compartir
   },
   // (Opcional pero recomendado) Redirige cualquier otra ruta al índice
   // TODO hacer una página 404

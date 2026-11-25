@@ -1,0 +1,18 @@
+<!-- Compartir el curso (QR) para proyectar en clase: nombre, QR y la dirección para teclearla -->
+<div class="container-compartir">
+    <p-card>
+        <h1 class="titulo-compartir">{{nombreCurso || 'Compartir curso'}}</h1>
+
+        <!-- El QR propio del curso (img/qrcode.png) si existe; si no, el generado -->
+        @if (qrPropio) {
+        <img class="qr-compartir" [src]="qrPropio" alt="Código QR para abrir el curso" />
+        } @else {
+        <!-- El marco lleva el brillo que "respira" y el reflejo de luz que cruza de vez en cuando -->
+        <div #marcoQr class="qr-compartir qr-generado">
+            <canvas #lienzoQr role="img" aria-label="Código QR para abrir el curso"></canvas>
+        </div>
+        }
+
+        <p class="direccion-compartir fuente-firacode">{{direccionVisible}}</p>
+    </p-card>
+</div>

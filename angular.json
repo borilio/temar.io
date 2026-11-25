@@ -71,7 +71,8 @@
               "bootstrap",
               "@vscode/markdown-it-katex",
               "markdown-it-highlightjs",
-              "markdown-it-attrs"
+              "markdown-it-attrs",
+              "qrcode"
             ]
           },
           "configurations": {
