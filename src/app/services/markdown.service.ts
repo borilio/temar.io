@@ -13,6 +13,7 @@ import markdownItHighlightjs from 'markdown-it-highlightjs';
 import tocDoneRight from 'markdown-it-toc-done-right';
 import anchor from 'markdown-it-anchor';
 import attrs from 'markdown-it-attrs';
+import { widgets } from '../shared/widgets-markdown';
 import { ConfigService } from './config.service';
 
 @Injectable({
@@ -60,6 +61,9 @@ export class MarkdownService {
 
     // Usamos el plugin que permite añadir atributos al markdown (usado para darle estilos a las imágenes)
     this.mdParser.use(attrs);
+
+    // Widgets con la sintaxis ::: (todo su código está en shared/widgets-markdown.ts)
+    this.mdParser.use(widgets);
   }
 
 

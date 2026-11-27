@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, OnInit, Renderer2, ViewContainerRef, ViewEncapsulation } from '@angular/core';
+import { Component, ElementRef, HostListener, NgZone, OnInit, Renderer2, ViewContainerRef, ViewEncapsulation } from '@angular/core';
 import { CodeHeader } from '../../layout/code-header/code-header'; // Componente code-header (cabecera para los bloques de código)
 import { PRIMENG_IMPORTS } from '../../../shared/primeng.imports';
 import { MarkdownService } from '../../../services/markdown.service';
@@ -76,6 +76,7 @@ export class Contenido implements OnInit {
   public idActivo: string | null = null; // Apartado que se está leyendo ("Estás aquí")
   private titulosIndice: HTMLElement[] = []; // Los títulos del tema, en el mismo orden que entradasIndice
   private fotogramaScroll = 0;
+  private quitarAnimaciones?: () => void; // Quita los escuchadores de los widgets animados (al cambiar de tema o salir)
   private focoEnBuscador = false; // Al abrir el panel, poner el cursor en el buscador (solo si se abrió con Ctrl+I)
   public seleccionIndice = 0; // Resultado elegido con ↑ ↓ en el buscador (Intro salta a él)
   public buscadorConFoco = false; // La marca del resultado elegido solo se ve mientras se usa el buscador
@@ -99,7 +100,8 @@ export class Contenido implements OnInit {
     private router: Router,
     // Para la configuración...
     public configService: ConfigService, //Tiene que ser público, para poder usarlo desde HTML
-    private preferencias: PreferenciasService
+    private preferencias: PreferenciasService,
+    private zona: NgZone // para mover el rótulo del jumbotron sin que Angular revise la vista en cada fotograma
 
   ) {
     this.contenidoHTML = "";
@@ -287,6 +289,7 @@ export class Contenido implements OnInit {
           this.mejorarBloquesDeCodigo(); // Mejora los bloques de código del HTML generado original
           this.construirIndice(); // Construye el índice lateral a partir del [TOC] del tema
           this.transformarImagenesPreview();
+          this.prepararWidgetsAnimados(); // Widgets con "animated": se animan en bucle con el ratón encima
           this.restaurarScrollTrasRecarga(id); // Si venimos de recargar la página, vuelve a donde se estaba
         }, 0);
 
@@ -588,12 +591,188 @@ export class Contenido implements OnInit {
   }
 
 
+  /** Clics en los widgets que responden al pulsar (su HTML lo genera widgets-markdown.ts) */
+  @HostListener('click', ['$event'])
+  alPulsarWidget(evento: MouseEvent): void {
+    const objetivo = evento.target as HTMLElement;
+    if (objetivo.closest('a')) return; // los enlaces, a lo suyo
+    this.cambiarPestana(objetivo);
+    this.alternarTarea(objetivo);
+  }
+
+  /**
+   * Widget "tabs": al pulsar una pestaña, se muestra su panel y se ocultan los demás (solo los de ese widget,
+   * no los de otras pestañas que haya dentro).
+   */
+  private cambiarPestana(objetivo: HTMLElement): void {
+    const pestana = objetivo.closest<HTMLElement>('.markdown-body [data-widget="tabs"] > .widget-pestanas > .widget-pestana');
+    if (!pestana) return;
+    const widget = pestana.closest('[data-widget="tabs"]')!;
+    const pestanas = Array.from(widget.querySelectorAll(':scope > .widget-pestanas > .widget-pestana'));
+    const paneles = Array.from(widget.querySelectorAll<HTMLElement>(':scope > .widget-pestana-panel'));
+    const elegida = pestanas.indexOf(pestana);
+    pestanas.forEach((p, i) => p.setAttribute('aria-selected', String(i === elegida)));
+    paneles.forEach((panel, i) => panel.hidden = i !== elegida);
+  }
+
+  /**
+   * Widget "checklist": al pulsar una tarea (casilla o texto) se marca o se desmarca. No se guarda nada: al
+   * recargar o cambiar de tema vuelven a como están en el .md. Pulsar un enlace de la tarea no la marca.
+   * Sus botones "Marcar todo" / "Desmarcar todo" / "Restablecer" (los añade widgets-markdown.ts) cambian todas a la vez.
+   */
+  private alternarTarea(objetivo: HTMLElement): void {
+
+    // Botones "Marcar todo" / "Desmarcar todo" / "Restablecer" (como en el .md): todas las tareas de ese widget
+    const boton = objetivo.closest<HTMLElement>('.markdown-body [data-widget="checklist"] [data-accion]');
+    if (boton) {
+      const accion = boton.dataset['accion'];
+      boton.closest('[data-widget="checklist"]')?.querySelectorAll('li.widget-tarea').forEach(tarea => {
+        const marcar = accion === 'restablecer' ? tarea.hasAttribute('data-hecha') : accion === 'marcar-todo';
+        tarea.classList.toggle('widget-tarea-hecha', marcar);
+      });
+      return;
+    }
+
+    const tarea = objetivo.closest('.markdown-body [data-widget="checklist"] li.widget-tarea');
+    tarea?.classList.toggle('widget-tarea-hecha');
+  }
+
+
+  /**
+   * Widgets con el modificador "animated": se animan en bucle mientras el ratón está encima (al quitarlo se paran
+   * y vuelven a su aspecto normal). Es la forma de animar cualquier widget: en widgets.css, la animación va en
+   * la clase "widget-animando", que se pone y se quita aquí.
+   * - Numera sus pasos (--paso: los <li> de su lista) para escalonar la animación.
+   * - Cada ciclo dura: pasos × --widget-intervalo + --widget-pausa (variables CSS de cada widget).
+   * Con "reducir movimiento" no se animan.
+   */
+  private prepararWidgetsAnimados(): void {
+    this.quitarAnimaciones?.();
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const animados: NodeListOf<HTMLElement> = this.elementRef.nativeElement.querySelectorAll('.markdown-body [data-widget].widget-animated');
+
+    const limpiezas: (() => void)[] = [];
+    animados.forEach(widget => {
+      // El jumbotron es la excepción: su rótulo se mueve siempre (y se puede arrastrar)
+      if (widget.dataset['widget'] === 'jumbotron') {
+        const quitar = this.prepararRotulo(widget);
+        if (quitar) limpiezas.push(quitar);
+        return;
+      }
+
+      const pasos = widget.querySelectorAll<HTMLElement>(':scope > ol > li');
+      pasos.forEach((paso, i) => paso.style.setProperty('--paso', String(i)));
+
+      let temporizador = 0;
+      // Volver a empezar la animación: quitar la clase, forzar que el navegador lo note y ponerla otra vez
+      const reiniciar = () => {
+        widget.classList.remove('widget-animando');
+        void widget.offsetWidth;
+        widget.classList.add('widget-animando');
+      };
+      const entrar = () => {
+        const estilos = getComputedStyle(widget);
+        const intervalo = parseFloat(estilos.getPropertyValue('--widget-intervalo')) || 1;
+        const pausa = parseFloat(estilos.getPropertyValue('--widget-pausa')) || 1.5;
+        reiniciar();
+        temporizador = window.setInterval(reiniciar, (Math.max(pasos.length, 1) * intervalo + pausa) * 1000);
+      };
+      const salir = () => {
+        clearInterval(temporizador);
+        widget.classList.remove('widget-animando');
+      };
+      widget.addEventListener('mouseenter', entrar);
+      widget.addEventListener('mouseleave', salir);
+      limpiezas.push(() => {
+        salir();
+        widget.removeEventListener('mouseenter', entrar);
+        widget.removeEventListener('mouseleave', salir);
+      });
+    });
+    this.quitarAnimaciones = () => limpiezas.forEach(limpiar => limpiar());
+  }
+
+  /**
+   * Jumbotron "animated": el titular pasa a ser un rótulo que se desplaza siempre (hacia la izquierda; con "reverse",
+   * hacia la derecha), repetido para que
+   * no queden huecos. Se puede arrastrar con el ratón o el dedo; al soltarlo sigue con su impulso y vuelve poco a
+   * poco a su velocidad normal. Se mueve fuera de Angular (requestAnimationFrame). Devuelve la función que lo para.
+   */
+  private prepararRotulo(widget: HTMLElement): (() => void) | undefined {
+    const titular = widget.firstElementChild as HTMLElement | null;
+    if (!titular) return;
+    // px por segundo: de derecha a izquierda (como un rótulo luminoso); con "reverse", de izquierda a derecha
+    const VELOCIDAD = widget.classList.contains('widget-reverse') ? 60 : -60;
+    const RECUPERACION = 1.5; // lo rápido que vuelve a su velocidad tras soltarlo (más = antes)
+
+    // Una "unidad" es el texto + el separador; se repite las veces necesarias para cubrir cualquier ancho
+    const unidad = `<span class="widget-rotulo-unidad">${titular.innerHTML}<span class="widget-rotulo-separador">•</span></span>`;
+    titular.innerHTML = `<span class="widget-rotulo-pista">${unidad}</span>`;
+    titular.classList.add('widget-rotulo');
+    const pista = titular.firstElementChild as HTMLElement;
+    const primera = pista.firstElementChild as HTMLElement;
+    pista.innerHTML = unidad.repeat(Math.ceil(screen.width / Math.max(primera.offsetWidth, 1)) + 2);
+
+    let posicion = 0, velocidad = VELOCIDAD, anterior = performance.now(), fotograma = 0;
+    let arrastrando = false, ultimoX = 0, ultimoT = 0;
+
+    const mover = (ahora: number) => {
+      const dt = Math.min((ahora - anterior) / 1000, 0.1);
+      anterior = ahora;
+      if (!arrastrando) {
+        velocidad += (VELOCIDAD - velocidad) * Math.min(1, dt * RECUPERACION); // inercia: vuelve a su velocidad
+        posicion += velocidad * dt;
+      }
+      const ancho = (pista.firstElementChild as HTMLElement).offsetWidth || 1;
+      posicion = ((posicion % ancho) + ancho) % ancho; // siempre entre 0 y una unidad: sin saltos
+      pista.style.transform = `translateX(${posicion - ancho}px)`;
+      fotograma = requestAnimationFrame(mover);
+    };
+
+    const coger = (e: PointerEvent) => {
+      arrastrando = true;
+      ultimoX = e.clientX;
+      ultimoT = e.timeStamp;
+      titular.setPointerCapture(e.pointerId);
+      titular.classList.add('widget-arrastrando');
+    };
+    const arrastrar = (e: PointerEvent) => {
+      if (!arrastrando) return;
+      const dx = e.clientX - ultimoX, dt = Math.max((e.timeStamp - ultimoT) / 1000, 0.001);
+      posicion += dx;
+      velocidad = velocidad * 0.5 + (dx / dt) * 0.5; // impulso del arrastre (suavizado)
+      ultimoX = e.clientX;
+      ultimoT = e.timeStamp;
+    };
+    const soltar = () => {
+      arrastrando = false;
+      titular.classList.remove('widget-arrastrando');
+    };
+
+    this.zona.runOutsideAngular(() => {
+      titular.addEventListener('pointerdown', coger);
+      titular.addEventListener('pointermove', arrastrar);
+      titular.addEventListener('pointerup', soltar);
+      titular.addEventListener('pointercancel', soltar);
+      fotograma = requestAnimationFrame(mover);
+    });
+
+    return () => {
+      cancelAnimationFrame(fotograma);
+      titular.removeEventListener('pointerdown', coger);
+      titular.removeEventListener('pointermove', arrastrar);
+      titular.removeEventListener('pointerup', soltar);
+      titular.removeEventListener('pointercancel', soltar);
+    };
+  }
+
   ngOnDestroy(): void {
     // Limpiamos la suscripción para evitar fugas de memoria
     if (this.routeSuscripcion) {
       this.routeSuscripcion.unsubscribe();
     }
     this.consultaAncho?.removeEventListener('change', this.alCambiarAncho);
+    this.quitarAnimaciones?.();
   }
 
 }

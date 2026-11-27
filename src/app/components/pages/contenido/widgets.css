@@ -1,130 +1,742 @@
 /* ================================
-   WIDGET - Colores contextuales
+   WIDGET - COLORES
+   Cada modificador de color elige un color de la paleta del tema (PrimeNG) y el color del texto que va encima:
+   --widget-color       color del widget (círculos, bordes, fondos suaves…)
+   --widget-contraste   texto encima de un relleno de ese color (p. ej. el número del stepper)
+   --widget-color-texto textos de color sobre el fondo de la página (p. ej. títulos): el color del widget
+                        mezclado con el del texto del tema, para que se lea en temas claros y oscuros
    ================================ */
 
 [data-widget] {
     --widget-color: var(--p-primary-500);
+    --widget-contraste: #fff;
+    --widget-color-texto: color-mix(in srgb, var(--widget-color) 70%, var(--p-text-color));
 }
 
 .widget-primary {
     --widget-color: var(--p-primary-500);
+    --widget-contraste: #fff;
 }
 
 .widget-info {
-    --widget-color: #0dcaf0;
+    --widget-color: var(--p-sky-500, #0ea5e9);
+    --widget-contraste: #fff;
 }
 
 .widget-success {
-    --widget-color: #198754;
+    --widget-color: var(--p-green-600, #16a34a);
+    --widget-contraste: #fff;
 }
 
 .widget-warning {
-    --widget-color: #ffc107;
+    --widget-color: var(--p-amber-500, #f59e0b);
+    --widget-contraste: var(--p-surface-900, #18181b);
 }
 
 .widget-danger {
-    --widget-color: #dc3545;
+    --widget-color: var(--p-red-600, #dc2626);
+    --widget-contraste: #fff;
 }
 
 .widget-light {
-    --widget-color: #f8f9fa;
+    --widget-color: var(--p-surface-200, #e4e4e7);
+    --widget-contraste: var(--p-surface-900, #18181b);
 }
 
 .widget-dark {
-    --widget-color: #212529;
+    --widget-color: var(--p-surface-700, #3f3f46);
+    --widget-contraste: #fff;
 }
 
 /* ================================
-   WIDGET - COMMON
+   WIDGET - MODIFICADORES COMUNES
+   Por defecto, un widget mide lo que su contenido y va centrado.
+   Un widget que deba ocupar siempre todo el ancho lo indica en su propio CSS con "width: auto".
    ================================ */
 
-.widget-bordered {
+.markdown-body [data-widget] {
+    width: fit-content;
+    max-width: 100%;
+    margin-inline: auto;
+}
+
+/* left: alineado a la izquierda, como el texto */
+.markdown-body [data-widget].widget-left {
+    margin-inline: 0 auto;
+}
+
+/* right: alineado a la derecha */
+.markdown-body [data-widget].widget-right {
+    margin-inline: auto 0;
+}
+
+/* full: ocupa todo el ancho de la página */
+.markdown-body [data-widget].widget-full {
+    width: auto;
+    margin-inline: 0;
+}
+
+/* inline: en línea, junto al widget anterior o el siguiente (si no caben, pasan a la línea de abajo).
+   Alineado por arriba, para que si uno crece (p. ej. un desplegable al abrirse) el de al lado no baje */
+.markdown-body [data-widget].widget-inline {
+    display: inline-block;
+    vertical-align: top;
+    margin-inline: 0 1rem;
+}
+
+/* bordered: borde del color del widget */
+.markdown-body [data-widget].widget-bordered {
     border: 1px solid var(--widget-color);
+}
+
+/* filled: fondo suave del color del widget */
+.markdown-body [data-widget].widget-filled {
+    background-color: color-mix(in srgb, var(--widget-color) 12%, transparent);
+}
+
+/* bordered y filled: esquinas redondeadas y espacio interior, solo si el widget no tiene los suyos
+   (:where no suma prioridad, así que gana el CSS propio de cada widget, como el del alert) */
+.markdown-body :where([data-widget].widget-bordered, [data-widget].widget-filled) {
     border-radius: 0.375rem;
     padding: 1rem;
 }
 
-.widget-centered {
-    margin-inline: auto;
-    width: fit-content;
+
+/* ================================
+   WIDGET - TÍTULO (común)
+   Si lo primero de un widget es un párrafo con solo una negrita (**Título**), markdown.service.ts
+   le pone la clase "widget-titulo". Cada widget puede darle su estilo.
+   ================================ */
+
+/* ================================
+   WIDGET - ALERT
+   Cuadro para destacar un contenido (no es un aviso tipo > [!note]): fondo suave, borde y esquinas
+   redondeadas del color del widget. Como todos los widgets, mide lo que su contenido (full: todo el ancho). Dentro, Markdown normal:
+     ::: alert success
+     **🟢 Título**
+
+     Texto, listas, imágenes…
+     :::
+   ================================ */
+
+.markdown-body [data-widget="alert"] {
+    margin-block: 1rem;
+    padding: 1rem 1.25rem;
+    background-color: color-mix(in srgb, var(--widget-color) 12%, transparent);
+    border: 1px solid color-mix(in srgb, var(--widget-color) 40%, transparent);
+    border-radius: 0.5rem;
 }
 
+/* Con bordered, el borde del alert pasa al color completo y algo más grueso */
+.markdown-body [data-widget="alert"].widget-bordered {
+    border-width: 2px;
+}
+
+/* Sin margen sobrante arriba ni abajo dentro del cuadro */
+.markdown-body [data-widget="alert"] > :first-child {
+    margin-top: 0;
+}
+
+.markdown-body [data-widget="alert"] > :last-child {
+    margin-bottom: 0;
+}
+
+/* El título (primera línea en negrita): más grande y del color del widget */
+.markdown-body [data-widget="alert"] > .widget-titulo {
+    font-size: 1.2em;
+    color: var(--widget-color-texto);
+}
 
 /* ================================
    WIDGET - STEPPER
+   Pasos numerados unidos por una línea vertical. Se escribe con una lista numerada normal:
+     ::: stepper
+     1. **Título del paso**
+        Texto, imágenes, código…
+     :::
+   (Sigue funcionando la forma antigua en HTML: <ol><li><div>…</div></li></ol>)
+   Las reglas llevan .markdown-body delante para ganar a los estilos de listas de los temas visuales
    ================================ */
 
-[data-widget="stepper"] {
+.markdown-body [data-widget="stepper"] {
     margin-block: 2rem;
 }
 
-[data-widget="stepper"] ol {
-    counter-reset: widget-step;
+.markdown-body [data-widget="stepper"] ol {
+    counter-reset: widget-paso;
     list-style: none;
     margin: 0;
     padding: 0;
 }
 
-[data-widget="stepper"] li {
-    counter-increment: widget-step;
-
+/* Cada paso: el número va en un círculo a la izquierda y el contenido a su derecha */
+.markdown-body [data-widget="stepper"] li {
+    counter-increment: widget-paso;
+    list-style: none; /* sin el número normal de la lista (el tema visual se lo pone a cada elemento) */
     position: relative;
-    display: grid;
-    grid-template-columns: 2rem 1fr;
-    column-gap: 1rem;
-    padding-bottom: 2rem;
+    min-height: 2rem;
+    margin: 0;
+    padding: 0 0 2rem 3rem;
 }
 
-[data-widget="stepper"] li:not(:last-child)::after {
-    content: "";
+.markdown-body [data-widget="stepper"] li::marker {
+    content: none;
+}
 
+.markdown-body [data-widget="stepper"] li:last-child {
+    padding-bottom: 0;
+}
+
+/* El número del paso */
+.markdown-body [data-widget="stepper"] li::before {
+    content: counter(widget-paso);
     position: absolute;
-    left: 1rem;
+    left: 0;
+    top: 0;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    background-color: var(--widget-color);
+    color: var(--widget-contraste, #fff);
+    font-weight: 600;
+}
+
+/* La línea que une un paso con el siguiente */
+.markdown-body [data-widget="stepper"] li:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    left: calc(1rem - 1px);
     top: 2rem;
     bottom: 0;
-
     width: 2px;
-
     background-color: var(--widget-color);
     opacity: 0.25;
 }
 
-[data-widget="stepper"] li::before {
-    content: counter(widget-step);
-
-    position: relative;
-    z-index: 1;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    width: 2rem;
-    height: 2rem;
-
-    border-radius: 50%;
-
-    background-color: var(--widget-color);
-    color: #fff;
-
-    font-weight: 600;
-}
-
-[data-widget="stepper"] li > div {
-    min-width: 0;
-}
-
-[data-widget="stepper"] li strong {
+/* El título del paso (lo primero en negrita), a la altura del número */
+.markdown-body [data-widget="stepper"] li strong:first-child {
     display: block;
     padding-top: 0.35rem;
 }
 
-[data-widget="stepper"] li p {
+.markdown-body [data-widget="stepper"] li p {
     margin: 0.4rem 0 0;
 }
 
-[data-widget="stepper"] img {
+.markdown-body [data-widget="stepper"] li > p:first-child {
+    margin-top: 0;
+}
+
+.markdown-body [data-widget="stepper"] li > div {
+    min-width: 0;
+}
+
+/* Las imágenes de un paso, a la izquierda (no centradas como en el resto del temario) */
+.markdown-body [data-widget="stepper"] img {
     display: block;
-    margin-left: 0;
-    margin-right: auto;
+    margin: 0.5rem auto 0 0;
+}
+
+/* ================================
+   WIDGET - DETAILS (desplegable)
+   Tarjeta con un título que se pulsa para mostrar u ocultar el contenido.
+   markdown.service.ts lo convierte en <details> (el título es el <summary>; sin título, "Más información"):
+     ::: details
+     **Título**
+
+     Contenido: texto, listas, imágenes, código…
+     :::
+   ================================ */
+
+.markdown-body [data-widget="details"] {
+    margin-block: 1rem;
+    padding: 0 1.25rem; /* margen del contenido (el título lo compensa con margen negativo) */
+    background-color: color-mix(in srgb, var(--widget-color) 6%, transparent);
+    border: 1px solid color-mix(in srgb, var(--widget-color) 25%, transparent);
+    border-radius: 0.75rem;
+    overflow: hidden;
+    interpolate-size: allow-keywords; /* permite animar la altura hasta "auto" */
+}
+
+.markdown-body [data-widget="details"].widget-bordered {
+    border-width: 2px;
+}
+
+/* El título: a la izquierda, del color del widget; la flecha, a la derecha */
+.markdown-body [data-widget="details"] > summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin: 0 -1.25rem;
+    padding: 0.9rem 1.25rem;
+    font-size: 1.05em;
+    font-weight: 600;
+    color: var(--widget-color-texto);
+    cursor: pointer;
+    list-style: none;
+    user-select: none;
+    transition: background-color 0.2s;
+}
+
+.markdown-body [data-widget="details"] > summary::-webkit-details-marker {
+    display: none;
+}
+
+.markdown-body [data-widget="details"] > summary:hover {
+    background-color: color-mix(in srgb, var(--widget-color) 10%, transparent);
+}
+
+/* La flecha (un ángulo hecho con dos bordes): hacia abajo cerrado y hacia arriba abierto */
+.markdown-body [data-widget="details"] > summary::after {
+    content: "";
+    flex-shrink: 0;
+    width: 0.55rem;
+    height: 0.55rem;
+    margin-top: -0.25rem;
+    border-right: 2px solid currentColor;
+    border-bottom: 2px solid currentColor;
+    transform: rotate(45deg);
+    transition: transform 0.25s, margin-top 0.25s;
+}
+
+.markdown-body [data-widget="details"][open] > summary::after {
+    margin-top: 0.25rem;
+    transform: rotate(-135deg);
+}
+
+/* El contenido (lo que va tras el título): sin margen sobrante arriba y con 1rem abajo */
+.markdown-body [data-widget="details"] > summary + * {
+    margin-top: 0.25rem;
+}
+
+.markdown-body [data-widget="details"] > :last-child:not(summary) {
+    margin-bottom: 1rem;
+}
+
+/* Al abrir y cerrar, la altura cambia suavemente (en navegadores que lo admiten; en los demás, de golpe) */
+.markdown-body [data-widget="details"]::details-content {
+    height: 0;
+    overflow: hidden;
+    transition: height 0.3s ease, content-visibility 0.3s allow-discrete;
+}
+
+.markdown-body [data-widget="details"][open]::details-content {
+    height: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .markdown-body [data-widget="details"]::details-content,
+    .markdown-body [data-widget="details"] > summary::after {
+        transition: none;
+    }
+}
+
+/* ================================
+   WIDGET - CHECKLIST (lista de tareas)
+   Lista con casillas del color del widget que se marcan y desmarcan pulsando (contenido.ts > alternarTarea;
+   no se guarda nada). Se escribe con la sintaxis de tareas, que Typora también muestra con casillas:
+     ::: checklist
+     **Título**
+
+     - [x] Tarea hecha
+     - [ ] Tarea pendiente
+     :::
+   markdown.service.ts quita el [ ] / [x] y pone en el <li> las clases "widget-tarea" y "widget-tarea-hecha"
+   ================================ */
+
+.markdown-body [data-widget="checklist"] {
+    margin-block: 1rem;
+}
+
+.markdown-body [data-widget="checklist"] > .widget-titulo {
+    margin-bottom: 1rem;
+    color: var(--widget-color-texto);
+}
+
+.markdown-body [data-widget="checklist"] > :last-child {
+    margin-bottom: 0;
+}
+
+/* Las listas con tareas, sin viñetas ni sangría (la casilla ocupa su sitio) */
+.markdown-body [data-widget="checklist"] ul:has(> .widget-tarea) {
+    padding-left: 0;
+}
+
+.markdown-body [data-widget="checklist"] li.widget-tarea {
+    position: relative;
+    list-style: none;
+    margin: 0.35rem 0;
+    padding-left: 1.9rem;
+    cursor: pointer;
+    user-select: none; /* que al pulsar varias veces no se seleccione el texto */
+}
+
+/* Las tareas de dentro y los enlaces, con su propio cursor */
+.markdown-body [data-widget="checklist"] li.widget-tarea :is(ul, ol) {
+    cursor: default;
+}
+
+.markdown-body [data-widget="checklist"] li.widget-tarea a {
+    cursor: pointer;
+}
+
+.markdown-body [data-widget="checklist"] li.widget-tarea::marker {
+    content: none;
+}
+
+/* La casilla, centrada con la primera línea del texto */
+.markdown-body [data-widget="checklist"] li.widget-tarea::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: calc(0.5lh - 0.6rem);
+    box-sizing: border-box;
+    width: 1.2rem;
+    height: 1.2rem;
+    border: 2px solid var(--widget-color);
+    border-radius: 0.3rem;
+    transition: background-color 0.15s;
+}
+
+.markdown-body [data-widget="checklist"] li.widget-tarea:not(.widget-tarea-hecha):hover::before {
+    background-color: color-mix(in srgb, var(--widget-color) 15%, transparent);
+}
+
+/* Marcada: casilla rellena del color del widget, con la marca de verificación encima */
+.markdown-body [data-widget="checklist"] li.widget-tarea-hecha::before {
+    background-color: var(--widget-color);
+}
+
+/* Botones "Marcar todo" / "Desmarcar todo": abajo y centrados, bajo una línea fina, como enlaces tenues */
+.markdown-body [data-widget="checklist"] > .widget-acciones {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1rem;
+    padding-top: 0.6rem;
+    border-top: 1px solid color-mix(in srgb, var(--p-text-color) 12%, transparent); /* línea fina y tenue */
+}
+
+.markdown-body [data-widget="checklist"] .widget-acciones button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0;
+    border: none;
+    background: none;
+    font: inherit;
+    font-size: 0.8em;
+    color: var(--p-text-muted-color);
+    opacity: 0.7;
+    cursor: pointer;
+    transition: color 0.15s, opacity 0.15s;
+}
+
+.markdown-body [data-widget="checklist"] .widget-acciones button:hover {
+    color: var(--widget-color-texto);
+    opacity: 1;
+}
+
+.markdown-body [data-widget="checklist"] .widget-acciones .pi {
+    font-size: 0.9em;
+}
+
+/* Marcada: el texto, tachado (solo el suyo, no el de las tareas de dentro) */
+.markdown-body [data-widget="checklist"] li.widget-tarea-hecha > .widget-tarea-texto {
+    text-decoration: line-through 1px color-mix(in srgb, var(--p-text-color) 40%, transparent);
+}
+
+.markdown-body [data-widget="checklist"] li.widget-tarea-hecha::after {
+    content: "";
+    position: absolute;
+    left: 0.42rem;
+    top: calc(0.5lh - 0.4rem);
+    width: 0.36rem;
+    height: 0.65rem;
+    border-right: 2px solid var(--widget-contraste);
+    border-bottom: 2px solid var(--widget-contraste);
+    transform: rotate(45deg);
+}
+
+/* ================================
+   WIDGET - TABS (pestañas)
+   Cada línea solo en negrita abre una pestaña (con "pi-algo" delante, lleva ese icono de PrimeIcons):
+     ::: tabs
+     **pi-windows Windows**
+
+     Contenido de la pestaña…
+
+     **Linux**
+
+     Contenido…
+     :::
+   widgets-markdown.ts genera la barra (.widget-pestanas con un botón .widget-pestana por pestaña) y los paneles
+   (.widget-pestana-panel); contenido.ts > cambiarPestana muestra el de la pestaña pulsada.
+   Aspecto como las pestañas de PrimeNG: barra con una línea abajo y la activa subrayada del color del widget.
+   ================================ */
+
+.markdown-body [data-widget="tabs"] {
+    margin-block: 1rem;
+}
+
+.markdown-body [data-widget="tabs"] > .widget-pestanas {
+    display: flex;
+    flex-wrap: wrap;
+    border-bottom: 1px solid var(--p-content-border-color);
+}
+
+.markdown-body [data-widget="tabs"] .widget-pestana {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: -1px; /* el subrayado de la activa, encima de la línea de la barra */
+    padding: 0.75rem 1.125rem;
+    border: none;
+    border-bottom: 2px solid transparent;
+    background: none;
+    font: inherit;
+    font-weight: 600;
+    color: var(--p-text-muted-color);
+    cursor: pointer;
+    transition: color 0.2s, border-color 0.2s;
+}
+
+.markdown-body [data-widget="tabs"] .widget-pestana:hover {
+    color: var(--p-text-color);
+}
+
+.markdown-body [data-widget="tabs"] .widget-pestana[aria-selected="true"] {
+    color: var(--widget-color-texto);
+    border-bottom-color: var(--widget-color);
+}
+
+.markdown-body [data-widget="tabs"] .widget-pestana code {
+    font-weight: normal;
+}
+
+/* El contenido de cada pestaña */
+.markdown-body [data-widget="tabs"] > .widget-pestana-panel {
+    padding-top: 1rem;
+}
+
+.markdown-body [data-widget="tabs"] > .widget-pestana-panel[hidden] {
+    display: none;
+}
+
+.markdown-body [data-widget="tabs"] > .widget-pestana-panel > :first-child {
+    margin-top: 0;
+}
+
+.markdown-body [data-widget="tabs"] > .widget-pestana-panel > :last-child {
+    margin-bottom: 0;
+}
+
+/* ================================
+   WIDGET - YOUTUBE (vídeo)
+   El enlace del vídeo y, si se quiere, un pie en negrita:
+     ::: youtube
+     https://www.youtube.com/watch?v=…
+
+     **Pie del vídeo**
+     :::
+   widgets-markdown.ts lo convierte en <figure> con el vídeo (.widget-video) y el pie (<figcaption>).
+   Como una tarjeta: el vídeo y el pie (una franja pegada debajo) dentro del mismo marco, con borde y sombra del
+   color del widget. 720 px de ancho (o menos si no cabe), 16:9; con full, todo el ancho
+   ================================ */
+
+.markdown-body [data-widget="youtube"] {
+    width: 720px;
+    margin-block: 1.5rem;
+    overflow: hidden;
+    border: 1px solid var(--widget-color);
+    border-radius: 0.75rem;
+    box-shadow: 0 6px 28px color-mix(in srgb, var(--widget-color) 35%, transparent);
+}
+
+.markdown-body [data-widget="youtube"] > .widget-video {
+    aspect-ratio: 16 / 9;
+    background-color: #000;
+}
+
+.markdown-body [data-widget="youtube"] iframe {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: 0;
+}
+
+/* El texto: franja rellena del color del widget, con el icono de YouTube y el texto. Abajo (pie) si en el .md va
+   después del enlace; arriba (cabecera) si va antes. La línea separadora, siempre del lado del vídeo */
+.markdown-body [data-widget="youtube"] > figcaption {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.65rem 1rem;
+    border-top: 1px solid var(--widget-color);
+}
+
+.markdown-body [data-widget="youtube"] > figcaption:first-child {
+    border-top: none;
+    border-bottom: 1px solid var(--widget-color);
+}
+
+.markdown-body [data-widget="youtube"] > figcaption {
+    /* Fondo con varios degradados del color del widget: un brillo más claro arriba a la izquierda, un toque
+       cálido (mezcla con ámbar) abajo a la derecha y, debajo de todo, el color oscureciéndose hacia la derecha */
+    background-color: var(--widget-color);
+    background-image:
+        radial-gradient(ellipse at 10% 0%, color-mix(in srgb, var(--widget-color), #fff 25%), transparent 60%),
+        radial-gradient(ellipse at 90% 100%, color-mix(in srgb, var(--widget-color), var(--p-amber-500, #f59e0b) 35%), transparent 65%),
+        linear-gradient(to right, var(--widget-color), color-mix(in srgb, var(--widget-color), #000 20%));
+    color: var(--widget-contraste);
+    font-weight: 600;
+}
+
+.markdown-body [data-widget="youtube"] > figcaption .pi {
+    font-size: 1.1em;
+}
+
+/* mini (solo de este widget): ventana pequeña, para listas de vídeos (con inline, varios en fila) */
+.markdown-body [data-widget="youtube"].widget-mini {
+    width: 320px;
+    margin-block: 0.75rem 1.5rem; /* más espacio abajo: los en fila no se separan del contenido que sigue */
+    border-radius: 0.5rem;
+    box-shadow: 0 3px 14px color-mix(in srgb, var(--widget-color) 30%, transparent);
+}
+
+.markdown-body [data-widget="youtube"].widget-mini > figcaption {
+    padding: 0.45rem 0.75rem;
+    font-size: 0.85em;
+}
+
+/* ================================
+   WIDGET - JUMBOTRON
+   Megatítulo o frase muy destacada. El primer párrafo, enorme y del color del widget;
+   los siguientes (opcionales), un subtítulo más pequeño:
+     ::: jumbotron
+     ¡Bienvenidos al curso!
+
+     Subtítulo
+     :::
+   ================================ */
+
+.markdown-body [data-widget="jumbotron"] {
+    margin-block: 2.5rem;
+    text-align: center;
+}
+
+.markdown-body :is([data-widget="jumbotron"].widget-bordered, [data-widget="jumbotron"].widget-filled) {
+    padding: 2rem 2.5rem;
+    border-radius: 1rem;
+}
+
+/* El megatítulo: se adapta al ancho de la pantalla (muy grande en el aula, más pequeño en el móvil) */
+.markdown-body [data-widget="jumbotron"] > :first-child {
+    width: fit-content;
+    margin: 0 auto;
+    font-size: clamp(2.25rem, 4vw + 1rem, 5rem);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    color: var(--widget-color-texto);
+}
+
+/* animated: el titular es un rótulo que se desplaza siempre (a la izquierda; con reverse, a la derecha) y se puede arrastrar
+   (contenido.ts > prepararRotulo; es la excepción a "animar solo con el ratón encima"). Ocupa todo el ancho */
+.markdown-body [data-widget="jumbotron"].widget-animated {
+    width: auto;
+}
+
+.markdown-body [data-widget="jumbotron"] > .widget-rotulo {
+    width: auto;
+    padding-block: 0.1em 0.2em; /* aire para lo que sobresale de las letras (g, j, p, tildes…), que si no se recorta */
+    overflow: hidden;
+    white-space: nowrap;
+    cursor: grab;
+    user-select: none;
+    touch-action: pan-y; /* en el móvil, arrastrar en horizontal mueve el rótulo; en vertical, la página */
+    /* el texto aparece y desaparece suavemente por los lados */
+    mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+}
+
+.markdown-body [data-widget="jumbotron"] > .widget-rotulo.widget-arrastrando {
+    cursor: grabbing;
+}
+
+.markdown-body [data-widget="jumbotron"] .widget-rotulo-pista {
+    display: inline-block;
+    will-change: transform;
+}
+
+.markdown-body [data-widget="jumbotron"] .widget-rotulo-unidad {
+    display: inline-block;
+}
+
+.markdown-body [data-widget="jumbotron"] .widget-rotulo-separador {
+    padding-inline: 0.6em;
+    opacity: 0.4;
+}
+
+/* El subtítulo (los párrafos siguientes) */
+.markdown-body [data-widget="jumbotron"] > :not(:first-child) {
+    margin: 1rem 0 0;
+    font-size: clamp(1.1rem, 1.2vw + 0.7rem, 1.6rem);
+    color: var(--p-text-muted-color);
+}
+
+/* ================================
+   WIDGETS ANIMADOS (modificador animated)
+   Se animan en bucle mientras el ratón está encima: contenido.ts pone la clase "widget-animando"
+   y la vuelve a poner en cada ciclo (pasos × --widget-intervalo + --widget-pausa). Sin el ratón
+   encima, el widget se ve normal y quieto. La animación de cada widget va dentro de .widget-animando.
+   ================================ */
+
+/* STEPPER ANIMADO (::: stepper animated): paso a paso, el círculo "palpita" y se enciende, y la línea
+   se rellena hasta el siguiente. Al empezar cada ciclo, todo vuelve a estar apagado */
+.markdown-body [data-widget="stepper"].widget-animated {
+    --widget-intervalo: 1.1s; /* tiempo entre un paso y el siguiente */
+    --widget-pausa: 1.5s;     /* pausa al terminar, antes de volver a empezar */
+}
+
+.markdown-body [data-widget="stepper"].widget-animando li::before {
+    animation: stepper-paso 0.8s ease-out both;
+    animation-delay: calc(var(--paso, 0) * var(--widget-intervalo));
+}
+
+.markdown-body [data-widget="stepper"].widget-animando li:not(:last-child)::after {
+    opacity: 1;
+    background:
+        linear-gradient(var(--widget-color), var(--widget-color)) top / 100% 0% no-repeat,
+        color-mix(in srgb, var(--widget-color) 25%, transparent);
+    animation: stepper-linea 0.6s ease-in-out both;
+    animation-delay: calc(var(--paso, 0) * var(--widget-intervalo) + 0.5s);
+}
+
+@keyframes stepper-paso {
+    0% {
+        background-color: color-mix(in srgb, var(--widget-color) 30%, transparent);
+        color: var(--widget-color-texto);
+        transform: scale(0.85);
+        box-shadow: 0 0 0 0 color-mix(in srgb, var(--widget-color) 60%, transparent);
+    }
+    50% {
+        transform: scale(1.15);
+        box-shadow: 0 0 0 10px color-mix(in srgb, var(--widget-color) 0%, transparent);
+    }
+    100% {
+        background-color: var(--widget-color);
+        color: var(--widget-contraste);
+        transform: scale(1);
+        box-shadow: 0 0 0 0 transparent;
+    }
+}
+
+@keyframes stepper-linea {
+    from { background-size: 100% 0%; }
+    to   { background-size: 100% 100%; }
 }

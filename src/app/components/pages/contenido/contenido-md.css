@@ -23,17 +23,12 @@ Aquí añadiremos estilos para forzar algunos estilos contenido html generado po
 }
 
 
-/* 2. Para pantallas grandes, activamos la maquetación Grid */
+/* 2. En pantallas grandes, el contenido va en una columna central de 1024 px como máximo: el espacio sobrante se
+   reparte como relleno a los lados. (Antes era una rejilla de 3 columnas, pero en una rejilla cada elemento ocupa
+   su fila y los widgets "inline" no podían ponerse uno junto al otro) */
 @media (min-width: 1200px) {
   .markdown-body {
-    display: grid;
-    /* Crea 3 columnas: [espacio flexible] [contenido de 1024px] [espacio flexible] */
-    grid-template-columns: 1fr minmax(0, 1024px) 1fr;
-  }
-
-  /* 3. Le decimos a TODOS los hijos directos que se pongan en la segunda columna (la central) */
-  .markdown-body > * {
-    grid-column: 2;
+    padding-inline: max(2rem, calc((100% - 1024px) / 2));
   }
 }
 
